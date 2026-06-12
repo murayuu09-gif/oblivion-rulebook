@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>システム：探索 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── シーン種別カード ── */
+.scene-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.scene-card { background: var(--bg2); padding: 1.5rem; }
+.scene-card__icon {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.scene-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.scene-card__body {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 0.75rem;
+}
+.scene-card__rule {
+  font-size: 11px;
+  color: var(--text3);
+  border-top: 1px solid var(--border);
+  padding-top: 0.6rem;
+}
+
+
+/* ── 周回テーブル ── */
+.ng-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 1.5rem 0;
+}
+.ng-table th, .ng-table td {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.ng-table th {
+  background: var(--bg2);
+  color: var(--gold-dim);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+}
+.ng-table td { color: var(--text2); }
+.ng-table td:first-child { color: var(--text); font-weight: 500; text-align: left; }
+.ng-table tr.ng-current { background: rgba(200,164,90,0.06); }
+.ng-table td .ng-pts { color: var(--gold); font-weight: 700; }
+.ng-table td .ng-pts-derelict { color: var(--purple2); font-weight: 700; }
+
+/* ── 素性ボーナス ── */
+.origin-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.origin-row { background: var(--bg2); display: grid; grid-template-columns: 160px 1fr; }
+.origin-row__head {
+  padding: 1.5rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.origin-row__name-ja { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.origin-row__name-en { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: var(--gold-dim); text-transform: uppercase; }
+.origin-row__body { padding: 1.25rem 1.5rem; }
+.bonus-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 4px;
+}
+.bonus-item:last-child { margin-bottom: 0; }
+.bonus-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.08em;
+  padding: 1px 6px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 3px;
+  font-weight: 500;
+}
+.bonus-tag--up   { background: rgba(48,128,112,0.2); color: var(--teal2); border: 1px solid var(--teal); }
+.bonus-tag--down { background: rgba(192,64,48,0.15); color: var(--red2);  border: 1px solid var(--red); }
+
+@media (max-width: 640px) {
+  .origin-row { grid-template-columns: 1fr; }
+  .origin-row__head { border-right: none; border-bottom: 1px solid var(--border); padding: 1rem 1.25rem; }
+  .scene-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav" role="navigation">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li class="site-nav__item">
+        <a href="world.html">世界観</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="world.html">概要</a></li>
+          <li><a href="world_detail.html">詳細設定</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="system_combat.html">システム</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="system_combat.html">戦闘</a></li>
+          <li><a href="system_explore.html">探索</a></li>
+        </ul>
+      </li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="origins.html">素性・能力値</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_prices.html">価格リスト</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="gm_enemies.html">GMツール</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="gm_enemies.html">エネミーリスト</a></li>
+          <li><a href="gm_artifacts.html">アーティファクト</a></li>
+          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <p class="page-eyebrow">Chapter II — 2</p>
+    <h1 class="page-title">Exploration</h1>
+    <p class="page-title-ja">システム — 探索</p>
+    <div class="page-divider"></div>
+  </div>
+
+  <div class="toc">
+    <p class="toc__title">Contents</p>
+    <ul class="toc__list">
+      <li><span>I</span><a href="#scenario">シナリオシステム設計思想</a></li>
+      <li><span>II</span><a href="#scene">シーン構造</a></li>
+      <li><span>III</span><a href="#roll">判定タイミング</a></li>
+      <li><span>IV</span><a href="#reward">報酬システム</a></li>
+      <li><span>V</span><a href="#ng">周回ボーナス</a></li>
+      <li><span>VI</span><a href="#origin">素性別シナリオ行動ボーナス</a></li>
+    </ul>
+  </div>
+
+  <!-- I. 設計思想 -->
+  <section class="section" id="scenario">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">シナリオシステム設計思想</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>「忘却の淵にて」の探索は、CoC式の「情報を求めて調査する」型とは一線を画す。キャラクターはすでに廃墟に向かう理由を持っており、GMはその理由を引き出す舞台を作る側に回る。</p>
+
+      <div class="rule-block">
+        <p class="rule-block__title">能動的導入</p>
+        <p>キャラクターが自分の意志で廃墟・目的地に向かう形式を基本とする。PLが「なぜここにいるか」を最初から自分の言葉で語れる状態にする。GMが動機を与えるのではなく、PLが持ち込んだ動機をGMが活かす。</p>
+      </div>
+
+      <div class="rule-block">
+        <p class="rule-block__title">情報と判定の分離</p>
+        <p>キャラクターが知っている情報は、判定なしで語れる。素性・出身・能力値はその知識の裏付けであり、「知っているかどうか」を判定で決めない。判定は「<b style="color:var(--text);">行動の成否</b>」に使い、「情報の解禁」には使わない。</p>
+      </div>
+
+      <div class="rule-block">
+        <p class="rule-block__title">重要情報の複数ルート</p>
+        <p>同じ情報に複数の到達経路を用意する。騎士は権力者から、盗賊は裏社会から、魔法使いは古文書から——どのルートを使うかでRPの方向性が変わり、詰まることもなくなる。一本道の推理劇にしないための仕組みだ。</p>
+      </div>
+
+      <div class="rule-block" style="border-left-color: var(--purple);">
+        <p class="rule-block__title" style="color:var(--purple2);">深淵のみ例外</p>
+        <p>本当に初めて触れるもの——旧支配者・深淵の存在・大崩壊の残滓——だけは、POWロールで精神的代償を求める。これはクトゥルフ的要素との接合点であり、「理解を超えたもの」に触れた時の演出として機能する。</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- II. シーン構造 -->
+  <section class="section" id="scene">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">シーン構造</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>シナリオは4種類のシーンの組み合わせで構成される。GMはこの4種を意識的に切り替えながら、戦闘と探索のリズムを作る。</p>
+
+      <div class="scene-grid">
+        <div class="scene-card">
+          <span class="scene-card__icon">Scene I</span>
+          <p class="scene-card__title">探索シーン</p>
+          <p class="scene-card__body">廃墟の調査・情報収集・環境描写への反応。PLが「見る・聞く・触れる」といった宣言をし、GMが描写を返す。</p>
+          <p class="scene-card__rule">能力値判定（状況に応じて）＋GM描写</p>
+        </div>
+        <div class="scene-card">
+          <span class="scene-card__icon">Scene II</span>
+          <p class="scene-card__title">イベントシーン</p>
+          <p class="scene-card__body">選択肢・トラップ・謎解き・NPC接触。GMが状況を提示し、PLが宣言する。選択が後のシーンに影響する。</p>
+          <p class="scene-card__rule">GMが提示・PLが宣言</p>
+        </div>
+        <div class="scene-card">
+          <span class="scene-card__icon">Scene III</span>
+          <p class="scene-card__title">戦闘シーン</p>
+          <p class="scene-card__body">敵との遭遇。ここでは戦闘ルールが全面適用される。探索の成否が奇襲・地形・情報量を左右する。</p>
+          <p class="scene-card__rule">既存の戦闘システム適用</p>
+        </div>
+        <div class="scene-card">
+          <span class="scene-card__icon">Scene IV</span>
+          <p class="scene-card__title">幕間（休息）</p>
+          <p class="scene-card__body">戦闘後の落ち着いたタイミング。演技・雑談・装備整理。描写として処理する。</p>
+          <p class="scene-card__rule">HP/MP自然回復（1時間+1）・状態異常リセット</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- III. 判定タイミング -->
+  <section class="section" id="roll">
+    <div class="section-header">
+      <span class="section-num">III</span>
+      <h2 class="section-title">判定タイミング</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>判定が行われる場面は限られている。「知っている情報」「できて当然の行動」には判定を求めない。以下が判定を行う主な場面だ。</p>
+
+      <table class="rule-table">
+        <thead>
+          <tr><th>場面</th><th>使用能力値</th><th>失敗した場合</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>トラップの察知・解除</td>
+            <td>DEX</td>
+            <td>ダメージ or 状態異常付与</td>
+          </tr>
+          <tr>
+            <td>NPCの説得・脅迫</td>
+            <td>INT or STR</td>
+            <td>交渉決裂・戦闘移行</td>
+          </tr>
+          <tr>
+            <td>危険察知（奇襲回避）</td>
+            <td>AGI</td>
+            <td>奇襲されてイニシアチブ最低</td>
+          </tr>
+          <tr>
+            <td>深淵的な何かへの接触</td>
+            <td>POW</td>
+            <td>精神系状態異常（恐怖・発狂）</td>
+          </tr>
+          <tr>
+            <td>幸運な発見</td>
+            <td>LCK</td>
+            <td>何も起きない（別ルートで情報は届く）</td>
+          </tr>
+          <tr>
+            <td>重要情報の発見</td>
+            <td style="color:var(--gold);">原則 判定不要</td>
+            <td>—　キャラクターが知っている情報は自由に語れる</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">「判定しないと情報を渡せない」という発想は、このシステムとは相性が悪い。ダイスは「どう行動したか」の結果を決めるためにある。</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- V. 報酬システム -->
+  <section class="section" id="reward">
+    <div class="section-header">
+      <span class="section-num">IV</span>
+      <h2 class="section-title">報酬システム</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>報酬はゴールドとアーティファクトの2種類。ゴールドは装備購入に使い、アーティファクトは所持するだけで効果が発動する。どちらもシナリオクリア報酬と戦闘ドロップの両方で入手できる。</p>
+
+      <p>装備は兵士級・英雄級・伝説級の3段階のレアリティに分かれており、レアリティが上がるほど価格も性能も大きく跳ね上がる。兵士級は街の商店で誰でも購入できる標準装備、英雄級は強力な効果を持つ代わりに高価な装備、伝説級は通常の商店では取り扱われず、シナリオ中の発見・報酬・特殊ルートでのみ入手できる特別な一品だ。売却価格はどのレアリティも買値の半額になる。</p>
+
+      <div class="note">武器・防具・触媒・アイテムの個別の価格は、<a href="data_prices.html" style="color:var(--gold); text-decoration:none;">データ一覧 → 価格リスト</a> を参照。</div>
+
+      <p style="margin:1.5rem 0;">アーティファクトは装備スロットを占有しない特別なアイテムだ。所持しているだけで効果が発動し、所持数の上限はない——ただし、シナリオへの持ち込み上限はシナリオごとに明記される。</p>
+
+      <table class="rule-table">
+        <thead>
+          <tr><th>項目</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>効果の発動</td><td>装備スロット不要。所持しているだけで効果が発動する</td></tr>
+          <tr><td>入手タイミング</td><td>シナリオクリア報酬・探索中のドロップ（途中入手）の両方</td></tr>
+          <tr><td>所持上限</td><td>なし。所持アーティファクト数はキャラクターのランクを示す指標になる</td></tr>
+          <tr><td>持ち込み上限</td><td>シナリオごとに明記される。難易度調整と世界観の両立のため</td></tr>
+          <tr><td>売却</td><td>買値の半額で売却可能</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- VI. 周回ボーナス -->
+  <section class="section" id="ng">
+    <div class="section-header">
+      <span class="section-num">V</span>
+      <h2 class="section-title">周回ボーナス</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>このシステムはニューゲームプラスに対応している。シナリオをクリアするたびに周回数が増え、キャラクター作成時に使えるポイントが積み上がっていく。廃人は初期ポイントが多い分、周回での成長幅も大きい。</p>
+
+      <table class="ng-table">
+        <thead>
+          <tr>
+            <th style="text-align:left;">周回</th>
+            <th>通常素性</th>
+            <th>廃人</th>
+            <th style="text-align:left;">備考</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>新規（初回）</td>
+            <td><span class="ng-pts">7点</span></td>
+            <td><span class="ng-pts-derelict">10点</span></td>
+            <td>基本値</td>
+          </tr>
+          <tr>
+            <td>1周目クリア後</td>
+            <td><span class="ng-pts">8点</span></td>
+            <td><span class="ng-pts-derelict">11点</span></td>
+            <td>+1点</td>
+          </tr>
+          <tr>
+            <td>2周目クリア後</td>
+            <td><span class="ng-pts">9点</span></td>
+            <td><span class="ng-pts-derelict">12点</span></td>
+            <td>+1点</td>
+          </tr>
+          <tr>
+            <td>3周目クリア後</td>
+            <td><span class="ng-pts">10点</span></td>
+            <td><span class="ng-pts-derelict">13点</span></td>
+            <td>+1点</td>
+          </tr>
+          <tr>
+            <td>4周目クリア後</td>
+            <td><span class="ng-pts">11点</span></td>
+            <td><span class="ng-pts-derelict">14点</span></td>
+            <td>+1点</td>
+          </tr>
+          <tr>
+            <td>5周目クリア後</td>
+            <td><span class="ng-pts">12点</span></td>
+            <td><span class="ng-pts-derelict">15点</span></td>
+            <td>+1点</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="note">周回上限は未定。1能力値への追加ポイントの上限は+4、能力値の最大値は20——これは周回後も変わらない。ポイントが増えるほど「どこに振るか」の選択が重くなる。</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- VII. 素性別シナリオ行動ボーナス -->
+  <section class="section" id="origin">
+    <div class="section-header">
+      <span class="section-num">VI</span>
+      <h2 class="section-title">素性別シナリオ行動ボーナス</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>探索・交渉・トラップなどシナリオ行動の能力値判定において、素性ごとに得意・不得意が生まれる。ボーナスダイスは2つ振って良い方を採用（有利）、ペナルティダイスは2つ振って悪い方を採用（不利）。交渉は相手の属性によりGM裁量で適用する。</p>
+
+      <div class="origin-list">
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">騎士</p>
+            <p class="origin-row__name-en">Knight</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>STR判定 — 力による突破・威圧交渉。体格と訓練が信頼感を与える</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>交渉：貴族・騎士団・白衣教団 — 身分と礼節が通じる相手に有利</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>DEX判定 — 罠解除・鍵開け・潜入。重装備と不向きな繊細作業</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>LCK判定 — 規律の人間は運に頼ることを嫌う</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">傭兵</p>
+            <p class="origin-row__name-en">Mercenary</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>AGI判定 — 危険察知・逃走・追跡。場数を踏んだ生存本能</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>交渉：裏社会・傭兵・盗賊 — 同業者として話が通じる</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>INT判定 — 魔術知識・古代文字。学のない者には難解</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：貴族・聖職者 — 立場と礼儀が通じない相手に不利</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">戦士</p>
+            <p class="origin-row__name-en">Warrior</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>STR判定 — 力仕事・障害物排除・威圧。純粋な肉体の強さ</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>交渉：競技場・戦場出身者 — 腕力への敬意が通じる</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>DEX判定 — 罠解除・精密作業。大きな手と荒削りな感覚が邪魔</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>INT判定 — 知識・交渉・看破。考えるより先に動く傾向</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">盗賊</p>
+            <p class="origin-row__name-en">Thief</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>DEX判定 — 罠解除・鍵開け・スリ・潜入。本領発揮</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>LCK判定 — 修羅場での幸運。生き延びてきた者の第六感</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：騎士団・白衣教団・貴族 — 素性が知れると信用されない</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>INT判定 — 魔術・古代文字の知識。体で覚えた技術者には縁遠い</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">呪術師</p>
+            <p class="origin-row__name-en">Hexer</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>INT判定 — 禁書・古代文字・魔術知識。独学ゆえに広範な知識</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>交渉：裏社会・異端者・深淵に触れた者 — 同じ匂いを持つ者として</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：テオフィリア・白衣教団 — 異端者として迫害対象になりうる</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>STR判定 — 力仕事・威圧。細い体と怪しい雰囲気</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">魔法使い</p>
+            <p class="origin-row__name-en">Mage</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>INT判定 — 古代文字・魔術書・遺物の鑑定。知識量が他の追随を許さない</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>INT判定（学者・帝国遺構調査） — 専門知識が直結する場面全般</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>STR判定 — 力仕事・威圧。貧弱な体格では話にならない</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>AGI判定 — 逃走・追跡・バランス。運動は専門外</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">聖職者</p>
+            <p class="origin-row__name-en">Cleric</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>交渉：一般市民・信者・病人 — 神の使徒として信頼される</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>INT判定（神学・奇跡・邪悪な存在） — 信仰の蓄積による知識</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：呪術師・裏社会 — 異端として拒絶される</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>DEX判定 — 潜入・スリ・鍵開け。戒律と育ちが邪魔をする</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">深きものの末裔</p>
+            <p class="origin-row__name-en">Deep One</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>AGI判定（水中・湿地・海岸） — 異形の身体能力が発揮される</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>INT判定（深淵・旧支配者・名無しの者） — 血が語る記憶</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：内陸の人間全般 — 異形の外見が偏見と差別を招く</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>LCK判定 — 呪われた血筋はLCKの低さに直結する</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">狩人</p>
+            <p class="origin-row__name-en">Hunter</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>AGI判定 — 追跡・索敵・危険察知。野生で磨かれた感覚</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>DEX判定（罠の設置・看破） — 罠師としての経験が活きる</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：都市・貴族・教団 — 文明の場に不慣れで言葉が少ない</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>INT判定 — 魔術・神学・古代文字。文字よりも自然を読んで生きてきた</span></div>
+          </div>
+        </div>
+
+        <div class="origin-row">
+          <div class="origin-row__head">
+            <p class="origin-row__name-ja">廃人</p>
+            <p class="origin-row__name-en">Derelict</p>
+          </div>
+          <div class="origin-row__body">
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--up">ボーナス</span><span>LCK判定 — すべてを失った者に残るのは運だけ。修羅場での幸運</span></div>
+            <div class="bonus-item"><span class="bonus-tag bonus-tag--down">ペナルティ</span><span>交渉：全社会階層 — どの階層とも繋がりがなく、信用の土台がない</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ページナビ -->
+  <nav class="page-nav">
+    <div>
+      <p class="page-nav__label">← Previous</p>
+      <a href="system_combat.html" class="page-nav__link">システム 戦闘</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">Next →</p>
+      <a href="charcreate.html" class="page-nav__link">キャラクター作成</a>
+    </div>
+  </nav>
+
+</div>
+
+<footer class="site-footer">
+  <p>忘却の淵にて — At the Edge of Oblivion</p>
+</footer>
+
+<script src="nav.js"></script>
+</body>
+</html>

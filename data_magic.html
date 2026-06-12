@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>魔術・奇跡 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.data-controls{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;align-items:center}
+.search-box{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem 1rem;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-box:focus{border-color:var(--gold-dim)}.search-box::placeholder{color:var(--text3)}
+.filter-group{display:flex;flex-wrap:wrap;gap:.5rem}
+.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.1em;padding:4px 12px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);border-radius:2px;cursor:pointer;transition:all .2s}
+.filter-btn:hover{color:var(--gold);border-color:var(--gold-dim)}.filter-btn.active{background:var(--gold-dim);color:var(--gold2);border-color:var(--gold)}
+.result-count,.fav-notice{font-size:11px;font-family:'Noto Sans JP',sans-serif;margin-bottom:1rem}
+.result-count{color:var(--text3)}.fav-notice{color:var(--gold-dim);margin-bottom:1.5rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:3rem}
+.data-card{background:var(--bg2);padding:1.25rem;position:relative;transition:background .15s}
+.data-card:hover{background:var(--bg3)}.data-card.hidden{display:none}.data-card.favorited{background:rgba(200,164,90,.06)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
+.card-id{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text3);flex-shrink:0;margin-top:2px}
+.card-name{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
+.card-name-en{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.15em;display:block;margin-top:2px}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px;flex-shrink:0;transition:color .2s,transform .15s;line-height:1}
+.fav-btn:hover{color:var(--gold);transform:scale(1.2)}.fav-btn.active{color:var(--gold2)}
+.card-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
+.tag{font-size:9px;font-family:'Noto Sans JP',sans-serif;letter-spacing:.08em;padding:2px 7px;border-radius:2px;font-weight:500}
+.tag-soldier{background:rgba(160,144,112,.2);color:var(--text2);border:1px solid var(--border2)}
+.tag-hero{background:rgba(200,164,90,.15);color:var(--gold);border:1px solid var(--gold-dim)}
+.tag-legend{background:rgba(192,64,48,.15);color:var(--red2);border:1px solid var(--red)}
+.tag-fire{background:rgba(200,80,40,.15);color:#e87050;border:1px solid #904030}
+.tag-ice{background:rgba(80,160,200,.15);color:#70b0e0;border:1px solid #4080a0}
+.tag-thunder{background:rgba(200,200,40,.15);color:#d0c050;border:1px solid #908030}
+.tag-poison{background:rgba(80,160,80,.15);color:#70c070;border:1px solid #408040}
+.tag-dark{background:rgba(112,80,144,.2);color:var(--purple2);border:1px solid var(--purple)}
+.tag-holy{background:rgba(200,164,90,.15);color:var(--gold2);border:1px solid var(--gold-dim)}
+.tag-none{background:rgba(100,90,64,.2);color:var(--text2);border:1px solid var(--border2)}
+.tag-buff{background:rgba(48,128,112,.15);color:var(--teal2);border:1px solid var(--teal)}
+.card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:.75rem}
+.stat-item{background:var(--bg3);border-radius:2px;padding:4px 6px;text-align:center}
+.stat-label{font-size:8px;font-family:'Noto Sans JP',sans-serif;color:var(--text3);letter-spacing:.1em;display:block}
+.stat-val{font-size:12px;font-weight:500;color:var(--gold);display:block}
+.card-effect{font-size:11px;color:var(--text3);line-height:1.7;margin-bottom:.5rem}
+.card-status{font-size:11px;color:var(--teal2);line-height:1.7;margin-bottom:4px}
+.card-hd{font-size:11px;line-height:1.7;padding:4px 8px;border-radius:2px;margin-bottom:4px;background:rgba(200,164,90,.08);color:var(--text2)}
+.card-hd::before{content:'HD ';color:var(--gold-dim);font-weight:500;font-family:'Cinzel',serif;font-size:9px}
+.card-ex{font-size:11px;line-height:1.7;padding:4px 8px;border-radius:2px;margin-bottom:4px;background:rgba(200,164,90,.14);color:var(--text2)}
+.card-ex::before{content:'EX ';color:var(--gold);font-weight:500;font-family:'Cinzel',serif;font-size:9px}
+.card-flavor{font-size:10px;color:var(--text3);font-style:italic;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;line-height:1.6}
+.tab-group{display:flex;flex-wrap:wrap;gap:0;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.08em;padding:.6rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
+.tab-btn:hover{color:var(--gold)}.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold-dim)}
+.tab-content{display:none}.tab-content.active{display:block}
+.cat-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem}
+.cat-table th{font-family:'Noto Sans JP',sans-serif;font-size:10px;color:var(--gold-dim);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border2);letter-spacing:.1em}
+.cat-table td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.6}
+.cat-table tr:last-child td{border-bottom:none}.cat-table td:first-child{color:var(--text);font-weight:500;white-space:nowrap}
+.cat-table tr:hover td{background:var(--bg3)}
+@media(max-width:640px){.card-grid{grid-template-columns:1fr}}
+
+/* ── キャラクター作成用テーブル ── */
+.cc-section { margin-bottom: 2.5rem; }
+.cc-section-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  margin-bottom: 0.6rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--gold-dim);
+}
+.cc-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+.cc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 700px;
+}
+.cc-table th {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--gold-dim);
+  text-align: left;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+.cc-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.cc-table tr:last-child td { border-bottom: none; }
+.cc-table tr:hover td { background: var(--bg3); }
+.cc-table td:first-child { white-space: nowrap; }
+.cc-name { color: var(--text); font-weight: 400; }
+.cc-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 1px 5px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+.cc-soldier { background: rgba(160,144,112,.2); color: var(--text2); border: 1px solid var(--border2); }
+.cc-hero    { background: rgba(200,164,90,.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+.cc-legend  { background: rgba(192,64,48,.15); color: var(--red2); border: 1px solid var(--red); }
+.cc-waza { font-size: 10px; color: var(--text3); line-height: 1.6; }
+.cc-waza .hd { color: var(--gold-dim); font-weight: 500; }
+.cc-waza .ex { color: var(--gold); font-weight: 500; }
+.cc-waza .mp { font-size: 9px; color: var(--teal2); }
+.cc-waza .none { color: var(--text3); font-style: italic; }
+.cc-price { color: var(--gold); font-family: 'Cinzel', serif; font-size: 10px; white-space: nowrap; }
+.cc-price.legend { color: var(--red2); }
+.cc-cat-note {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.8;
+  padding: 0.6rem 1rem;
+  background: rgba(200,164,90,0.04);
+  border: 1px solid rgba(200,164,90,0.12);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.cc-cat-note b { color: var(--gold-dim); }
+
+</style>
+</head>
+<body>
+<nav class="site-nav" role="navigation"><div class="site-nav__inner">
+  <a href="index.html" class="site-nav__logo">Oblivion</a>
+  <ul class="site-nav__links">
+    <li><a href="index.html">Top</a></li>
+    <li class="site-nav__item"><a href="world.html">世界観</a><ul class="site-nav__dropdown"><li><a href="world.html">概要</a></li><li><a href="world_detail.html">詳細設定</a></li></ul></li>
+    <li class="site-nav__item"><a href="system_combat.html">システム</a><ul class="site-nav__dropdown"><li><a href="system_combat.html">戦闘</a></li><li><a href="system_explore.html">探索</a></li></ul></li>
+    <li><a href="charcreate.html">キャラクター作成</a></li>
+    <li><a href="origins.html">素性・能力値</a></li>
+    <li class="site-nav__item"><a href="data_weapons.html">データ一覧</a><ul class="site-nav__dropdown"><li><a href="data_weapons.html">武器・防具</a></li><li><a href="data_magic.html">魔術・奇跡</a></li><li><a href="data_seals.html">刻印</a></li></ul></li>
+    <li class="site-nav__item"><a href="gm_enemies.html">GMツール</a><ul class="site-nav__dropdown"><li><a href="gm_enemies.html">エネミーリスト</a></li><li><a href="gm_artifacts.html">アーティファクト</a></li><li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li></ul></li>
+  </ul>
+</div></nav>
+<div class="page-wrap">
+  <div class="page-header">
+    <p class="page-eyebrow">Data — V-B</p>
+    <h1 class="page-title">Magic & Miracles</h1>
+    <p class="page-title-ja">魔術・奇跡・触媒</p>
+    <div class="page-divider"></div>
+  </div>
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchTab('magic')">魔術（24種）</button>
+    <button class="tab-btn" onclick="switchTab('miracle')">奇跡（12種）</button>
+    <button class="tab-btn" onclick="switchTab('catalyst')">触媒（17種）</button>
+    <button class="tab-btn" onclick="switchTab('favorites')">★ お気に入り</button>
+    <button class="tab-btn" onclick="switchTab('charcreate')">📋 キャラクター作成用</button>
+  </div>
+  <div id="tab-magic" class="tab-content active">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果・属性で検索…" oninput="filterCards('magic',this.value)">
+      <div class="filter-group" id="magic-filters">
+        <button class="filter-btn active" onclick="setRF('magic','all',this)">すべて</button>
+        <button class="filter-btn" onclick="setRF('magic','兵士',this)">兵士（初級）</button>
+        <button class="filter-btn" onclick="setRF('magic','英雄',this)">英雄（上級）</button>
+        <button class="filter-btn" onclick="setRF('magic','伝説',this)">伝説（超級）</button>
+      </div>
+    </div>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="magic-count"></p>
+    <div class="card-grid" id="magic-grid"></div>
+  </div>
+  <div id="tab-miracle" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果・属性で検索…" oninput="filterCards('miracle',this.value)">
+      <div class="filter-group" id="miracle-filters">
+        <button class="filter-btn active" onclick="setRF('miracle','all',this)">すべて</button>
+        <button class="filter-btn" onclick="setRF('miracle','兵士',this)">兵士（初級）</button>
+        <button class="filter-btn" onclick="setRF('miracle','英雄',this)">英雄（上級）</button>
+        <button class="filter-btn" onclick="setRF('miracle','伝説',this)">伝説（超級）</button>
+      </div>
+    </div>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="miracle-count"></p>
+    <div class="card-grid" id="miracle-grid"></div>
+  </div>
+  <div id="tab-catalyst" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果で検索…" oninput="filterCat(this.value)">
+      <div class="filter-group">
+        <button class="filter-btn active" onclick="setCatFilter('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setCatFilter('杖',this)">杖（魔術）</button>
+        <button class="filter-btn" onclick="setCatFilter('聖印',this)">聖印（奇跡）</button>
+      </div>
+    </div>
+    <p class="result-count" id="catalyst-count"></p>
+    <div id="catalyst-container"></div>
+  </div>
+  
+  <div id="tab-charcreate" class="tab-content">
+    <div id="cc-magic-content"></div>
+  </div>
+  <div id="tab-favorites" class="tab-content">
+    <p class="fav-notice">★ をつけたカードがここに表示されます</p>
+    <div class="card-grid" id="fav-grid"><div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div></div>
+  </div>
+  <nav class="page-nav">
+    <div><p class="page-nav__label">← Previous</p><a href="data_weapons.html" class="page-nav__link">武器・防具</a></div>
+    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="data_seals.html" class="page-nav__link">刻印</a></div>
+  </nav>
+</div>
+<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
+<script src="nav.js"></script>
+<script>
+const MAGIC=[
+{id:'M01',name:'炎の矢',en:'Flame Bolt',rank:'兵士',ap:'初級 1AP',mp:1,attr:'炎',range:5,dice:'1d6',fixed:'—',pierce:'—',status:'燃焼付与（POWロール）',effect:'炎属性の単体射撃。命中時POWロール失敗で燃焼付与。',hd:'ダメージ+1d4',ex:'ダメージ+1d6。燃焼付与ロール不要',flavor:'「マナの最初の使い方だ。難しくない。ただ燃やせばいい」'},
+{id:'M02',name:'霜の息',en:'Frost Breath',rank:'兵士',ap:'初級 1AP',mp:1,attr:'冷気',range:3,dice:'1d4',fixed:'—',pierce:'—',status:'冷気付与（POWロール）',effect:'正面扇形（射程3・幅2マス）に冷気を放つ。各対象にPOWロール、失敗で冷気付与。',hd:'ダメージ+1d3',ex:'ダメージ+1d4。冷気付与ロール不要',flavor:'「空気そのものを止める呪文」'},
+{id:'M03',name:'帯雷',en:'Static Spark',rank:'兵士',ap:'初級 1AP',mp:1,attr:'雷',range:4,dice:'1d6',fixed:'—',pierce:'—',status:'装甲半減（1R）',effect:'雷属性の単体射撃。対象の物理装甲を1ラウンド半減する。',hd:'ダメージ+1d4',ex:'ダメージ+1d6。射程2内の別の敵1体にも1d4連鎖（命中判定不要）',flavor:'「空気が軋む音がする」'},
+{id:'M04',name:'毒霧',en:'Poison Mist',rank:'兵士',ap:'初級 1AP',mp:1,attr:'毒',range:4,dice:'1d4',fixed:'—',pierce:'1',status:'毒付与（ロール不要）',effect:'毒属性の範囲射撃（射程4内・半径1マスの円形）。全対象に装甲貫通1・毒付与（ロール不要）。',hd:'ダメージ+1d3',ex:'ダメージ+1d4。毒スタック+1追加',flavor:'「毒は見えないから、余計に恐ろしい」'},
+{id:'M05',name:'闇の一瞥',en:'Dark Glance',rank:'兵士',ap:'初級 1AP',mp:1,attr:'闇',range:5,dice:'1d4',fixed:'—',pierce:'—',status:'恐怖付与（POWロール）',effect:'闇属性の単体射撃。命中時POWロール失敗で恐怖付与。',hd:'ダメージ+1d4',ex:'ダメージ+1d6。恐怖付与ロール不要',flavor:'「一瞬で正気の縁が崩れる」'},
+{id:'M06',name:'風の刃',en:'Wind Blade',rank:'兵士',ap:'初級 1AP',mp:1,attr:'無属性',range:6,dice:'1d6',fixed:'+1',pierce:'—',status:'—',effect:'無属性の斬撃。物理装甲・魔術耐性両方の軽減を受けない。',hd:'ダメージ+1d4',ex:'ダメージ+1d6。対象を1マス強制後退',flavor:'「属性を持たないがゆえに、どんな装備も意味をなさない」'},
+{id:'M07',name:'石礫の雨',en:'Gravel Storm',rank:'兵士',ap:'初級 1AP',mp:1,attr:'無属性',range:4,dice:'1d4',fixed:'—',pierce:'—',status:'—',effect:'無属性の範囲射撃（射程4内・半径1マスの円形）。',hd:'ダメージ+1d3',ex:'ダメージ+1d4。命中対象全員に盲目付与（POWロール）',flavor:'「魔術と呼ぶには粗末だ。だが、確実に痛い」'},
+{id:'M08',name:'炎壁',en:'Flame Wall',rank:'兵士',ap:'初級 1AP',mp:2,attr:'炎',range:3,dice:'1d4',fixed:'—',pierce:'1',status:'燃焼付与（ロール不要）',effect:'術者前方1列3マスに炎の壁を展開。通過した敵に燃焼付与（ロール不要）・装甲貫通1。壁は1ラウンド持続。',hd:'ダメージ+1d3。壁の持続2ラウンドに延長',ex:'ダメージ+1d4。壁の持続3ラウンドに延長',flavor:'「退路を断つ炎」'},
+{id:'M09',name:'属性呪縛',en:'Elemental Imprint',rank:'兵士',ap:'初級 1AP',mp:1,attr:'付与',range:2,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'味方1体（自分含む）の次の武器攻撃に属性（炎・冷気・雷・毒・闇・神聖から選択）を1ラウンド付与。',hd:'効果が2ラウンドに延長',ex:'効果が2ラウンドに延長。最大攻撃回数全ての攻撃に属性付与',flavor:'「武器に魔術を乗せる技術」'},
+{id:'M10',name:'速度の術式',en:'Haste',rank:'兵士',ap:'初級 1AP',mp:2,attr:'無属性',range:2,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'味方1体（自分含む）に1ラウンド、命中判定にBD+1と移動APコスト-1（最小0）を付与。',hd:'効果が2ラウンドに延長',ex:'効果が2ラウンドに延長。射程2内の味方全員に付与',flavor:'「帝国の速度術式の断片」'},
+{id:'M11',name:'魔力吸収',en:'Mana Drain',rank:'兵士',ap:'初級 1AP',mp:1,attr:'闇',range:5,dice:'1d4',fixed:'—',pierce:'—',status:'—',effect:'闇属性の単体射撃。命中時、対象のMP-1d3。回収したMP分だけ術者のMPを回復。MPが0の場合HPへ直接ダメージ。',hd:'ダメージ+1d3。吸収MP量+1',ex:'ダメージ+1d4。吸収MP量+1d3',flavor:'「力を奪う」'},
+{id:'M12',name:'Fireball',en:'Fireball',rank:'英雄',ap:'上級 2AP',mp:3,attr:'炎',range:7,dice:'2d6',fixed:'—',pierce:'1',status:'燃焼付与（POWロール）',effect:'炎属性の爆発射撃。半径2マスの円形範囲内全対象に命中判定。装甲貫通1・燃焼付与のPOWロール。',hd:'ダメージ+1d6。燃焼付与ロール不要',ex:'ダメージ+2d6。燃焼付与ロール不要。命中対象の次ターンAP-1',flavor:'「帝国時代の攻城魔術」'},
+{id:'M13',name:'氷槍',en:'Ice Lance',rank:'英雄',ap:'上級 2AP',mp:2,attr:'冷気',range:8,dice:'2d4',fixed:'+1',pierce:'1',status:'冷気付与×2（ロール不要）',effect:'冷気属性の貫通射撃。直線上全対象に命中判定。装甲貫通1・冷気付与×2（ロール不要）。凍結中の対象へダメージ+2d4。',hd:'ダメージ+1d6',ex:'ダメージ+2d4。凍結中の対象に石化付与（POWロール）',flavor:'「名無しの者の息吹を凝縮した槍」'},
+{id:'M14',name:'雷鳴撃',en:'Thunderstrike',rank:'英雄',ap:'上級 2AP',mp:3,attr:'雷',range:7,dice:'2d6',fixed:'—',pierce:'—',status:'装甲半減（2R）',effect:'雷属性の強撃。物理装甲を2ラウンド半減。命中時、射程3内の別の敵1体に連鎖ダメージ1d6。',hd:'ダメージ+1d6',ex:'ダメージ+2d6。連鎖ダメージが2d6に上昇',flavor:'「金属鎧は敵だ」'},
+{id:'M15',name:'死毒の沼',en:'Death Bog',rank:'英雄',ap:'上級 2AP',mp:3,attr:'毒',range:5,dice:'1d6',fixed:'—',pierce:'1',status:'毒付与（ロール不要）',effect:'指定マス（半径2マス）に毒の沼を展開。沼内・沼を通過した敵に毒付与（ロール不要）・装甲貫通1。2ラウンド持続。',hd:'ダメージ+1d4。沼の持続3ラウンドに延長',ex:'ダメージ+1d6。沼内での移動APコスト+1追加',flavor:'「沼から逃れることが先決だ」'},
+{id:'M16',name:'深淵の叫び',en:'Abyssal Scream',rank:'英雄',ap:'上級 2AP',mp:3,attr:'闇',range:6,dice:'1d6',fixed:'—',pierce:'—',status:'恐怖・発狂付与（POWロール）',effect:'闇属性の範囲魔術（射程6・半径2マスの円形）。全対象にPOWロール、失敗で恐怖付与。恐怖状態の対象は追加POWロール、失敗で発狂付与。',hd:'ダメージ+1d4',ex:'ダメージ+1d6。1回のPOWロールで恐怖＋発狂を同時判定',flavor:'「理性が崩れる音がする」'},
+{id:'M17',name:'魂の鎖',en:'Soul Chain',rank:'英雄',ap:'上級 2AP',mp:2,attr:'闇',range:5,dice:'1d4',fixed:'—',pierce:'—',status:'封印付与（POWロール）',effect:'闇属性の呪縛魔術。対象1体にPOWロール、失敗で封印付与。封印成功時、対象の刻印効果を無効化する。',hd:'ダメージ+1d4。封印付与ロール不要',ex:'ダメージ+1d6。封印付与ロール不要＋沈黙付与',flavor:'「力ではなく可能性を奪う」'},
+{id:'M18',name:'地砕',en:'Earth Fist',rank:'英雄',ap:'上級 2AP',mp:2,attr:'無属性',range:4,dice:'2d4',fixed:'—',pierce:'全',status:'—',effect:'無属性の強撃。全装甲・耐性を無視した純粋な打撃。対象を1マス強制後退させる。',hd:'ダメージ+1d6',ex:'ダメージ+2d4。後退距離2マスに延長',flavor:'「どんな鎧も突き通す」'},
+{id:'M19',name:'鍛錬術式',en:'Empower Weapon',rank:'英雄',ap:'上級 2AP',mp:2,attr:'付与',range:2,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'味方1体（自分含む）の武器攻撃を2ラウンド強化。①命中+10% ②ダメージボーナス1段階上昇 ③属性付与（選択）を同時付与。',hd:'効果が3ラウンドに延長',ex:'効果が3ラウンドに延長。射程2内の味方2体に付与可能',flavor:'「帝国の従軍魔術師が騎士に施した強化術式の断片」'},
+{id:'M20',name:'反射の幕',en:'Mirror Veil',rank:'英雄',ap:'上級 2AP',mp:3,attr:'無属性',range:1,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'自分または味方1体に1ラウンド、魔術攻撃の相殺判定にBD+2を付与。相殺成功時の反射ダメージが全量になる。',hd:'効果が2ラウンドに延長',ex:'効果が2ラウンドに延長。射程2内の味方全員に付与',flavor:'「帝国の対魔術師部隊が使っていた防護術式」'},
+{id:'M21',name:'炎帝顕現',en:'Solar Manifestation',rank:'伝説',ap:'超級 3AP',mp:5,attr:'炎',range:8,dice:'3d8',fixed:'—',pierce:'1',status:'燃焼付与（全対象・ロール不要）',effect:'射程8・半径3マスの巨大爆発。全対象に命中判定・装甲貫通1・燃焼付与（ロール不要）。術者HP-3（代償）。',hd:'ダメージ+2d6',ex:'ダメージ+3d6。燃焼中の対象の次ターンAP-1',flavor:'「縫合の神の炎の側面が、一瞬だけ世界に降りてきた」'},
+{id:'M22',name:'時間凍結',en:'Temporal Freeze',rank:'伝説',ap:'超級 3AP',mp:5,attr:'冷気',range:7,dice:'2d8',fixed:'—',pierce:'全',status:'凍結付与（全対象・ロール不要）',effect:'射程7・半径3マスの時間停止魔術。全対象に凍結付与（ロール不要）・全装甲無視。術者は2ラウンドAP-1（魔術疲弊）。',hd:'ダメージ+2d6',ex:'ダメージ+2d8。凍結解除時に追加ダメージ1d6',flavor:'「名無しの者が最初に人類に見せた力」'},
+{id:'M23',name:'深淵解放',en:'Abyssal Release',rank:'伝説',ap:'超級 3AP',mp:5,attr:'闇',range:6,dice:'2d8',fixed:'—',pierce:'全',status:'発狂付与（全対象・ロール不要）',effect:'射程6・半径3マスに深淵の残滓を解き放つ。全対象に全装甲無視・発狂付与（ロール不要）。術者もPOWロール（失敗で恐怖付与）。',hd:'ダメージ+2d6',ex:'ダメージ+2d8。発狂付与した対象の次の行動を任意に決定（1ターン制御）',flavor:'「深淵を放つとは、自分も深淵に触れることだ」'},
+{id:'M24',name:'消滅',en:'Erasure',rank:'伝説',ap:'超級 3AP',mp:4,attr:'無属性',range:10,dice:'4d6',fixed:'—',pierce:'全',status:'—',effect:'射程10の単体消去魔術。全装甲・耐性無視。命中時、対象の全状態異常を解除した上でダメージ。対象HPが最大値30以下なら即死判定（LCKロール）。',hd:'ダメージ+2d6。即死判定条件がHP最大値40以下に拡大',ex:'ダメージ+3d6。即死判定失敗時、対象に石化付与',flavor:'「帝国が作った最後の魔術。標的を概念ごと消す」'},
+];
+
+const MIRACLE=[
+{id:'R01',name:'聖なる光',en:'Holy Light',rank:'兵士',ap:'初級 1AP',mp:1,attr:'神聖',range:6,dice:'1d6',fixed:'—',pierce:'—',status:'アンデッド+2d4',effect:'神聖属性の単体射撃。アンデッド・邪悪に+2d4固定ダメージ追加。',hd:'ダメージ+1d4',ex:'ダメージ+1d6。アンデッド・邪悪への追加ダメージ+1d4',flavor:'「廃墟には光が必要だ」'},
+{id:'R02',name:'縫合の手',en:'Mend',rank:'兵士',ap:'初級 1AP',mp:1,attr:'神聖',range:1,dice:'1d6',fixed:'—',pierce:'—',status:'回復',effect:'味方1体（自分含む）のHPを1d6回復する。戦闘外でも使用可能。',hd:'回復量+1d4',ex:'回復量+1d6。射程2内の味方全員にHP+1d3（回復の波及）',flavor:'「信仰が傷を塞ぐ」'},
+{id:'R03',name:'神聖の盾',en:'Sacred Ward',rank:'兵士',ap:'初級 1AP',mp:1,attr:'神聖',range:2,dice:'—',fixed:'—',pierce:'—',status:'魔術耐性+2',effect:'味方1体に1ラウンド、魔術耐性+2の加護を与える。アンデッド・邪悪からの攻撃に対しては+4。',hd:'加護が2ラウンドに延長',ex:'加護が2ラウンドに延長。物理ダメージも1d4軽減',flavor:'「信仰の厚さが壁の厚さになる」'},
+{id:'R04',name:'浄化の炎',en:'Purifying Flame',rank:'兵士',ap:'初級 1AP',mp:2,attr:'炎',range:5,dice:'1d6',fixed:'—',pierce:'1',status:'燃焼付与（ロール不要）',effect:'炎属性の神聖魔術。装甲貫通1・燃焼付与（ロール不要）。アンデッド・邪悪には+2d4固定ダメージ。',hd:'ダメージ+1d4。命中対象の状態異常（毒・冷気）を1種解除',ex:'ダメージ+1d6。アンデッド・邪悪に死の宣告付与（POWロール）',flavor:'「罪を焼く。腐敗を焼く。そして、邪悪を焼く」'},
+{id:'R05',name:'神罰',en:'Divine Judgment',rank:'英雄',ap:'上級 2AP',mp:3,attr:'神聖',range:7,dice:'2d8',fixed:'—',pierce:'全',status:'アンデッド+3d6',effect:'神聖属性の強撃。全装甲・耐性無視。アンデッド・邪悪には+3d6固定ダメージ。FTHが15以上の場合クリティカル率+3%。',hd:'ダメージ+1d6',ex:'ダメージ+2d6。命中対象の次ターンAP-1',flavor:'「縫合の神が世界に下す審判の、ほんの一端」'},
+{id:'R06',name:'大治癒',en:'Greater Heal',rank:'英雄',ap:'上級 2AP',mp:3,attr:'神聖',range:2,dice:'2d6',fixed:'—',pierce:'—',status:'状態異常1種除去',effect:'味方1体のHPを2d6+FTH参照ボーナス回復する。状態異常（毒・燃焼・疲労）を1種除去する。',hd:'回復量+1d6。状態異常除去数が2種に増加',ex:'回復量+2d6。射程3内の味方全員にHP+1d6回復',flavor:'「回路が太い者だけが使える大きな癒し」'},
+{id:'R07',name:'信仰の連鎖',en:'Chain of Faith',rank:'英雄',ap:'上級 2AP',mp:2,attr:'神聖',range:5,dice:'1d6',fixed:'—',pierce:'—',status:'連鎖攻撃',effect:'神聖属性の連鎖攻撃。対象1体に命中後、射程3内の別の敵1体に連鎖（命中判定不要・ダメージ1d4）。アンデッド・邪悪への追加ダメージは連鎖先にも適用。',hd:'ダメージ+1d4。連鎖が最大2体まで',ex:'ダメージ+1d6。連鎖するたびに命中対象に恐怖付与（POWロール）',flavor:'「信仰はつながる。縫合の神は分割されない」'},
+{id:'R08',name:'贖罪の一撃',en:'Penance Strike',rank:'英雄',ap:'上級 2AP',mp:2,attr:'神聖',range:4,dice:'1d8',fixed:'+2',pierce:'—',status:'死の宣告（EX以上）',effect:'神聖属性の強撃。術者のHP現在値が最大値の半分以下の場合、ダメージ+1d8。EX以上で死の宣告付与。',hd:'ダメージ+1d4（HP半分以下でなくても適用）',ex:'ダメージ+1d8。死の宣告付与ロール不要',flavor:'「苦しみが、力になる」'},
+{id:'R09',name:'祝福の詠唱',en:'Battle Blessing',rank:'英雄',ap:'上級 2AP',mp:2,attr:'神聖',range:3,dice:'—',fixed:'—',pierce:'—',status:'全体バフ',effect:'射程3内の味方全員に2ラウンド、命中判定にBD+1と状態異常付与のPOWロール難易度+5%を付与する。術者はこのラウンド攻撃行動不可。',hd:'効果が3ラウンドに延長',ex:'効果が3ラウンドに延長。BD+2に上昇。POWロール難易度+10%に強化',flavor:'「攻撃しなくても、仲間を強くすることが戦い方だ」'},
+{id:'R10',name:'縫合の祝福',en:'Sutured Blessing',rank:'伝説',ap:'超級 3AP',mp:4,attr:'神聖',range:3,dice:'—',fixed:'—',pierce:'—',status:'全体回復・耐性強化',effect:'射程3内の味方全員のHPを2d8+FTH参照ボーナス回復。全状態異常を1種除去。1ラウンド全員の物理・魔術耐性+3。術者はこのラウンド攻撃行動不可。',hd:'回復量+1d8。状態異常除去数が2種に増加',ex:'回復量+2d8。ラウンド終了時に全員HP自然回復+1d4（1ラウンド）',flavor:'「縫合の神が世界を修復しようとしたように、聖職者は仲間を修復する」'},
+{id:'R11',name:'蘇生',en:'Resurrection',rank:'伝説',ap:'超級 3AP',mp:5,attr:'神聖',range:2,dice:'—',fixed:'—',pierce:'—',status:'蘇生',effect:'戦闘不能状態の味方1体を蘇生。FTHロール成功でHP1d8+FTH参照ボーナスで復活。失敗でも対象はHP1で踏みとどまる（LCKロール・失敗で蘇生不可）。石化状態での戦闘不能には使用不可。術者HP-5・このターンの残りAP全消費。',hd:'回復量+1d8（FTHロール成功時）',ex:'FTHロール失敗時のLCKロール不要（必ずHP1で復活）',flavor:'「縫合の神に死者を返してもらう行為。代償を払う者にだけ答える」'},
+{id:'R12',name:'終焉の審判',en:'Final Judgment',rank:'伝説',ap:'超級 3AP',mp:5,attr:'神聖',range:8,dice:'3d8',fixed:'—',pierce:'全',status:'死の宣告（全対象）',effect:'射程8・半径3マスの範囲内全対象に全装甲無視・死の宣告付与（ロール不要）。アンデッド・邪悪は即死判定（LCKロール）。術者FTH-3（1戦闘のみ）。',hd:'ダメージ+2d6。即死LCKロールにPD+1',ex:'ダメージ+2d8。アンデッド・邪悪は即死ロール不要',flavor:'「使った者は皆、翌日から夢を見なくなったという」'},
+];
+
+const CATALYST=[
+{type:'杖',name:'木の杖',en:'Wooden Staff',rank:'兵士',hit:'—',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'特になし。初期装備。',mp_r:'—',fl:'「安くて、折れそうで、なんとか機能する」'},
+{type:'杖',name:'学院の杖',en:'Academy Staff',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'全魔術の命中判定に+5%。',mp_r:'—',fl:'「帝国学院が量産した標準品」'},
+{type:'杖',name:'炎術の杖',en:'Pyrostaff',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'炎属性魔術のダメージ+1（固定）。燃焼付与のPOWロールにPD+1。',mp_r:'初級炎EX→MP+1',fl:'「縫合の神の炎の側面を模した」'},
+{type:'杖',name:'雷術の杖',en:'Thunderstaff',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'雷属性魔術のダメージ+1（固定）。物理装甲半減効果が1ラウンド延長される。',mp_r:'初級雷EX→MP+1',fl:'「外なる神々の電磁エネルギーを模して設計された」'},
+{type:'杖',name:'霜術の杖',en:'Froststaff',rank:'兵士',hit:'+5%',fixed:0,range:'+1',ap:'初級1AP/上級2AP',bonus:'冷気属性魔術のダメージ+1（固定）。射程+1。冷気スタックが1追加で蓄積される。',mp_r:'初級冷気EX→MP+1',fl:'「インスマス海岸で発見された。素材不明」'},
+{type:'杖',name:'禁呪の杖',en:'Forbidden Staff',rank:'英雄',hit:'+10%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'闇属性魔術の命中+10%・固定値+1。闇魔術の状態異常付与のPOWロールにPD+1。上級闇魔術のMP消費-1（最低1）。',mp_r:'上級闇EX→MP+1',fl:'「帝国の禁書庫にあったもの」'},
+{type:'杖',name:'深淵の杖',en:'Abyssal Staff',rank:'英雄',hit:'+10%',fixed:'+1',range:'+1',ap:'初級1AP/上級2AP',bonus:'闇属性魔術の装甲貫通+1・固定値+1・射程+1。毎ラウンド終了時、使用した場合術者POWロール（失敗で疲労付与）。',mp_r:'上級闇EX→MP+2',fl:'「深淵の残滓が凝固した杖。使うほど精神を侵食する」'},
+{type:'杖',name:'叡智の杖',en:"Sage's Staff",rank:'英雄',hit:'+10%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'全魔術の命中+10%・固定値+1。同一ターンに2回以上魔術を使用した場合、次の魔術命中+5%追加。',mp_r:'初級・上級EX→MP+1',fl:'「帝国学院の最上位生が卒業時に授与された触媒」'},
+{type:'杖',name:'帝国の至宝',en:'Imperial Relic',rank:'伝説',hit:'+15%',fixed:'+2',range:'+2',ap:'全AP対応',bonus:'全魔術の射程+2・命中+15%・固定値+2・装甲貫通+1。超級魔術のMP消費-1（最低4）。MP最大値+3。',mp_r:'全ランクEX→MP+2（超級MP+1）',fl:'「セラフィット帝国最高の術師が使ったという」'},
+{type:'聖印',name:'粗末な聖印',en:'Crude Seal',rank:'兵士',hit:'—',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'特になし。初期装備。',mp_r:'—',fl:'「信仰があれば、形は問わない」'},
+{type:'聖印',name:'白衣教団の聖印',en:'Covenant Seal',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'全奇跡の命中判定に+5%。',mp_r:'—',fl:'「テオフィリアの白衣教団が全聖職者に授ける標準品」'},
+{type:'聖印',name:'浄化の聖印',en:'Purifying Seal',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'神聖奇跡のアンデッド・邪悪への追加ダメージ+1d4。浄化・解除系奇跡の命中+5%追加。',mp_r:'初級神聖EX→MP+1',fl:'「廃墟浄化を専門とする修道士が使う」'},
+{type:'聖印',name:'守護の聖印',en:'Guardian Seal',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'防護・加護系奇跡の効果が1ラウンド延長。防護奇跡使用時、術者への次の攻撃命中にPD+1。',mp_r:'初級防護EX→MP+1',fl:'「仲間を守る者に縫合の神は力を与える」'},
+{type:'聖印',name:'信仰の焔',en:'Seal of Conviction',rank:'兵士',hit:'+5%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'炎属性奇跡の固定値+1。燃焼付与のPOWロールにPD+1。浄化の炎（R04）使用時、状態異常解除を2種に拡大。',mp_r:'初級炎奇跡EX→MP+1',fl:'「縫合の神の裁きの炎を聖印に封じたもの」'},
+{type:'聖印',name:'殉教者の聖印',en:"Martyr's Seal",rank:'英雄',hit:'+10%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'HP半分以下の場合、全奇跡の命中+10%追加・固定値+1追加。回復奇跡の回復量+1d4。',mp_r:'上級奇跡EX→MP+1',fl:'「信仰の回路が傷つくほど強まる」'},
+{type:'聖印',name:'審判の聖印',en:'Seal of Judgment',rank:'英雄',hit:'+10%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'攻撃系奇跡の命中+10%・固定値+1。神罰・信仰の連鎖・贖罪の一撃使用時、状態異常付与のPOWロールにPD+1。上級攻撃奇跡のMP消費-1（最低1）。',mp_r:'上級攻撃奇跡EX→MP+2',fl:'「縫合の神の厳格な側面を宿す」'},
+{type:'聖印',name:'縫合の沈黙',en:'Seal of Divine Silence',rank:'伝説',hit:'+15%',fixed:'+2',range:'+1',ap:'全AP対応',bonus:'全奇跡の射程+1・命中+15%・固定値+2。超級奇跡のMP消費-1（最低4）。回復奇跡の回復量+1d6。MP最大値+3。術者への状態異常付与のPOWロールにPD+1（常時）。',mp_r:'全ランクEX→MP+2（超級MP+1）',fl:'「縫合の神が世界を沈黙させる瞬間を封じた聖印」'},
+];
+
+const AC={炎:'fire',冷気:'ice',雷:'thunder',毒:'poison',闇:'dark',神聖:'holy',無属性:'none',付与:'buff'};
+const RC=r=>r==='兵士'?'tag-soldier':r==='英雄'?'tag-hero':'tag-legend';
+const favs=new Set(JSON.parse(localStorage.getItem('mfav')||'[]'));
+function saveFavs(){try{localStorage.setItem('mfav',JSON.stringify([...favs]));}catch(e){}}
+const st={magic:{rank:'all',search:''},miracle:{rank:'all',search:''}};
+let catFilter='all';
+
+function buildCard(d,type){
+  const id=type+d.id;const isFav=favs.has(id);
+  return `<div class="data-card${isFav?' favorited':''}" data-id="${id}" data-rank="${d.rank}" data-search="${[d.id,d.name,d.en,d.attr,d.effect,d.status||''].join(' ').toLowerCase()}">
+<div class="card-head"><span class="card-id">${d.id}</span><div style="flex:1"><span class="card-name">${d.name}</span><span class="card-name-en">${d.en}</span></div><button class="fav-btn${isFav?' active':''}" onclick="toggleFav('${id}',this)">★</button></div>
+<div class="card-badges"><span class="tag ${RC(d.rank)}">${d.rank}</span><span class="tag tag-${AC[d.attr]||'none'}">${d.attr}</span><span class="tag tag-none">${d.ap.replace('初級 ','').replace('上級 ','').replace('超級 ','')}</span><span class="tag tag-none">MP${d.mp}</span>${d.pierce&&d.pierce!=='—'?`<span class="tag tag-fire">貫通${d.pierce}</span>`:''}</div>
+<div class="card-stats"><div class="stat-item"><span class="stat-label">射程</span><span class="stat-val">${d.range}</span></div><div class="stat-item"><span class="stat-label">ダイス</span><span class="stat-val">${d.dice||'—'}</span></div><div class="stat-item"><span class="stat-label">固定値</span><span class="stat-val">${d.fixed||'—'}</span></div></div>
+${d.status&&d.status!=='—'?`<div class="card-status">◆ ${d.status}</div>`:''}
+<div class="card-effect">${d.effect}</div>
+${d.hd?`<div class="card-hd">${d.hd}</div>`:''}
+${d.ex?`<div class="card-ex">${d.ex}</div>`:''}
+<div class="card-flavor">${d.flavor}</div></div>`;
+}
+
+function renderGrid(gid,data,type){document.getElementById(gid).innerHTML=data.map(d=>buildCard(d,type)).join('');updateCount(type);}
+function updateCount(type){const gid=type+'-grid',cid=type+'-count';const t=document.querySelectorAll(`#${gid} .data-card`).length,v=document.querySelectorAll(`#${gid} .data-card:not(.hidden)`).length;document.getElementById(cid).textContent=v<t?`${v} / ${t} 件表示`:`全${t}件`;}
+function filterCards(type,q){st[type].search=q.toLowerCase();applyFilter(type);}
+function setRF(type,rank,btn){st[type].rank=rank;document.querySelectorAll(`#${type}-filters .filter-btn`).forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter(type);}
+function applyFilter(type){const{rank,search}=st[type];const gid=type+'-grid';document.querySelectorAll(`#${gid} .data-card`).forEach(c=>{const mr=rank==='all'||c.dataset.rank===rank,ms=!search||c.dataset.search.includes(search);c.classList.toggle('hidden',!(mr&&ms));});updateCount(type);}
+
+function renderCat(data){
+  const staffs=data.filter(c=>c.type==='杖'),seals=data.filter(c=>c.type==='聖印');
+  let html='';
+  if(staffs.length){html+=`<p style="font-size:12px;color:var(--text3);margin-bottom:.75rem;font-family:'Noto Sans JP',sans-serif;">杖（魔術用）— ${staffs.length}種</p>`;html+=buildCatTable(staffs);}
+  if(seals.length){html+=`<p style="font-size:12px;color:var(--text3);margin:1.5rem 0 .75rem;font-family:'Noto Sans JP',sans-serif;">聖印（奇跡用）— ${seals.length}種</p>`;html+=buildCatTable(seals);}
+  document.getElementById('catalyst-container').innerHTML=html||'<p style="color:var(--text3);padding:1rem 0;">該当なし</p>';
+  document.getElementById('catalyst-count').textContent=`${data.length}件`;
+}
+function buildCatTable(data){return `<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;"><table class="cat-table"><thead><tr><th>触媒名</th><th>レア</th><th>命中補正</th><th>固定値</th><th>射程補正</th><th>触媒ボーナス</th><th>EX時MP還元</th></tr></thead><tbody>${data.map(c=>`<tr><td>${c.name}<br><span style="font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim)">${c.en}</span></td><td><span class="tag ${RC(c.rank)}">${c.rank}</span></td><td style="color:var(--gold)">${c.hit}</td><td>${c.fixed||'—'}</td><td>${c.range||'—'}</td><td style="font-size:11px;max-width:240px">${c.bonus}</td><td style="font-size:11px;color:var(--teal2)">${c.mp_r}</td></tr>`).join('')}</tbody></table></div>`;}
+function filterCat(q){const filtered=CATALYST.filter(c=>{const mt=catFilter==='all'||c.type===catFilter,mq=!q||[c.name,c.en,c.bonus,c.fl].join(' ').toLowerCase().includes(q.toLowerCase());return mt&&mq;});renderCat(filtered);}
+function setCatFilter(v,btn){catFilter=v;document.querySelectorAll('#tab-catalyst .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filterCat(document.querySelector('#tab-catalyst .search-box')?.value||'');}
+
+function toggleFav(id,btn){if(favs.has(id)){favs.delete(id);btn.classList.remove('active');btn.closest('.data-card').classList.remove('favorited');}else{favs.add(id);btn.classList.add('active');btn.closest('.data-card').classList.add('favorited');}saveFavs();renderFav();}
+function renderFav(){const all=[...MAGIC.map(d=>({...d,_t:'magic'})),...MIRACLE.map(d=>({...d,_t:'miracle'}))];const fd=all.filter(d=>favs.has(d._t+d.id));document.getElementById('fav-grid').innerHTML=fd.length?fd.map(d=>buildCard(d,d._t)).join(''):'<div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div>';}
+function switchTab(n){['magic','miracle','catalyst','favorites','charcreate'].forEach((nm,i)=>{document.querySelectorAll('.tab-btn')[i].classList.toggle('active',nm===n);document.getElementById('tab-'+nm).classList.toggle('active',nm===n);});}
+
+renderGrid('magic-grid',MAGIC,'magic');renderGrid('miracle-grid',MIRACLE,'miracle');renderCat(CATALYST);renderFav();renderCCMagic();
+function renderCCMagic(){
+  const SPELL_PRICES={'木の杖':30,'学院の杖':80,'炎術の杖':120,'雷術の杖':120,'霜術の杖':120,'禁呪の杖':440,'深淵の杖':560,'叡智の杖':480,'帝国の至宝':0,'粗末な聖印':20,'白衣教団の聖印':70,'浄化の聖印':100,'守護の聖印':90,'信仰の焔':130,'殉教者の聖印':400,'審判の聖印':460,'縫合の沈黙':0};
+  function sp(n){const p=SPELL_PRICES[n];if(p===undefined)return'—';if(p===0)return'入手不可';return p+'G';}
+  function spcls(n){return SPELL_PRICES[n]===0?'cc-price legend':'cc-price';}
+  function badgeCC(r){const cls={'兵士':'cc-soldier','英雄':'cc-hero','伝説':'cc-legend'}[r]||'';return `<span class="cc-badge ${cls}">${r}</span>`;}
+  function dmgCC(d,f){const dd=d&&d!=='—'?d:'';const ff=f&&f!=='—'?f:'';if(!dd&&!ff)return'—';if(dd&&ff)return dd+ff;return dd||ff;}
+  function wazaCC(hd,ex){
+    let parts=[];
+    if(hd&&hd!=='—')parts.push(`<span class="hd">HD</span> ${hd}`);
+    if(ex&&ex!=='—')parts.push(`<span class="ex">EX</span> ${ex}`);
+    return parts.length?parts.join('<br>'):'<span class="none">なし</span>';
+  }
+
+  // 触媒テーブル
+  const CAT_RANKS={'兵士':'兵士触媒：初級のみ','英雄':'英雄触媒：初級・上級','伝説':'伝説触媒：全ランク'};
+  let html=`<div class="cc-cat-note"><b>触媒について</b>：1キャラクターにつき触媒（杖または聖印）は2つまで装備可。<br>レアリティによる対応魔術ランク：<b>兵士触媒</b>→初級のみ ／ <b>英雄触媒</b>→初級・上級 ／ <b>伝説触媒</b>→全ランク</div>`;
+
+  ['杖','聖印'].forEach(type=>{
+    const rows=CATALYST.filter(c=>c.type===type);
+    html+=`<div class="cc-section"><p class="cc-section-title">${type}</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>名前</th><th>命中補正</th><th>固定値</th><th>射程補正</th><th>対応ランク</th><th>EX時MP還元</th><th>価格</th></tr></thead><tbody>`;
+    rows.forEach(c=>{
+      html+=`<tr>
+<td><span class="cc-name">${c.name}</span>${badgeCC(c.rank)}</td>
+<td>${c.hit}</td><td>${c.fixed||'—'}</td><td>${c.range||'—'}</td>
+<td style="font-size:10px">${CAT_RANKS[c.rank]||c.rank}</td>
+<td style="font-size:10px;color:var(--teal2)">${c.mp_r}</td>
+<td class="${spcls(c.name)}">${sp(c.name)}</td>
+</tr>`;
+    });
+    html+='</tbody></table></div></div>';
+  });
+
+  // 魔術テーブル
+  const RANKS=['兵士','英雄','伝説'];
+  const RANK_LABELS={'兵士':'初級','英雄':'上級','伝説':'超級'};
+  html+=`<div class="cc-section"><p class="cc-section-title">魔術</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>No</th><th>名前</th><th>AP / MP</th><th>射程</th><th>ダメージ</th><th>状態異常付与</th><th>HD/EX効果</th></tr></thead><tbody>`;
+  MAGIC.forEach(d=>{
+    html+=`<tr>
+<td style="color:var(--text3);font-size:10px">${d.id}</td>
+<td><span class="cc-name">${d.name}</span>${badgeCC(d.rank)}</td>
+<td>${RANK_LABELS[d.rank]||d.rank} ${d.ap.replace(/.*AP/,'')}<br><span style="color:var(--teal2);font-size:10px">MP${d.mp}</span></td>
+<td>${d.range}</td>
+<td>${dmgCC(d.dice,d.fixed)}</td>
+<td style="font-size:10px;max-width:120px">${d.status&&d.status!=='—'?d.status:'<span class="none">なし</span>'}</td>
+<td class="cc-waza" style="max-width:200px">${wazaCC(d.hd,d.ex)}</td>
+</tr>`;
+  });
+  html+='</tbody></table></div></div>';
+
+  // 奇跡テーブル
+  html+=`<div class="cc-section"><p class="cc-section-title">奇跡</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>No</th><th>名前</th><th>AP / MP</th><th>射程</th><th>ダメージ</th><th>状態異常付与</th><th>HD/EX効果</th></tr></thead><tbody>`;
+  MIRACLE.forEach(d=>{
+    html+=`<tr>
+<td style="color:var(--text3);font-size:10px">${d.id}</td>
+<td><span class="cc-name">${d.name}</span>${badgeCC(d.rank)}</td>
+<td>${RANK_LABELS[d.rank]||d.rank} ${d.ap.replace(/.*AP/,'')}<br><span style="color:var(--teal2);font-size:10px">MP${d.mp}</span></td>
+<td>${d.range}</td>
+<td>${dmgCC(d.dice,d.fixed)}</td>
+<td style="font-size:10px;max-width:120px">${d.status&&d.status!=='—'?d.status:'<span class="none">なし</span>'}</td>
+<td class="cc-waza" style="max-width:200px">${wazaCC(d.hd,d.ex)}</td>
+</tr>`;
+  });
+  html+='</tbody></table></div></div>';
+  document.getElementById('cc-magic-content').innerHTML=html;
+}
+
+</script>
+</body>
+</html>

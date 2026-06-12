@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>装備価格リスト — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Serif+JP:wght@300;400;500&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.price-section { margin-bottom: 3rem; }
+.price-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.price-group { margin-bottom: 1.5rem; }
+.price-group-label {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--text3);
+  margin-bottom: 0.4rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--gold-dim);
+}
+.price-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.price-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.55rem 1rem;
+  font-size: 12px;
+}
+.price-row--soldier { background: #13100c; }
+.price-row--hero    { background: #14120a; }
+.price-row--legend  { background: #181008; }
+.price-row__name { color: var(--text); letter-spacing: 0.04em; }
+.price-row__badge {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.badge-soldier { background: rgba(200,164,90,0.10); color: #8a7040; border: 1px solid #3a3020; }
+.badge-hero    { background: rgba(80,128,192,0.12); color: #5080b0; border: 1px solid #304060; }
+.badge-legend  { background: rgba(160,80,60,0.15);  color: #c06040; border: 1px solid #602010; }
+.price-row__price {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  color: var(--gold);
+  white-space: nowrap;
+  min-width: 60px;
+  text-align: right;
+}
+.price-row--legend .price-row__price { color: #c06040; }
+
+/* 売却価格の注記 */
+.sell-note {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.7;
+  padding: 0.75rem 1rem;
+  background: rgba(200,164,90,0.04);
+  border: 1px solid rgba(200,164,90,0.12);
+  border-radius: var(--radius);
+  margin-top: 0.75rem;
+}
+
+/* 支給品テーブル */
+.issue-table { margin-bottom: 2rem; }
+
+/* サマリーボックス */
+.summary-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 2.5rem;
+}
+.summary-cell {
+  background: var(--bg2);
+  padding: 1rem 1.25rem;
+}
+.summary-cell__label {
+  font-size: 10px;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  margin-bottom: 0.3rem;
+}
+.summary-cell__val {
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  color: var(--gold);
+  letter-spacing: 0.05em;
+}
+.summary-cell__note {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 0.25rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 560px) {
+  .price-row { grid-template-columns: 1fr auto; gap: 0.5rem; }
+  .price-row__badge { display: none; }
+}
+</style>
+</head>
+<body>
+<nav class="site-nav" role="navigation">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_prices.html">価格リスト</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-header">
+    <p class="page-eyebrow">Equipment</p>
+    <h1 class="page-title">Price List</h1>
+    <p class="page-title-ja">装備価格リスト</p>
+    <div class="page-divider"></div>
+  </div>
+
+  <!-- キャラクター作成ルール -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">─</span>
+      <h2 class="section-title">キャラクター作成時の装備ルール</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <div class="summary-box">
+      <div class="summary-cell">
+        <p class="summary-cell__label">① 固定支給品</p>
+        <p class="summary-cell__val">エスト瓶 ×1</p>
+        <p class="summary-cell__note">＋素性ごとの支給武器・支給防具（各素性ページ参照）</p>
+      </div>
+      <div class="summary-cell">
+        <p class="summary-cell__label">② 初期ゴールド</p>
+        <p class="summary-cell__val">500 G</p>
+        <p class="summary-cell__note">支給品は売却可。売値＝買値の半額</p>
+      </div>
+      <div class="summary-cell">
+        <p class="summary-cell__label">③ 廃人のみ特例</p>
+        <p class="summary-cell__val">各200 G以内</p>
+        <p class="summary-cell__note">武器・防具をそれぞれ200G以内で自由選択（支給品の代わり）</p>
+      </div>
+      <div class="summary-cell">
+        <p class="summary-cell__label">④ 追加購入</p>
+        <p class="summary-cell__val">500G の範囲内</p>
+        <p class="summary-cell__note">残ったGで自由に追加購入可。余ったGはセッション開始時に持ち越し</p>
+      </div>
+    </div>
+
+    <div class="sell-note">
+      ※ 売値は買値の半額。例：ロングソード（100G）の売値は50G。支給品を全て売れば最大で英雄装備1つの足しになる。<br>
+      ※ 伝説装備は通常の商店では取り扱いなし。シナリオ中の発見・報酬・特殊ルートでのみ入手可能。
+    </div>
+  </div>
+
+  <!-- 武器価格 -->
+  <div class="section price-section">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">武器</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <!-- 短剣 -->
+    <div class="price-group">
+      <p class="price-group-label">短剣</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">カッター</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">50 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">ダガー</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">80 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">毒刃</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">忍び刀</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">110 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">骨砕き</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">90 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">水銀刃</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">150 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">爪牙</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">100 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">星鉄の短刀</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">380 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">儚月</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">500 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">深淵の舌</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">450 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">終焉の一刺し</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 直剣 -->
+    <div class="price-group">
+      <p class="price-group-label">直剣</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">ショートソード</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">80 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">ロングソード</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">100 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">バスタードソード</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">炎の直剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">160 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">銀の直剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">140 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">月光剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">180 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">ラピア</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">贖罪の剣</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">420 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">霜の剣</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">460 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">骸の王</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">550 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">大審判者</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 大剣 -->
+    <div class="price-group">
+      <p class="price-group-label">大剣</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">グレートソード</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">クレイモア</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">140 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">断罪剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">160 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">炎帝の大剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">180 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">腐食剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">150 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">裂地</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">170 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">石英の大剣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">嘆きの大剣</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">480 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">鯨骨の大剣</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">520 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">星喰い</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">580 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">目覚め</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 斧・ハンマー -->
+    <div class="price-group">
+      <p class="price-group-label">斧・ハンマー</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">ハンドアックス</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">70 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">戦斧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">110 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">投擲斧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">90 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">石割り</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">雷槌</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">170 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">儀式の斧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">180 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">双斧</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">440 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">骨の砕き手</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">500 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">疫病斧</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">480 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">歳輪</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 槍・ハルバード -->
+    <div class="price-group">
+      <p class="price-group-label">槍・ハルバード</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">ショートスピア</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">70 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">ロングスピア</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">90 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">ハルバード</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">150 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">毒槍</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">140 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">聖槍</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">160 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">凍てつく穂先</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">170 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">地穿ち</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">180 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">波紋の槍</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">420 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">魂喰らいの穂</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">560 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">嵐の矛</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">520 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">星の槍</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 盾 -->
+    <div class="price-group">
+      <p class="price-group-label">盾</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">木の盾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">40 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">丸盾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">80 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">タワーシールド</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">140 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">刺盾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">炎の紋章盾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">160 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">聖印盾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">150 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">反射盾</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">480 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">深淵の盾</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">520 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">受難者の盾</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">400 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">不滅の守護者</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 弓 -->
+    <div class="price-group">
+      <p class="price-group-label">弓</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">ショートボウ</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">60 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">ロングボウ</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">100 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">複合弓</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">毒矢（弓）</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">110 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">炎矢（弓）</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">狙撃弓</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">160 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">連射弓</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">150 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">魂狩り弓</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">540 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">冬の弓</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">460 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">星読みの弓</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">500 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">天弓</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 防具価格 -->
+  <div class="section price-section">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">防具</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <!-- 頭 -->
+    <div class="price-group">
+      <p class="price-group-label">頭部防具</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">布の頭巾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">30 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">革兜</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">60 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">鉄兜</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">100 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">騎士兜</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">140 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">白衣の頭巾</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">50 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">魔術師の帽子</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">80 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">深淵の仮面</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">狩人の帽子</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">70 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">角兜</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">110 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">呪術師の仮面</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">帝国の兜</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">400 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">廃人の頭巾</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">320 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">深海の仮面</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">420 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">傭兵の頭巾</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">360 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">縫合の冠</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 胴 -->
+    <div class="price-group">
+      <p class="price-group-label">胴部防具</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">布の服</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">20 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">革鎧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">70 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">鎖帷子</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">板金鎧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">170 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">白衣の法衣</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">60 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">魔術師のローブ</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">90 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">呪術師の外套</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">110 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">深海の鱗鎧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">鱗片鎧</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">100 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">毒染めの外套</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">影走りの外套</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">80 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">帝国の重鎧</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">500 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">継ぎ接ぎの鎧</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">340 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">深淵の鱗甲</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">460 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">縫合の鎧</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 触媒価格 -->
+  <div class="section price-section">
+    <div class="section-header">
+      <span class="section-num">III</span>
+      <h2 class="section-title">触媒（杖・聖印）</h2>
+      <div class="section-rule"></div>
+    </div>
+
+    <!-- 杖 -->
+    <div class="price-group">
+      <p class="price-group-label">杖</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">木の杖</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">30 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">学院の杖</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">80 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">炎術の杖</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">雷術の杖</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">霜術の杖</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">120 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">禁呪の杖</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">440 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">深淵の杖</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">560 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">叡智の杖</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">480 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">帝国の至宝</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <!-- 聖印 -->
+    <div class="price-group">
+      <p class="price-group-label">聖印</p>
+      <div class="price-list">
+        <div class="price-row price-row--soldier"><span class="price-row__name">粗末な聖印</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">20 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">白衣教団の聖印</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">70 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">浄化の聖印</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">100 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">守護の聖印</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">90 G</span></div>
+        <div class="price-row price-row--soldier"><span class="price-row__name">信仰の焔</span><span class="price-row__badge badge-soldier">兵士</span><span class="price-row__price">130 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">殉教者の聖印</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">400 G</span></div>
+        <div class="price-row price-row--hero"><span class="price-row__name">審判の聖印</span><span class="price-row__badge badge-hero">英雄</span><span class="price-row__price">460 G</span></div>
+        <div class="price-row price-row--legend"><span class="price-row__name">縫合の沈黙</span><span class="price-row__badge badge-legend">伝説</span><span class="price-row__price">— G</span></div>
+      </div>
+    </div>
+
+    <div class="sell-note">
+      ※ 伝説装備（— G）は通常の商店では取り扱いなし。シナリオ中の発見・報酬・特殊ルートでのみ入手可能。GM裁量で価格を設定してください。
+    </div>
+  </div>
+
+  <!-- ページナビ -->
+  <nav class="page-nav">
+    <div>
+      <p class="page-nav__label">← Previous</p>
+      <a href="data_weapons.html" class="page-nav__link">武器・防具データ</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">Next →</p>
+      <a href="charcreate.html" class="page-nav__link">キャラクター作成</a>
+    </div>
+  </nav>
+</div>
+
+<footer class="site-footer">
+  <p>忘却の淵にて — At the Edge of Oblivion</p>
+</footer>
+<script src="nav.js"></script>
+</body>
+</html>

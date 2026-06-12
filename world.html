@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>世界観 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* 引用ブロック */
+.lore-quote {
+  border-left: 2px solid var(--gold-dim);
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  background: rgba(200,164,90,0.04);
+}
+.lore-quote p {
+  font-style: italic;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 1.9;
+}
+.lore-quote cite {
+  display: block;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 0.5rem;
+  font-style: normal;
+  letter-spacing: 0.05em;
+}
+
+/* 神々カード */
+.deity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.deity-card { background: var(--bg2); padding: 1.5rem; }
+.deity-card__name { font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.2em; color: var(--gold); margin-bottom: 0.25rem; }
+.deity-card__name-ja { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 0.75rem; display: block; }
+.deity-card__desc { font-size: 12px; color: var(--text3); line-height: 1.8; }
+
+/* 年表 */
+.timeline { position: relative; padding-left: 2rem; }
+.timeline::before { content: ''; position: absolute; left: 4px; top: 0; bottom: 0; width: 1px; background: var(--border2); }
+.timeline__item { position: relative; margin-bottom: 2rem; }
+.timeline__item::before { content: ''; position: absolute; left: -1.75rem; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold-dim); border: 1px solid var(--gold); }
+.timeline__date { font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.2em; color: var(--gold-dim); margin-bottom: 4px; }
+.timeline__title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.timeline__desc { font-size: 12px; color: var(--text3); line-height: 1.8; }
+
+/* ══════════════════════════════════════
+   地域アコーディオン
+   ══════════════════════════════════════ */
+.region-list { display: flex; flex-direction: column; gap: 2px; }
+
+/* ── トリガー（常時表示部分） ── */
+.region-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--bg2);
+  transition: border-color 0.25s;
+}
+.region-item.is-open { border-color: var(--gold-dim); }
+
+.region-trigger {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 140px 1fr 28px;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: inherit;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+.region-trigger:hover { background: var(--bg3); }
+.region-item.is-open .region-trigger { background: var(--bg3); }
+
+.region-trigger__meta { flex-shrink: 0; }
+.region-card__tag { font-size: 10px; font-family: 'Noto Sans JP', sans-serif; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 0.25rem; }
+.region-card__name { font-size: 13px; font-weight: 500; color: var(--gold); margin-bottom: 2px; }
+.region-card__name-en { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold-dim); letter-spacing: 0.15em; display: block; margin-bottom: 0; }
+
+.region-trigger__summary {
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.7;
+}
+
+.region-trigger__chevron {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-dim);
+  transition: transform 0.3s ease;
+}
+.region-item.is-open .region-trigger__chevron { transform: rotate(180deg); color: var(--gold); }
+
+/* ── 展開パネル ── */
+.region-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+.region-item.is-open .region-panel { grid-template-rows: 1fr; }
+
+.region-panel__inner {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+}
+
+.region-panel__body {
+  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* 画像ペア */
+.region-images {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.region-img {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+  display: block;
+  background: var(--bg3);
+}
+
+/* ── 詳細テキスト ── */
+.region-detail { display: flex; flex-direction: column; gap: 1rem; }
+
+.region-detail__section { }
+
+.region-detail__heading {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--gold);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.region-detail__body {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.9;
+}
+
+.region-detail__quote {
+  border-left: 2px solid var(--gold-dim);
+  padding: 0.6rem 1rem;
+  background: rgba(200,164,90,0.04);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--text3);
+  line-height: 1.8;
+}
+
+.region-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 0.75rem;
+}
+
+.region-detail__tag {
+  font-size: 10px;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 2px 8px;
+  border: 1px solid var(--border2);
+  border-radius: 2px;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 700px) {
+  .region-trigger { grid-template-columns: 110px 1fr 24px; gap: 0.6rem; padding: 1rem 1rem; }
+  .region-panel__body { grid-template-columns: 1fr; }
+  .region-images { flex-direction: row; }
+  .region-img { aspect-ratio: 4 / 3; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav" role="navigation">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li class="site-nav__item">
+        <a href="world.html">世界観</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="world.html">概要</a></li>
+          <li><a href="world_detail.html">詳細設定</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="system_combat.html">システム</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="system_combat.html">戦闘</a></li>
+          <li><a href="system_explore.html">探索</a></li>
+        </ul>
+      </li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="origins.html">素性・能力値</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="gm_enemies.html">GMツール</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="gm_enemies.html">エネミーリスト</a></li>
+          <li><a href="gm_artifacts.html">アーティファクト</a></li>
+          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <p class="page-eyebrow">Chapter I</p>
+    <h1 class="page-title">World</h1>
+    <p class="page-title-ja">世界観</p>
+    <div class="page-divider"></div>
+  </div>
+
+  <!-- 目次 -->
+  <div class="toc">
+    <p class="toc__title">Contents</p>
+    <ul class="toc__list">
+      <li><span>I</span><a href="#origin">世界の成り立ち</a></li>
+      <li><span>II</span><a href="#history">セラフィット帝国と大崩壊</a></li>
+      <li><span>III</span><a href="#present">現在の世界</a></li>
+      <li><span>IV</span><a href="#regions">主要地域</a></li>
+      <li><span>V</span><a href="#magic">信仰と魔術体系</a></li>
+      <li><span>VI</span><a href="#tone">世界のトーン</a></li>
+    </ul>
+  </div>
+
+  <!-- I. 世界の成り立ち -->
+  <section class="section" id="origin">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">世界の成り立ち</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>世界が誕生した太古、この大地は「外なる神々（The Outer Presences）」と呼ばれる存在たちによって観測されていた。彼らは宇宙の深淵に棲む存在であり、善悪の概念を超えた純粋な「力の塊」である。古代の神学者たちはこれらを大きく三つに分類した。</p>
+
+      <div class="deity-grid">
+        <div class="deity-card">
+          <p class="deity-card__name">The Sutured Ones</p>
+          <span class="deity-card__name-ja">縫合の神</span>
+          <p class="deity-card__desc">秩序と構造を司る者たち。神聖魔術の源泉であり、聖職者はその加護のもとに奇跡を行使する。人の形をしているとも、巨大な幾何学的構造体であるとも伝えられるが、直接姿を見た者はいない。</p>
+        </div>
+        <div class="deity-card">
+          <p class="deity-card__name">The Abyssal Choir</p>
+          <span class="deity-card__name-ja">深淵の神</span>
+          <p class="deity-card__desc">混沌と変質を司る者たち。魔術師が扱う「魔力」は、深淵の神が宇宙に漏らす思念が結晶化したものだという説がある。理性を持って近づけば力となり、無防備に触れれば発狂を招く。</p>
+        </div>
+        <div class="deity-card">
+          <p class="deity-card__name">The Nameless Throng</p>
+          <span class="deity-card__name-ja">名無しの者</span>
+          <p class="deity-card__desc">深きものをはじめとする、人類と異質な血を持つ生命体たちを統べる存在。その実態は最も不明瞭であり、海の底、土の中、夢の深部に潜んでいるとされる。「深きものの末裔」はこの名無しの者の意志を血に宿している。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- II. セラフィット帝国と大崩壊 -->
+  <section class="section" id="history">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">セラフィット帝国と大崩壊</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <div class="timeline">
+        <div class="timeline__item">
+          <p class="timeline__date">約300年前</p>
+          <p class="timeline__title">セラフィット帝国の全盛期</p>
+          <p class="timeline__desc">縫合の神の加護のもとで神聖魔術を発展させ、外なる神々の研究も並行して行った。帝都アルカーナには世界最大の神学図書館が建立され、禁断とされた呪文書までもが「学術的目的」のもとに収集・分類された。</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__date">約250年前</p>
+          <p class="timeline__title">大崩壊（The Unravelling）</p>
+          <p class="timeline__desc">突如として帝国各地で「境界の侵食」が始まった。物理的な壁が意味をなさなくなり、人の理性と狂気の境が融解し、死者が動き出し、海から名状しがたい形をした何かが這い上がった。帝国は三年で滅んだ。</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__date">大崩壊から3年後</p>
+          <p class="timeline__title">帝都アルカーナの消滅</p>
+          <p class="timeline__desc">帝都は深霧の底に沈み、地図から消えた都市として語り継がれている。最後の帝国皇帝エドガー四世の消息は不明のままだ。</p>
+        </div>
+        <div class="timeline__item">
+          <p class="timeline__date">現在</p>
+          <p class="timeline__title">廃帝国の後継地帯</p>
+          <p class="timeline__desc">各地に小規模な都市国家・集落が点在し、人々はなんとか文明の火を繋いでいる。大崩壊の後遺症は今も続いており、霧・怪異・正気を失う者の数は戦争や飢饉による死者に匹敵するとも言われる。</p>
+        </div>
+      </div>
+
+      <div class="lore-quote">
+        <p>「太陽が絶えなかった時代があった。そう、確かにあったのだ。今となっては誰も信じまい」</p>
+        <cite>——廃人の独白、断片的な日記より</cite>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- III. 現在の世界 -->
+  <section class="section" id="present">
+    <div class="section-header">
+      <span class="section-num">III</span>
+      <h2 class="section-title">現在の世界</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>大崩壊から二百五十年。世界は「完全には滅んでいない」。</p>
+      <p style="margin-top:1rem;">各地に小規模な都市国家・集落が点在し、人々はなんとか文明の火を繋いでいる。しかしセラフィット帝国の偉業を再現できる者はおらず、失われた技術・魔術・奇跡の断片を求めて廃墟を漁る者たちが後を絶たない。彼らを「廃掘人（ルーカー）」と呼ぶ。</p>
+
+      <div class="rule-block" style="margin-top:1.5rem;">
+        <p class="rule-block__title">廃掘人（ルーカー）とは</p>
+        <p>失われた帝国の知識・魔術・秘宝を求めて廃墟に踏み込む者たちの総称。動機は様々だ——金、知識、失った何かの痕跡、あるいは「動いていれば死について考えずに済む」という逃避。この世界を「前進させる」のはほとんどの場合この種の人々だ。</p>
+      </div>
+
+      <div class="rule-block">
+        <p class="rule-block__title">大崩壊の後遺症</p>
+        <p>夜になると霧が深まり、廃墟には怪異が集い、海の近くでは奇妙な夢を見る者が増えている。正気を失った者の数は、戦争や飢饉による死者に匹敵するとも言われる。この世界で生まれた者にとって、廃墟は「廃墟」ではなく「風景」であり、霧は「異常」ではなく「季節の一つ」だ。</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- IV. 主要地域（アコーディオン） -->
+  <section class="section" id="regions">
+    <div class="section-header">
+      <span class="section-num">IV</span>
+      <h2 class="section-title">主要地域 — アルゴス大陸</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="font-size:12px; color:var(--text3); margin-bottom:1.25rem; letter-spacing:0.05em;">各地域名をクリックすると詳細が展開します。</p>
+      <div class="region-list">
+
+        <!-- ── メルクリア ── -->
+        <div class="region-item" id="region-mercuria">
+          <button class="region-trigger" aria-expanded="false" aria-controls="panel-mercuria" onclick="toggleRegion('mercuria')">
+            <div class="region-trigger__meta">
+              <p class="region-card__tag">自由都市連合</p>
+              <p class="region-card__name">メルクリア</p>
+              <span class="region-card__name-en">Mercuria</span>
+            </div>
+            <p class="region-trigger__summary">大陸中央部に残った最大規模の人間集住地帯。商人・傭兵・市民が築いた自治都市連合。</p>
+            <svg class="region-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="region-panel" id="panel-mercuria" role="region">
+            <div class="region-panel__inner">
+              <div class="region-panel__body">
+                <!-- 画像2枚 -->
+                <div class="region-images">
+                  <img class="region-img" src="img/bg/bg5.jpg" alt="メルクリアの街並み" loading="lazy">
+                  <img class="region-img" src="img/bg/bg7.jpg" alt="ギルド" loading="lazy">
+                </div>
+                <!-- 詳細テキスト -->
+                <div class="region-detail">
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">概要</p>
+                    <p class="region-detail__body">もともとは帝国の商業都市群だったが、大崩壊後に生き残った商人・傭兵・市民が独自の自治体制を築いた。政治体制は各都市が独自の法を持つ「緩やかな連合」であり、軍事的な中央集権はない。帝国時代の文化・技術が一部継承されており、識字率は他地域に比べて高い。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">三つの主要都市</p>
+                    <p class="region-detail__body">最大の商業都市「カーニヴァル」、港湾都市「ブリッジ・ポート」（深きものの末裔の人口比率が高い）、傭兵ギルド本部がある要塞都市「ソルタフォート」。三都市の利害対立は常にあり、全会一致が原則の評議会では重要な決定がほとんど下せない。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「ここでは何でも買えるし、何でも売れる。命以外はな」<br><small style="font-style:normal; color:var(--text3);">——カーニヴァルの市場での格言</small></div>
+                  </div>
+                  <div class="region-detail__tags">
+                    <span class="region-detail__tag">騎士・傭兵・盗賊の出身地</span>
+                    <span class="region-detail__tag">廃掘人ギルド本部</span>
+                    <span class="region-detail__tag">大陸最大の商業圏</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── テオフィリア ── -->
+        <div class="region-item" id="region-theophilia">
+          <button class="region-trigger" aria-expanded="false" aria-controls="panel-theophilia" onclick="toggleRegion('theophilia')">
+            <div class="region-trigger__meta">
+              <p class="region-card__tag">神聖教国</p>
+              <p class="region-card__name">テオフィリア</p>
+              <span class="region-card__name-en">Theophilia</span>
+            </div>
+            <p class="region-trigger__summary">大陸北西部の山岳地帯に広がる神権国家。縫合の神を信奉する「白衣教団」が支配する。</p>
+            <svg class="region-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="region-panel" id="panel-theophilia" role="region">
+            <div class="region-panel__inner">
+              <div class="region-panel__body">
+                <div class="region-images">
+                  <img class="region-img" src="img/bg/bg3.jpg" alt="テオフィリアの大聖堂跡" loading="lazy">
+                  <img class="region-img" src="img/bg/bg4.jpg" alt="テオフィリア" loading="lazy">
+                </div>
+                <div class="region-detail">
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">概要</p>
+                    <p class="region-detail__body">外なる神々の研究を徹底的に禁じており、魔術師・呪術師への迫害が激しい。一方で医療・農業・建築技術は大陸随一であり、難民を積極的に受け入れることでも知られる。聖職者のほとんどはここの出身か、白衣教団で修練を積んだ者である。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">白衣教団の三派閥</p>
+                    <p class="region-detail__body">教団は一枚岩ではなく「浄化派」「縫合派」「観察派」の三派閥が存在する。最も政治的権力を持つ浄化派は魔術師・呪術師への迫害を推進。穏健な縫合派は医療・農業の実績を担う。外部にほぼ知られていない観察派は、外なる神々の研究を「理解のために制限しながら行う」立場をとる。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「神は慈悲を持てと言っている」——そう言いながら、呪術師を地下の独房に収監する男がいる。<br><small style="font-style:normal; color:var(--text3);">——廃掘人の手記より</small></div>
+                  </div>
+                  <div class="region-detail__tags">
+                    <span class="region-detail__tag">聖職者の出身地</span>
+                    <span class="region-detail__tag">魔術師迫害</span>
+                    <span class="region-detail__tag">大陸最高の医療技術</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── アルカーナの霧 ── -->
+        <div class="region-item" id="region-arkana">
+          <button class="region-trigger" aria-expanded="false" aria-controls="panel-arkana" onclick="toggleRegion('arkana')">
+            <div class="region-trigger__meta">
+              <p class="region-card__tag">廃都市</p>
+              <p class="region-card__name">アルカーナの霧</p>
+              <span class="region-card__name-en">Fog of Arkana</span>
+            </div>
+            <p class="region-trigger__summary">かつてのセラフィット帝国の首都。大崩壊以降、都市全体が濃霧に包まれ、戻った者はほぼいない。</p>
+            <svg class="region-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="region-panel" id="panel-arkana" role="region">
+            <div class="region-panel__inner">
+              <div class="region-panel__body">
+                <div class="region-images">
+                  <img class="region-img" src="img/bg/bg6.jpg" alt="アルカーナの霧と廃墟" loading="lazy">
+                  <img class="region-img" src="img/bg/bg10.jpg" alt="虚の玉座" loading="lazy">
+                </div>
+                <div class="region-detail">
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">概要</p>
+                    <p class="region-detail__body">廃墟には失われた帝国の知識・魔術書・秘宝が眠り、廃掘人たちが命がけで挑む「聖地」となっている。霧の内部に入った者の証言に共通する点として「方角がわからなくなる」「建物の内部は保存状態が良い」「先客の痕跡はあるが出会わない」「夜になると何かの光が見える」が挙げられる。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">霧の中の時間</p>
+                    <p class="region-detail__body">証言には矛盾も多い。同じ場所について「三時間しかいなかった」という者と「三日間さまよった」という者がおり、二人の体験談の内容はほぼ同じだ。霧の内部では時間の流れが異常をきたしているという説が根強い。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「霧の向こうには、まだ何かが動いているのが見えた。人の形をしていた。少なくとも、最初は」<br><small style="font-style:normal; color:var(--text3);">——生還した廃掘人の証言</small></div>
+                  </div>
+                  <div class="region-detail__tags">
+                    <span class="region-detail__tag">帝国の知識が眠る</span>
+                    <span class="region-detail__tag">正気度への影響</span>
+                    <span class="region-detail__tag">キャンペーン最終目的地</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── インスマス海岸 ── -->
+        <div class="region-item" id="region-innsmouth">
+          <button class="region-trigger" aria-expanded="false" aria-controls="panel-innsmouth" onclick="toggleRegion('innsmouth')">
+            <div class="region-trigger__meta">
+              <p class="region-card__tag">深海沿岸</p>
+              <p class="region-card__name">インスマス海岸</p>
+              <span class="region-card__name-en">Innsmouth Coast</span>
+            </div>
+            <p class="region-trigger__summary">名無しの者の影響が最も強い地域。深きものの末裔が多く暮らし、夜になると瞳が燐光を発する。</p>
+            <svg class="region-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="region-panel" id="panel-innsmouth" role="region">
+            <div class="region-panel__inner">
+              <div class="region-panel__body">
+                <div class="region-images">
+                  <img class="region-img" src="img/bg/bg2.jpg" alt="インスマス海岸と深海の燐光" loading="lazy">
+                  <img class="region-img" src="img/bg/bg8.jpg" alt="村近くで発見された洞窟" loading="lazy">
+                </div>
+                <div class="region-detail">
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">概要</p>
+                    <p class="region-detail__body">外見上は普通の人間と区別がつかない者も多いが、夜になると彼らの瞳が燐光を発することがある。大陸内陸の人間からは差別・偏見の目を向けられることも多く、出身者は都市部でも肩身の狭い思いをすることが多い。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">海底神殿の伝説</p>
+                    <p class="region-detail__body">海岸の沖合い深くに、水没した古い構造物があるという伝説が絶えない。大崩壊の五年前から沿岸の漁村で「夜に海へ帰る者」の数が急増していたという記録がある。名無しの者の「合図」はまだ続いているかもしれない。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「波の音が変わった日から、父は夜に海を見るようになった。三ヶ月後、父は帰ってこなかった」<br><small style="font-style:normal; color:var(--text3);">——沿岸住民の証言</small></div>
+                  </div>
+                  <div class="region-detail__tags">
+                    <span class="region-detail__tag">深きものの末裔の故郷</span>
+                    <span class="region-detail__tag">冷気・闇属性との親和</span>
+                    <span class="region-detail__tag">海底神殿</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── ヴェイルホロウ ── -->
+        <div class="region-item" id="region-veilhollow">
+          <button class="region-trigger" aria-expanded="false" aria-controls="panel-veilhollow" onclick="toggleRegion('veilhollow')">
+            <div class="region-trigger__meta">
+              <p class="region-card__tag">呪術師の隠れ里</p>
+              <p class="region-card__name">ヴェイルホロウ</p>
+              <span class="region-card__name-en">Veilhollow</span>
+            </div>
+            <p class="region-trigger__summary">大陸東部の深い森の中に点在する、呪術師・異端魔術師たちの集落。闇の術が代々受け継がれる。</p>
+            <svg class="region-trigger__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="region-panel" id="panel-veilhollow" role="region">
+            <div class="region-panel__inner">
+              <div class="region-panel__body">
+                <div class="region-images">
+                  <img class="region-img" src="img/bg/bg1.jpg" alt="ヴェイルホロウの深い森" loading="lazy">
+                  <img class="region-img" src="img/bg/bg9.jpg" alt="ヴェイルホロウの夜" loading="lazy">
+                </div>
+                <div class="region-detail">
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">概要</p>
+                    <p class="region-detail__body">テオフィリアの迫害を逃れた者たちが身を寄せ合い、独自の呪術体系を発展させてきた。「外からは呪われた土地として恐れられているが、内部には独自の倫理観と秩序が存在している」というのが実態だ。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">暗約（ダーク・コヴェナント）</p>
+                    <p class="region-detail__body">内部には独自の倫理規定「暗約」が存在し、同族への呪術使用を禁じている。ここで発展した呪術体系は深淵の残滓と「交渉し共存する技術」だ。力を支配するのではなく、力に一部を譲渡することで残りを借りる——その代償は術者の精神の一部であり、ベテランの呪術師ほど目に「うつろな部分」が混じると言われる。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「私たちは力を盗んでいるのではない。借りているのだ。返す先が、私たちの精神だというだけで」<br><small style="font-style:normal; color:var(--text3);">——ヴェイルホロウの呪術師</small></div>
+                  </div>
+                  <div class="region-detail__tags">
+                    <span class="region-detail__tag">呪術師の出身地</span>
+                    <span class="region-detail__tag">闇属性魔術の発祥</span>
+                    <span class="region-detail__tag">テオフィリアと対立</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- / region-list -->
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- V. 信仰と魔術体系 -->
+  <section class="section" id="magic">
+    <div class="section-header">
+      <span class="section-num">V</span>
+      <h2 class="section-title">信仰と魔術体系</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <div class="rule-block">
+        <p class="rule-block__title">魔術の源泉「マナ」と「深淵の残滓」</p>
+        <p>魔術は大きく二つの源泉から力を汲む。一つは「マナ」——大地・大気・生命体に漂う自然の力の総称で、理力（INT）の高い術者が操作することで魔術を発動させる。もう一つは「深淵の残滓」——大崩壊の際に世界に染み込んだ外なる神々の思念の欠片。これを利用した魔術は威力が高いが、使用者の精神（POW）を侵食するリスクを伴う。</p>
+      </div>
+      <div class="rule-block">
+        <p class="rule-block__title">奇跡の仕組み「信仰の回路」</p>
+        <p>聖職者が行使する「奇跡」は術者自身の力ではなく、縫合の神との「信仰の回路（サーキット・オブ・フェイス）」を通じて神の力を借りる行為だ。信仰（FTH）の高さが直接的に奇跡の威力に結びつく。戒律を破った聖職者が奇跡を使えなくなる事例が報告されており、これは「信仰の回路の遮断」と呼ばれる。</p>
+      </div>
+      <div class="rule-block">
+        <p class="rule-block__title">刻印（Inscription）——力の痕跡を肉体に宿す</p>
+        <p>セラフィット帝国時代に発展した特殊な技法。外なる神々の力・古代魔術の法則・生命の根源的なパターンを微細な紋様として人体の深部に刻み込む。一度刻まれた刻印は生涯消えることなく、その者のあり方の一部となる。帝国の滅亡後、刻印の技法は断片的にしか伝わっていない。施術者「刻み師（スクライバー）」は大陸全体でわずか七名しか存在しない。</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- VI. 世界のトーン -->
+  <section class="section" id="tone">
+    <div class="section-header">
+      <span class="section-num">VI</span>
+      <h2 class="section-title">世界のトーン</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>「忘却の淵にて」は暗く退廃した世界を舞台としているが、「絶望だけを描く世界」ではない。廃墟の中に残った美しい彫刻。見知らぬ旅人に食事を分け与える老農夫。深淵の怪異を前にしても仲間の手を離さないPCたち——「そこにまだ人間らしさがある」という瞬間の輝きが、暗い世界のコントラストをより際立たせる。</p>
+
+      <div class="lore-quote" style="margin-top:1.5rem;">
+        <p>淵の縁に立つことの意味は、落ちることではない。落ちないために、ここに立っていることだ。</p>
+        <cite>——世界観拡張資料集より</cite>
+      </div>
+
+      <div class="note">詳細な設定（大崩壊の詳細記録・三つの説・人物録・怪異録・廃掘人の手記）は<a href="world_detail.html" style="color:var(--gold); text-decoration:none;">詳細設定ページ</a>を参照。</div>
+    </div>
+  </section>
+
+  <!-- ページナビ -->
+  <nav class="page-nav">
+    <div>
+      <p class="page-nav__label">← Previous</p>
+      <a href="index.html" class="page-nav__link">トップページ</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">Next →</p>
+      <a href="world_detail.html" class="page-nav__link">世界観 詳細設定</a>
+    </div>
+  </nav>
+
+</div>
+
+<footer class="site-footer">
+  <p>忘却の淵にて — At the Edge of Oblivion</p>
+</footer>
+
+<script src="nav.js"></script>
+<script>
+/* ── 地域アコーディオン ── */
+function toggleRegion(id) {
+  const item   = document.getElementById('region-' + id);
+  const panel  = document.getElementById('panel-' + id);
+  const btn    = item.querySelector('.region-trigger');
+  const isOpen = item.classList.contains('is-open');
+
+  /* 他をすべて閉じる */
+  document.querySelectorAll('.region-item.is-open').forEach(el => {
+    if (el !== item) {
+      el.classList.remove('is-open');
+      el.querySelector('.region-trigger').setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  /* 自分をトグル */
+  item.classList.toggle('is-open', !isOpen);
+  btn.setAttribute('aria-expanded', String(!isOpen));
+
+  /* 展開時に画面内に収まるようスクロール（少し余白をとる） */
+  if (!isOpen) {
+    setTimeout(() => {
+      const top = item.getBoundingClientRect().top + window.scrollY - 72;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }, 50);
+  }
+}
+</script>
+</body>
+</html>

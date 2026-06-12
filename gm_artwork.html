@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMツール：コンセプトアート / 背景画像 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── アートギャラリー ── */
+.art-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.art-card {
+  display: block;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+.art-card:hover { border-color: var(--gold-dim); }
+
+.art-card__img {
+  aspect-ratio: 4 / 3;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.art-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.art-card__placeholder {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+
+.art-card__meta { padding: 0.6rem 0.8rem; }
+.art-card__file {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+}
+.art-card__title {
+  font-size: 12px;
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+/* ── 背景画像セクションカード ── */
+.bg-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0 1.5rem;
+}
+.bg-item {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.8rem;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--gold-dim);
+  text-decoration: none;
+  display: block;
+}
+.bg-item:hover { border-color: var(--gold-dim); color: var(--gold); }
+</style>
+</head>
+<body>
+
+<nav class="site-nav" role="navigation">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li class="site-nav__item">
+        <a href="world.html">世界観</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="world.html">概要</a></li>
+          <li><a href="world_detail.html">詳細設定</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="system_combat.html">システム</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="system_combat.html">戦闘</a></li>
+          <li><a href="system_explore.html">探索</a></li>
+        </ul>
+      </li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="origins.html">素性・能力値</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="gm_enemies.html">GMツール</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="gm_enemies.html">エネミーリスト</a></li>
+          <li><a href="gm_artwork.html">コンセプトアート / 背景画像</a></li>
+          <li><a href="gm_artifacts.html">アーティファクト</a></li>
+          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <p class="page-eyebrow">Chapter VI — 2</p>
+    <h1 class="page-title">Artwork</h1>
+    <p class="page-title-ja">GMツール — コンセプトアート / 背景画像</p>
+    <div class="page-divider"></div>
+  </div>
+
+  <div class="toc">
+    <p class="toc__title">Contents</p>
+    <ul class="toc__list">
+      <li><span>I</span><a href="#site-bg">サイト背景画像</a></li>
+      <li><span>II</span><a href="#concept">コンセプトアート</a></li>
+    </ul>
+  </div>
+
+  <!-- I. サイト背景画像 -->
+  <section class="section" id="site-bg">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">サイト背景画像</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>サイト全体の背景にランダム表示される画像（<code>img/bg/</code> フォルダ）。クリックでダウンロードできる。</p>
+
+      <div class="bg-list">
+        <a href="img/bg/bg1.jpg" class="bg-item" download>bg1.jpg</a>
+        <a href="img/bg/bg2.jpg" class="bg-item" download>bg2.jpg</a>
+        <a href="img/bg/bg3.jpg" class="bg-item" download>bg3.jpg</a>
+        <a href="img/bg/bg4.jpg" class="bg-item" download>bg4.jpg</a>
+        <a href="img/bg/bg5.jpg" class="bg-item" download>bg5.jpg</a>
+        <a href="img/bg/bg6.jpg" class="bg-item" download>bg6.jpg</a>
+      </div>
+
+      <div class="note">背景画像を増やす場合は <code>img/bg/</code> に追加し、<code>nav.js</code> の <code>BG_IMAGES</code> 配列にパスを追記する。</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- II. コンセプトアート -->
+  <section class="section" id="concept">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">コンセプトアート</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>キャラクター・エネミー・場所などのコンセプトアート。<code>img/art/</code> フォルダに <code>art01.jpg</code>〜<code>art23.jpg</code> として格納する。各画像をクリックでダウンロードできる。</p>
+
+      <div class="art-grid">
+        <a href="img/art/art01.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art01.jpg" alt="art01" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art01.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art01.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art02.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art02.jpg" alt="art02" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art02.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art02.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art03.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art03.jpg" alt="art03" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art03.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art03.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art04.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art04.jpg" alt="art04" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art04.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art04.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art05.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art05.jpg" alt="art05" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art05.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art05.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art06.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art06.jpg" alt="art06" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art06.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art06.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art07.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art07.jpg" alt="art07" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art07.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art07.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art08.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art08.jpg" alt="art08" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art08.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art08.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art09.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art09.jpg" alt="art09" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art09.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art09.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art10.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art10.jpg" alt="art10" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art10.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art10.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art11.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art11.jpg" alt="art11" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art11.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art11.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art12.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art12.jpg" alt="art12" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art12.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art12.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art13.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art13.jpg" alt="art13" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art13.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art13.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art14.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art14.jpg" alt="art14" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art14.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art14.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art15.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art15.jpg" alt="art15" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art15.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art15.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art16.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art16.jpg" alt="art16" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art16.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art16.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art17.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art17.jpg" alt="art17" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art17.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art17.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art18.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art18.jpg" alt="art18" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art18.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art18.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art19.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art19.jpg" alt="art19" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art19.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art19.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art20.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art20.jpg" alt="art20" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art20.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art20.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art21.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art21.jpg" alt="art21" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art21.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art21.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art22.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art22.jpg" alt="art22" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art22.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art22.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+        <a href="img/art/art23.jpg" class="art-card" download>
+          <div class="art-card__img">
+            <img src="img/art/art23.jpg" alt="art23" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="art-card__placeholder">art23.jpg</div>
+          </div>
+          <div class="art-card__meta">
+            <p class="art-card__file">art23.jpg</p>
+            <p class="art-card__title">（タイトル未設定）</p>
+          </div>
+        </a>
+      </div>
+
+      <div class="note">画像のタイトルは仮表示。<code>.art-card__title</code> 内のテキストを各画像の内容に合わせて編集すること。</div>
+    </div>
+  </section>
+
+  <!-- ページナビ -->
+  <nav class="page-nav">
+    <div>
+      <p class="page-nav__label">← Previous</p>
+      <a href="gm_enemies.html" class="page-nav__link">GMツール エネミーリスト</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">Next →</p>
+      <a href="gm_artifacts.html" class="page-nav__link">GMツール アーティファクト</a>
+    </div>
+  </nav>
+
+</div>
+
+<footer class="site-footer">
+  <p>忘却の淵にて — At the Edge of Oblivion</p>
+</footer>
+
+<script src="nav.js"></script>
+</body>
+</html>

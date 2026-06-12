@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>刻印 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.data-controls{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;align-items:center}
+.search-box{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem 1rem;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-box:focus{border-color:var(--gold-dim)}.search-box::placeholder{color:var(--text3)}
+.filter-group{display:flex;flex-wrap:wrap;gap:.5rem}
+.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.1em;padding:4px 12px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);border-radius:2px;cursor:pointer;transition:all .2s}
+.filter-btn:hover{color:var(--gold);border-color:var(--gold-dim)}.filter-btn.active{background:var(--gold-dim);color:var(--gold2);border-color:var(--gold)}
+.result-count,.fav-notice{font-size:11px;font-family:'Noto Sans JP',sans-serif;margin-bottom:1rem}
+.result-count{color:var(--text3)}.fav-notice{color:var(--gold-dim);margin-bottom:1.5rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:3rem}
+.data-card{background:var(--bg2);padding:1.25rem;position:relative;transition:background .15s}
+.data-card:hover{background:var(--bg3)}.data-card.hidden{display:none}.data-card.favorited{background:rgba(200,164,90,.06)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
+.card-id{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text3);flex-shrink:0;margin-top:2px}
+.card-name{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
+.card-name-en{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.15em;display:block;margin-top:2px}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px;flex-shrink:0;transition:color .2s,transform .15s;line-height:1}
+.fav-btn:hover{color:var(--gold);transform:scale(1.2)}.fav-btn.active{color:var(--gold2)}
+.card-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
+.tag{font-size:9px;font-family:'Noto Sans JP',sans-serif;letter-spacing:.08em;padding:2px 7px;border-radius:2px;font-weight:500}
+.tag-origin{background:rgba(112,80,144,.2);color:var(--purple2);border:1px solid var(--purple)}
+.tag-generic{background:rgba(200,164,90,.12);color:var(--gold);border:1px solid var(--gold-dim)}
+.tag-ap{background:rgba(48,128,112,.15);color:var(--teal2);border:1px solid var(--teal)}
+.tag-hit{background:rgba(48,96,160,.15);color:var(--blue2);border:1px solid var(--blue)}
+.tag-dmg{background:rgba(192,64,48,.15);color:var(--red2);border:1px solid var(--red)}
+.tag-hdex{background:rgba(200,164,90,.15);color:var(--gold);border:1px solid var(--gold-dim)}
+.tag-hp{background:rgba(80,160,80,.15);color:#70c070;border:1px solid #408040}
+.tag-mp{background:rgba(112,80,144,.15);color:var(--purple2);border:1px solid var(--purple)}
+.card-trigger{font-size:10px;color:var(--gold-dim);font-family:'Noto Sans JP',sans-serif;margin-bottom:.4rem;letter-spacing:.05em}
+.card-trigger::before{content:'⚡ '}
+.card-effect{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:.5rem}
+.card-condition{font-size:11px;color:var(--text3);line-height:1.6;margin-bottom:.5rem;padding:4px 8px;background:var(--bg3);border-radius:2px}
+.card-condition::before{content:'条件 ';color:var(--gold-dim);font-family:'Noto Sans JP',sans-serif;font-size:9px;font-weight:500}
+.card-flavor{font-size:10px;color:var(--text3);font-style:italic;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;line-height:1.6}
+.tab-group{display:flex;flex-wrap:wrap;gap:0;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.08em;padding:.6rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
+.tab-btn:hover{color:var(--gold)}.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold-dim)}
+.tab-content{display:none}.tab-content.active{display:block}
+.rule-summary{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.rl{font-size:10px;font-family:'Noto Sans JP',sans-serif;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:4px}
+.rv{font-size:13px;color:var(--text2);line-height:1.6}
+@media(max-width:640px){.card-grid{grid-template-columns:1fr}}
+
+/* ── キャラクター作成用テーブル ── */
+.cc-section { margin-bottom: 2.5rem; }
+.cc-section-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  margin-bottom: 0.6rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--gold-dim);
+}
+.cc-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+.cc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 700px;
+}
+.cc-table th {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--gold-dim);
+  text-align: left;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+.cc-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.cc-table tr:last-child td { border-bottom: none; }
+.cc-table tr:hover td { background: var(--bg3); }
+.cc-table td:first-child { white-space: nowrap; }
+.cc-name { color: var(--text); font-weight: 400; }
+.cc-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 1px 5px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+.cc-soldier { background: rgba(160,144,112,.2); color: var(--text2); border: 1px solid var(--border2); }
+.cc-hero    { background: rgba(200,164,90,.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+.cc-legend  { background: rgba(192,64,48,.15); color: var(--red2); border: 1px solid var(--red); }
+.cc-waza { font-size: 10px; color: var(--text3); line-height: 1.6; }
+.cc-waza .hd { color: var(--gold-dim); font-weight: 500; }
+.cc-waza .ex { color: var(--gold); font-weight: 500; }
+.cc-waza .mp { font-size: 9px; color: var(--teal2); }
+.cc-waza .none { color: var(--text3); font-style: italic; }
+.cc-price { color: var(--gold); font-family: 'Cinzel', serif; font-size: 10px; white-space: nowrap; }
+.cc-price.legend { color: var(--red2); }
+.cc-cat-note {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.8;
+  padding: 0.6rem 1rem;
+  background: rgba(200,164,90,0.04);
+  border: 1px solid rgba(200,164,90,0.12);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.cc-cat-note b { color: var(--gold-dim); }
+
+</style>
+</head>
+<body>
+<nav class="site-nav" role="navigation"><div class="site-nav__inner">
+  <a href="index.html" class="site-nav__logo">Oblivion</a>
+  <ul class="site-nav__links">
+    <li><a href="index.html">Top</a></li>
+    <li class="site-nav__item"><a href="world.html">世界観</a><ul class="site-nav__dropdown"><li><a href="world.html">概要</a></li><li><a href="world_detail.html">詳細設定</a></li></ul></li>
+    <li class="site-nav__item"><a href="system_combat.html">システム</a><ul class="site-nav__dropdown"><li><a href="system_combat.html">戦闘</a></li><li><a href="system_explore.html">探索</a></li></ul></li>
+    <li><a href="charcreate.html">キャラクター作成</a></li>
+    <li><a href="origins.html">素性・能力値</a></li>
+    <li class="site-nav__item"><a href="data_weapons.html">データ一覧</a><ul class="site-nav__dropdown"><li><a href="data_weapons.html">武器・防具</a></li><li><a href="data_magic.html">魔術・奇跡</a></li><li><a href="data_seals.html">刻印</a></li></ul></li>
+    <li class="site-nav__item"><a href="gm_enemies.html">GMツール</a><ul class="site-nav__dropdown"><li><a href="gm_enemies.html">エネミーリスト</a></li><li><a href="gm_artifacts.html">アーティファクト</a></li><li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li></ul></li>
+  </ul>
+</div></nav>
+<div class="page-wrap">
+  <div class="page-header">
+    <p class="page-eyebrow">Data — V-C</p>
+    <h1 class="page-title">Inscriptions</h1>
+    <p class="page-title-ja">刻印一覧</p>
+    <div class="page-divider"></div>
+  </div>
+  <div class="rule-summary">
+    <div><p class="rl">選択数</p><p class="rv">汎用＋自素性専用あわせて<strong style="color:var(--gold)">4種</strong>を作成時に選択</p></div>
+    <div><p class="rl">重複取得</p><p class="rv">同一刻印の重複取得不可</p></div>
+    <div><p class="rl">封印状態</p><p class="rv">「封印」状態異常中は全刻印の効果が無効化</p></div>
+    <div><p class="rl">選択関係</p><p class="rv">G13「星読み」と狩人Hu03「星に愛された者」は片方のみ</p></div>
+    <div><p class="rl">排他ルール</p><p class="rv">G10「深淵の洞察」とG19「過充填」は同一命中判定で重複宣言不可</p></div>
+  </div>
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchTab('generic')">汎用（20種）</button>
+    <button class="tab-btn" onclick="switchTab('origin')">素性専用（40種）</button>
+    <button class="tab-btn" onclick="switchTab('favorites')">★ お気に入り</button>
+    <button class="tab-btn" onclick="switchTab('charcreate')">📋 キャラクター作成用</button>
+  </div>
+  <div id="tab-generic" class="tab-content active">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果・カテゴリで検索…" oninput="filterSeals('generic',this.value)">
+      <div class="filter-group" id="generic-cat-filters">
+        <button class="filter-btn active" onclick="setCF('generic','all',this)">すべて</button>
+        <button class="filter-btn" onclick="setCF('generic','AP効率',this)">AP効率</button>
+        <button class="filter-btn" onclick="setCF('generic','命中強化',this)">命中・ダメージ</button>
+        <button class="filter-btn" onclick="setCF('generic','HD/EX強化',this)">HD/EX強化</button>
+        <button class="filter-btn" onclick="setCF('generic','HP・生存',this)">HP・生存</button>
+        <button class="filter-btn" onclick="setCF('generic','MP・触媒',this)">MP・触媒</button>
+      </div>
+    </div>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="generic-count"></p>
+    <div class="card-grid" id="generic-grid"></div>
+  </div>
+  <div id="tab-origin" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果・素性で検索…" oninput="filterSeals('origin',this.value)">
+      <div class="filter-group" id="origin-filters">
+        <button class="filter-btn active" onclick="setOF('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setOF('騎士',this)">騎士</button>
+        <button class="filter-btn" onclick="setOF('傭兵',this)">傭兵</button>
+        <button class="filter-btn" onclick="setOF('戦士',this)">戦士</button>
+        <button class="filter-btn" onclick="setOF('盗賊',this)">盗賊</button>
+        <button class="filter-btn" onclick="setOF('呪術師',this)">呪術師</button>
+        <button class="filter-btn" onclick="setOF('魔法使い',this)">魔法使い</button>
+        <button class="filter-btn" onclick="setOF('聖職者',this)">聖職者</button>
+        <button class="filter-btn" onclick="setOF('深きものの末裔',this)">深きもの</button>
+        <button class="filter-btn" onclick="setOF('狩人',this)">狩人</button>
+        <button class="filter-btn" onclick="setOF('廃人',this)">廃人</button>
+      </div>
+    </div>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="origin-count"></p>
+    <div class="card-grid" id="origin-grid"></div>
+  </div>
+  
+  <div id="tab-charcreate" class="tab-content">
+    <div id="cc-seal-content"></div>
+  </div>
+  <div id="tab-favorites" class="tab-content">
+    <p class="fav-notice">★ をつけた刻印がここに表示されます</p>
+    <div class="card-grid" id="fav-grid"><div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div></div>
+  </div>
+  <nav class="page-nav">
+    <div><p class="page-nav__label">← Previous</p><a href="data_magic.html" class="page-nav__link">魔術・奇跡</a></div>
+    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="gm_enemies.html" class="page-nav__link">GMツール</a></div>
+  </nav>
+</div>
+<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
+<script src="nav.js"></script>
+<script>
+const GENERIC=[
+{id:'G01',name:'疾風の歩法',en:'Windstep',cat:'AP効率',trigger:'常時',effect:'AGI12以上のとき、1ラウンドのAP+1（計4AP）になる。AGIが12を下回った場合、AP3に戻る。',cond:'AGI12は装備込みで満たしてよい。',fl:'「速さは意志ではなく、肉体に刻まれた反射だ」'},
+{id:'G02',name:'先手の回路',en:'First Strike',cat:'AP効率',trigger:'イニシアチブ最上位の時（自ターン）',effect:'そのターン中のみ、1AP武器の最大攻撃回数を+1する（短剣4回・直剣/槍/弓3回）。2AP武器には適用しない。',cond:'イニシアチブ最上位でない場合は不発動。',fl:'「先手を取った瞬間だけ、時が緩むように感じる」'},
+{id:'G03',name:'踏み込みの術式',en:'Press Forward',cat:'AP効率',trigger:'自ターン・攻撃と同時宣言',effect:'攻撃と同じAPを消費して1マス前進する（移動APを別途消費しない）。1ターンに1回のみ。',cond:'近接武器のみ（弓・触媒不可）。',fl:'「踏み込みながら斬る。帝国騎士団の基本戦術だった」'},
+{id:'G04',name:'残滓の循環',en:'Residual Flow',cat:'AP効率',trigger:'戦技（HD/EX）が発動した直後',effect:'HD戦技またはEX戦技が発動したターンの終了時に、消費APを1回復する（次のターンに持ち越し不可）。1ターン1回のみ。',cond:'クリティカルには適用しない。AP回復。',fl:'「力を放った後に残る余韻——帝国術師が発見した副作用の逆利用」'},
+{id:'G05',name:'刻まれた技',en:'Weapon Mastery',cat:'命中強化',trigger:'命中判定時（常時）',effect:'取得時に武器種を1種選択する。その武器種の命中値+5%（常時）。同じ武器種を対象に重複取得不可（別の武器種は別途取得可）。',cond:'9武器種すべてが選択対象。',fl:'「剣士の腕に刻まれた剣術紋様。身体が動きを憶えている」'},
+{id:'G06',name:'屍を踏む者',en:'Blood Rush',cat:'命中強化',trigger:'敵撃破直後',effect:'戦闘中に敵を撃破した直後、次の攻撃の命中値+10%（1回限り・次のターン終了まで）。',cond:'1ターンに複数撃破しても1回分のみカウント。',fl:'「殺しに慣れることを、帝国は戦闘刻印と呼んだ」'},
+{id:'G07',name:'渾身の一撃',en:'All-In',cat:'ダメージ強化',trigger:'自ターン開始時（宣言制）',effect:'そのターンの攻撃回数を最大1回に制限する代わりに、その1回の攻撃のダメージボーナスを1段階上昇させる。',cond:'攻撃を行わなかった場合も宣言消費。',fl:'「一点に全てを注ぐ。量より質を選んだ者だけが知る重さ」'},
+{id:'G08',name:'研ぎ澄まされた一手',en:'Honed Edge',cat:'ダメージ強化',trigger:'命中判定・通常成功時',effect:'HD・EXでない通常成功の攻撃に、固定ダメージ+2を加算する。HD・EX・クリティカル時は発動しない。',cond:'武器種・属性問わず全攻撃に適用。装甲軽減後に加算。',fl:'「確実に当てることの価値を知る者の刻印」'},
+{id:'G09',name:'廃都の継承者',en:'Imperial Heir',cat:'ダメージ強化',trigger:'クリティカル命中時',effect:'クリティカル命中時、通常のダメージ（装甲無視）に加えてさらにダメージボーナスダイスを1回追加する（合計：装甲無視＋ダメージボーナスダイス×3）。',cond:'クリティカル以外には適用しない。1ターン1回。',fl:'「帝国の術師が戦士に施した複合刻印」'},
+{id:'G10',name:'深淵の洞察',en:'Abyssal Insight',cat:'HD/EX強化',trigger:'命中判定前（宣言制）',effect:'1ターンに1回、命中判定の前に宣言することで、その判定のHD発動条件を命中値×1/2から命中値×3/5に緩和する。',cond:'宣言後に攻撃をキャンセルしても消費扱い。G19との重複宣言不可。',fl:'「深淵を覗くことで弱点が見える」'},
+{id:'G11',name:'試練の鋼',en:'Trial-Hardened',cat:'HD/EX強化',trigger:'常時',effect:'同一戦闘中、同じ相手に対して2回以上命中している場合、その相手へのHD発動条件を+5%緩和する。',cond:'別の相手に移ると蓄積はリセット。',fl:'「戦えば戦うほど相手が見えてくる」'},
+{id:'G12',name:'共鳴刻',en:'Resonant Arts',cat:'HD/EX強化',trigger:'HD/EX戦技発動後',effect:'HD戦技またはEX戦技が発動したターン、そのターン中の次の攻撃1回の命中値+10%。',cond:'同一ターン内にHD/EXが複数発動しても命中ボーナスは1回分のみ。',fl:'「帝国の術式は共鳴する。一度輝けば、次の輝きが生まれやすい」'},
+{id:'G13',name:'星読み',en:'Stargazer',cat:'HD/EX強化',trigger:'常時',effect:'LCKによるクリティカル率ボーナスを+1%追加する（通常のLCKボーナスに上乗せ）。',cond:'LCK10以上のキャラクターのみ取得可。狩人Hu03「星に愛された者」との選択関係（片方のみ取得可）。',fl:'「運命の紋様を肉体に刻む行為」'},
+{id:'G14',name:'不死の肉体',en:'Ironhide',cat:'HP・生存',trigger:'常時',effect:'物理装甲値の計算時、CONの参照値を+2として扱う（共通テーブル上の数値が上がる場合のみ有効）。',cond:'テーブル段階が上がらない場合は効果なし。',fl:'「鎧より先に皮膚が固くなる」'},
+{id:'G15',name:'肉体の錬磨',en:'Tempered Body',cat:'HP・生存',trigger:'常時',effect:'HP計算時、STRとCONの合計値を+2として扱う。さらに瀕死状態でのLCKロールに+10%のボーナスを得る。',cond:'G14との重複取得可（別枠）。',fl:'「セラフィット帝国の重装兵が施した二重の刻印の片割れ」'},
+{id:'G16',name:'まだ終わらない',en:'Tenacity',cat:'HP・生存',trigger:'HP0時（瀕死判定前）',effect:'1戦闘に1回のみ、HP0になった時点でLCKロールを行い、成功すればHP1で踏み留まる（瀕死状態にならない）。',cond:'石化状態での瀕死は無効。1戦闘1回限り。封印状態では無効。',fl:'「生命力の紋様を骨の表面に刻む」'},
+{id:'G17',name:'死の淵から',en:'Near Death',cat:'HP・生存',trigger:'HP最大値の1/4以下の時（常時）',effect:'HP最大値の1/4以下の間、全ての命中判定にボーナスダイス（BD+1）を得る。',cond:'回復でHPが1/4を超えた瞬間、効果は消失する。封印状態では無効。',fl:'「追い詰められた者だけが触れる感覚」'},
+{id:'G18',name:'術式の残滓',en:'Arcane Vessel',cat:'MP・触媒',trigger:'常時',effect:'MP最大値+4。さらに魔術・奇跡使用後、ラウンド終了時にMP+1自動回復する。',cond:'INT・FTH・POWのいずれか8以上のキャラクターのみ取得可。',fl:'「マナが肉体に馴染んだ証」'},
+{id:'G19',name:'過充填',en:'Overcharge',cat:'MP・触媒',trigger:'魔術・奇跡使用前（宣言制）',effect:'魔術・奇跡使用時、通常のMP消費に加えてMP+2を追加消費することで、その魔術・奇跡のHD発動条件を命中値×1/2から命中値×3/5に緩和する。',cond:'追加MP2が払えない場合は使用不可。G10との重複宣言不可。',fl:'「力を限界まで押し込む技術」'},
+{id:'G20',name:'魔術遮蔽',en:'Spell Ward',cat:'MP・触媒',trigger:'魔術攻撃を受けた時',effect:'魔術耐性の計算時、POWの参照値を+2として扱う（共通テーブル上の数値が上がる場合のみ有効）。',cond:'奇跡攻撃・物理攻撃には無効。魔術ダメージのみ。',fl:'「テオフィリアが対魔術師用に研究していた防護刻印」'},
+];
+
+const ORIGIN=[
+{id:'K01',origin:'騎士',name:'誓いの盾',en:'Oath Shield',trigger:'防御行動時',effect:'盾を装備して防御行動を取った時、隣接する味方1名への次の攻撃を代わりに受けられる（1回のみ）。代わりに受けた攻撃に通常の防御行動可。',cond:'盾装備が必須。1ターンに1回のみ。',fl:''},
+{id:'K02',origin:'騎士',name:'名誉の一閃',en:"Honor's Edge",trigger:'命中判定時',effect:'直剣・大剣・槍のいずれかで通常成功した時（HDでもEXでもない）、ダメージ+1d4を加算する。',cond:'G08「研ぎ澄まされた一手」と重複発動可（両方適用）。',fl:''},
+{id:'K03',origin:'騎士',name:'不抜の意志',en:'Unyielding Will',trigger:'恐怖・発狂・封印が付与された瞬間',effect:'恐怖・発狂・封印のいずれかが付与された瞬間、POWロールを行う。成功すれば1ターンだけ状態異常を無視して行動できる（解除ではない）。',cond:'1戦闘に2回まで発動可。封印中でも発動する（付与された瞬間のみ有効）。',fl:''},
+{id:'K04',origin:'騎士',name:'守護の誓約',en:"Guardian's Vow",trigger:'常時',effect:'戦闘開始時に「守護対象」を1名宣言する。その対象がダメージを受けた時、自分の命中判定にBD+1を1ターン得る（1ターン1回まで）。',cond:'守護対象が戦闘不能または距離3以上離れると効果消失。自分自身は指定不可。',fl:''},
+{id:'M01',origin:'傭兵',name:'傭兵の流儀',en:"Mercenary's Creed",trigger:'同ターン2回目以降の攻撃時',effect:'同ターン中にすでに命中した攻撃がある場合、2回目以降の命中判定にBD+1を得る。',cond:'1回目が外れた場合は不発動。',fl:''},
+{id:'M02',origin:'傭兵',name:'生存の計算',en:'Survival Math',trigger:'常時（HP量による切り替え）',effect:'HP最大値の1/2以上ある時、回避の対抗ロールにBD+1を得る。HP1/4以下の時は全命中判定にBD+1を得る。',cond:'1/4〜1/2の間は両方不発動。',fl:''},
+{id:'M03',origin:'傭兵',name:'修羅場の嗅覚',en:'Battle Instinct',trigger:'イニシアチブ決定時',effect:'イニシアチブ決定時にBD+1を得る。さらにイニシアチブ最上位だった場合、そのターンの最初の攻撃に命中+5%。',cond:'同値時はLCK比較。BDはLCK比較前に適用。',fl:''},
+{id:'M04',origin:'傭兵',name:'報酬の分だけ',en:'Paid to Win',trigger:'ターン開始時（累積制）',effect:'戦闘中に撃破した敵の数×1%を全命中値に加算する（最大+5%・戦闘終了でリセット）。',cond:'最大5体分（+5%）。戦闘終了でリセット。',fl:''},
+{id:'W01',origin:'戦士',name:'渾身の鉄槌',en:'Ironswing',trigger:'大剣・斧・ハンマーがHD成功した時',effect:'大剣・斧・ハンマーによる攻撃がHD成功した時、ダメージボーナスダイスをさらに1段階上昇させる（HD時：ボーナスダイス×2扱い）。',cond:'EX成功時には適用しない。対象武器種のみ。',fl:''},
+{id:'W02',origin:'戦士',name:'鉄の肌',en:'Steelskin',trigger:'物理ダメージを受けた直後',effect:'1回の物理ダメージが6以上だった場合に限り、そのダメージを1軽減する（最小1）。',cond:'魔術・奇跡・クリティカル（装甲無視）には無効。',fl:''},
+{id:'W03',origin:'戦士',name:'暴風の体躯',en:'Stormborn',trigger:'大剣・斧・ハンマーで攻撃したターン中',effect:'大剣・斧・ハンマーで攻撃した後、そのターン中の回避の対抗ロールにPD+1を受ける代わりに、次ターン開始時にAP+1を得る（疾風の歩法と重複可で最大5AP）。',cond:'攻撃しなければペナルティも付与も発生しない。',fl:''},
+{id:'W04',origin:'戦士',name:'生ける戦場',en:'Walking Battlefield',trigger:'ラウンド開始時・疲労付与中',effect:'ラウンド開始時に疲労が付与されている場合、1APを消費して疲労を解除できる。解除したラウンドの最初の攻撃に命中+5%。',cond:'疲労していない場合は不発動。1AP消費が必要。',fl:''},
+{id:'T01',origin:'盗賊',name:'毒の血脈',en:'Venomblood',trigger:'短剣・弓の攻撃命中時',effect:'短剣・弓で攻撃が命中した時（通常成功以上）、対象にPOWロールを課す。失敗で毒付与。1ターン1回のみ。',cond:'POWロール不要の毒付与とは別枠。',fl:''},
+{id:'T02',origin:'盗賊',name:'影の足音',en:'Silent Step',trigger:'イニシアチブ最上位の時',effect:'イニシアチブ最上位の時、そのターンの短剣・弓による攻撃の命中値+10%。GM判断で奇襲状態にある場合、HD/EX発動条件が1段階易しくなる。',cond:'奇襲状態の判定はGMに委ねる。',fl:''},
+{id:'T03',origin:'盗賊',name:'蜘蛛の巣',en:'Spiderweb',trigger:'命中時・対象が状態異常持ちの場合',effect:'命中した対象が疲労・封印・盲目・毒のいずれかを持つ場合、ダメージ+1d6。さらに同ターン2回目以降の攻撃に命中+5%（同じ敵への攻撃のみ）。',cond:'状態異常が解除されると追加ダメージ消失。',fl:''},
+{id:'T04',origin:'盗賊',name:'逃げ足の哲学',en:'Run First',trigger:'回避の対抗ロール成功直後',effect:'回避の対抗ロール成功直後、そのターン中の次の攻撃1回の命中値+10%。さらにそのターン中の移動AP消費が0になる（1ターン1回）。',cond:'防御行動（装甲軽減）では不発動。回避成功のみ。',fl:''},
+{id:'H01',origin:'呪術師',name:'深淵の裂傷',en:'Abyssal Crack',trigger:'魔術命中時',effect:'魔術が命中した時、その対象の次の判定（命中・回避・POWロール問わず）にPD+1が付与される（1ターン1回）。',cond:'',fl:''},
+{id:'H02',origin:'呪術師',name:'呪いの増幅',en:'Curse Amplifier',trigger:'魔術がHD/EX成功した時',effect:'魔術攻撃がHD成功した時、ダメージボーナスダイスをさらに1段階上昇させる。EX成功時はさらに命中した対象の次のPOWロールにPD+1が付与される。',cond:'',fl:''},
+{id:'H03',origin:'呪術師',name:'魂食い',en:'Soul Leech',trigger:'魔術がEX成功した時',effect:'魔術攻撃がEX成功した時、与えたダメージの1/4（切捨て・最小1）をMPとして回収する。',cond:'EX成功時のみ。最大値超過分は無効。',fl:''},
+{id:'H04',origin:'呪術師',name:'歪んだ触媒',en:'Corrupted Focus',trigger:'魔術使用前（宣言制）',effect:'魔術使用時、MP消費+1を宣言することで命中値+10%またはダメージボーナス1段階上昇のいずれかを選択できる。',cond:'1回の魔術につき1種の効果のみ選択可。',fl:''},
+{id:'Ma01',origin:'魔法使い',name:'知識の回廊',en:'Hall of Knowledge',trigger:'常時（MP量による切り替え）',effect:'MPが最大値の1/2以上ある時、魔術の命中値+5%。MPが最大値の1/4以下の時、魔術のダメージボーナス1段階上昇。',cond:'1/4〜1/2の間は両方不発動。',fl:''},
+{id:'Ma02',origin:'魔法使い',name:'元素の親和',en:'Elemental Affinity',trigger:'選択属性の魔術命中時',effect:'取得時に属性を1種選択（炎・冷気・雷・闇・神聖・毒）。その属性の魔術が命中した時、ダメージ+1d4。',cond:'選択属性以外・無属性魔術には無効。',fl:''},
+{id:'Ma03',origin:'魔法使い',name:'遠視の刻印',en:'Farsight',trigger:'常時',effect:'魔術・奇跡・弓の射程+1。さらに煙幕・霧による命中ペナルティを1個軽減する。',cond:'触媒の射程補正とは別枠で加算。',fl:''},
+{id:'Ma04',origin:'魔法使い',name:'帝国の術式',en:'Imperial Protocol',trigger:'魔術がEX成功した時',effect:'魔術攻撃がEX成功した時、通常のEX戦技に加えてMP+2を回収する。さらにそのターン中の次の魔術詠唱のAPコストを1軽減する（最小0AP・1ターン1回）。',cond:'EX成功時のみ。',fl:''},
+{id:'C01',origin:'聖職者',name:'縫合の回路',en:'Faith Circuit',trigger:'奇跡使用後',effect:'奇跡使用後、ラウンド終了時に味方1名（HP最低の者）のHP+1d4を自動回復する。奇跡が外れた場合も発動する。',cond:'自分自身への適用は最もHPが低い場合のみ。',fl:''},
+{id:'C02',origin:'聖職者',name:'聖別の一撃',en:'Holy Smite',trigger:'奇跡・神聖属性武器がHD成功した時',effect:'アンデッド・邪悪への攻撃がHD成功した時、通常のHD戦技に加えてダメージ+1d6を追加する。',cond:'アンデッド・邪悪の定義はGM判断。',fl:''},
+{id:'C03',origin:'聖職者',name:'浄化の手',en:'Purifying Touch',trigger:'アイテムで状態異常を解除する時',effect:'アイテムで状態異常を解除する際、同一アイテムで1種追加で解除できる。',cond:'刻印・属性相互作用での解除には適用されない。アイテムによる解除のみ。',fl:''},
+{id:'C04',origin:'聖職者',name:'信仰の鎧',en:'Armor of Faith',trigger:'魔術・奇跡攻撃を受けた時',effect:'魔術・奇跡どちらの攻撃を受けた時も、魔術耐性計算時CONの参照値を+1として扱う。G20「魔術遮蔽」と重複取得・加算可（合計CON+3扱い）。',cond:'物理攻撃には無効。奇跡にも適用される点がG20との差別化。',fl:''},
+{id:'D01',origin:'深きものの末裔',name:'深海の血脈',en:'Tidal Blood',trigger:'常時',effect:'HP計算時、CONを+2として扱う（常時）。さらに凍結状態の敵への近接攻撃の命中値+5%を得る。',cond:'',fl:''},
+{id:'D02',origin:'深きものの末裔',name:'深淵の適応',en:'Abyssal Adaptation',trigger:'常時',effect:'命中判定・回避の対抗ロール・POWロールのうち、そのターン中に最初に判定に失敗した時、次の同種の判定にBD+1を得る（1ターン1回・種別ごとに独立）。',cond:'',fl:''},
+{id:'D03',origin:'深きものの末裔',name:'異形の回復',en:'Aberrant Heal',trigger:'瀕死状態のラウンド終了時',effect:'瀕死状態（HP0）のラウンド終了時LCKロールに加えて、POWロールも行う。POWロール成功でHP1で復活する。どちらか成功すれば生存。',cond:'石化状態での瀕死は無効。',fl:''},
+{id:'D04',origin:'深きものの末裔',name:'虚無の眼',en:'Void Gaze',trigger:'EX成功した時',effect:'直剣・斧・ハンマー・槍・盾のいずれかでEX成功した時、通常のEX戦技に加えて対象に発狂付与のPOWロールを課す。',cond:'',fl:''},
+{id:'Hu01',origin:'狩人',name:'獲物の気配',en:'Prey Sense',trigger:'戦闘開始時・ターン開始時',effect:'戦闘開始時、対象の現在HPを「多い／半分以下／瀕死寸前」の3段階でGMが秘密裏に通知する。HP半分以下の敵への弓・短剣の命中値+5%。',cond:'GM判断により情報精度が変わることがある。',fl:''},
+{id:'Hu02',origin:'狩人',name:'毒の矢筒',en:'Quiver of Venom',trigger:'弓の攻撃命中時',effect:'弓で攻撃が命中した時（通常成功以上）、対象にPOWロールを課す。失敗で毒付与。1ターン1回のみ。',cond:'弓のみ有効。',fl:''},
+{id:'Hu03',origin:'狩人',name:'星に愛された者',en:'Favored by Stars',trigger:'常時',effect:'LCKによるクリティカル率ボーナスを+1%追加する。さらに瀕死状態でのLCKロールにBD+1を得る。',cond:'汎用G13「星読み」との選択関係（片方のみ取得可）。LCK10以上不要（取得制限なし）。',fl:''},
+{id:'Hu04',origin:'狩人',name:"Hunter's Mark",en:"Hunter's Mark",trigger:'攻撃命中直後',effect:'命中した敵を「標的」として設定する（1体のみ）。以降、標的への命中判定+5%。別の敵を命中させると前の標的のボーナスは消える。',cond:'命中しなければ設定されない。逃走・戦闘不能で解除。',fl:''},
+{id:'De01',origin:'廃人',name:'何も残らなかった',en:'Nothing Remains',trigger:'常時',effect:'追加ポイントを振り分けた能力値の種類数×1%を全命中値に加算する（最大+8%・8種の能力値すべてに1点以上振り分けた場合）。',cond:'「種類数」とは1点以上振り分けた能力値の数を指す（量は問わない）。',fl:''},
+{id:'De02',origin:'廃人',name:'空の器',en:'Empty Vessel',trigger:'ターン開始時',effect:'HP＋MPの合計が最大値の1/2以下の場合、そのターン中の全命中判定とPOWロールにBD+1を得る。',cond:'HP・MPそれぞれではなく合計値で判定。',fl:''},
+{id:'De03',origin:'廃人',name:'傷だらけの肉体',en:'Battle-Worn',trigger:'常時',effect:'物理ダメージを受けた時（1以上）、その後の同一戦闘中において、同じ武器種からの物理ダメージを1軽減する（最小1・武器種ごとに1種記録・上書き制）。',cond:'状態異常ダメージは対象外。純粋な物理ダメージのみ。',fl:''},
+{id:'De04',origin:'廃人',name:'ゼロからの一手',en:'From Nothing',trigger:'戦闘開始・第1ラウンドのみ',effect:'第1ラウンドのみ：自分の最も低い能力値×5%を全命中判定に加算する。',cond:'廃人の低い初期値を逆手に取る設計。',fl:''},
+];
+
+const CT={AP効率:'tag-ap',命中強化:'tag-hit',ダメージ強化:'tag-dmg','HD/EX強化':'tag-hdex','HP・生存':'tag-hp','MP・触媒':'tag-mp'};
+const favs=new Set(JSON.parse(localStorage.getItem('sfav')||'[]'));
+function saveFavs(){try{localStorage.setItem('sfav',JSON.stringify([...favs]));}catch(e){}}
+const st={generic:{cat:'all',search:''},origin:{origin:'all',search:''}};
+
+function buildCard(d,isO){
+  const id=(isO?'O':'G')+d.id;const isFav=favs.has(id);
+  const cat=isO?d.origin:d.cat;
+  return `<div class="data-card${isFav?' favorited':''}" data-id="${id}" data-cat="${cat}" data-origin="${d.origin||''}" data-search="${[d.id,d.name,d.en,d.effect,d.trigger,cat].join(' ').toLowerCase()}">
+<div class="card-head"><span class="card-id">${d.id}</span><div style="flex:1"><span class="card-name">${d.name}</span><span class="card-name-en">${d.en}</span></div><button class="fav-btn${isFav?' active':''}" onclick="toggleFav('${id}',this)">★</button></div>
+<div class="card-badges">${isO?`<span class="tag tag-origin">${d.origin}</span>`:'<span class="tag tag-generic">汎用</span>'}<span class="tag ${CT[d.cat||'']||'tag-generic'}">${d.cat||d.origin}</span></div>
+<div class="card-trigger">${d.trigger}</div>
+<div class="card-effect">${d.effect}</div>
+${d.cond?`<div class="card-condition">${d.cond}</div>`:''}
+${d.fl?`<div class="card-flavor">${d.fl}</div>`:''}
+</div>`;
+}
+
+function renderGrid(gid,data,isO){document.getElementById(gid).innerHTML=data.map(d=>buildCard(d,isO)).join('');updateCount(isO?'origin':'generic');}
+function updateCount(type){const gid=type+'-grid',cid=type+'-count';const t=document.querySelectorAll(`#${gid} .data-card`).length,v=document.querySelectorAll(`#${gid} .data-card:not(.hidden)`).length;document.getElementById(cid).textContent=v<t?`${v} / ${t} 件表示`:`全${t}件`;}
+function filterSeals(type,q){st[type].search=q.toLowerCase();applyFilter(type);}
+function setCF(type,cat,btn){st[type].cat=cat;document.querySelectorAll(`#${type}-cat-filters .filter-btn`).forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter(type);}
+function setOF(origin,btn){st.origin.origin=origin;document.querySelectorAll('#origin-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter('origin');}
+function applyFilter(type){const{search}=st[type];const gid=type+'-grid';document.querySelectorAll(`#${gid} .data-card`).forEach(c=>{let m=!search||c.dataset.search.includes(search);if(type==='generic'){const cat=st.generic.cat;if(cat!=='all')m=m&&(c.dataset.cat===cat||cat==='命中強化'&&c.dataset.cat==='ダメージ強化');}else{const o=st.origin.origin;if(o!=='all')m=m&&c.dataset.origin===o;}c.classList.toggle('hidden',!m);});updateCount(type);}
+function toggleFav(id,btn){if(favs.has(id)){favs.delete(id);btn.classList.remove('active');btn.closest('.data-card').classList.remove('favorited');}else{favs.add(id);btn.classList.add('active');btn.closest('.data-card').classList.add('favorited');}saveFavs();renderFav();}
+function renderFav(){const all=[...GENERIC.map(d=>({...d,_o:false})),...ORIGIN.map(d=>({...d,_o:true}))];const fd=all.filter(d=>favs.has((d._o?'O':'G')+d.id));document.getElementById('fav-grid').innerHTML=fd.length?fd.map(d=>buildCard(d,d._o)).join(''):'<div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div>';}
+function switchTab(n){['generic','origin','favorites','charcreate'].forEach((nm,i)=>{document.querySelectorAll('.tab-btn')[i].classList.toggle('active',nm===n);document.getElementById('tab-'+nm).classList.toggle('active',nm===n);});}
+
+renderGrid('generic-grid',GENERIC,false);renderGrid('origin-grid',ORIGIN,true);renderFav();renderCCSeal();
+function renderCCSeal(){
+  function badgeCC(r){const cls={'兵士':'cc-soldier','英雄':'cc-hero','伝説':'cc-legend'}[r]||'';return r?`<span class="cc-badge ${cls}">${r}</span>`:'<span class="cc-badge cc-soldier">汎用</span>';}
+
+  let html='';
+  // 汎用刻印
+  html+=`<div class="cc-section"><p class="cc-section-title">汎用刻印（全素性使用可）</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>No</th><th>名前</th><th>カテゴリ</th><th>発動条件</th><th>効果（簡略）</th></tr></thead><tbody>`;
+  GENERIC.forEach(d=>{
+    // 効果を短縮（100文字以内）
+    const eff=d.effect.length>90?d.effect.slice(0,88)+'…':d.effect;
+    html+=`<tr>
+<td style="color:var(--text3);font-size:10px">${d.id}</td>
+<td><span class="cc-name">${d.name}</span>${badgeCC(null)}</td>
+<td style="font-size:10px;white-space:nowrap">${d.cat}</td>
+<td style="font-size:10px;max-width:140px">${d.trigger}</td>
+<td style="font-size:10px;max-width:240px">${eff}</td>
+</tr>`;
+  });
+  html+='</tbody></table></div></div>';
+
+  // 素性専用刻印（素性ごとにグループ化）
+  const ORIGINS=['騎士','傭兵','戦士','盗賊','呪術師','魔法使い','聖職者','深きものの末裔','狩人','廃人'];
+  html+=`<div class="cc-section"><p class="cc-section-title">素性専用刻印</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>No</th><th>名前</th><th>素性</th><th>発動条件</th><th>効果（簡略）</th></tr></thead><tbody>`;
+  ORIGINS.forEach(origin=>{
+    const rows=ORIGIN.filter(d=>d.origin===origin);
+    rows.forEach(d=>{
+      const eff=d.effect.length>90?d.effect.slice(0,88)+'…':d.effect;
+      html+=`<tr>
+<td style="color:var(--text3);font-size:10px">${d.id}</td>
+<td><span class="cc-name">${d.name}</span></td>
+<td>${badgeCC(origin)}</td>
+<td style="font-size:10px;max-width:140px">${d.trigger}</td>
+<td style="font-size:10px;max-width:240px">${eff}</td>
+</tr>`;
+    });
+  });
+  html+='</tbody></table></div></div>';
+  document.getElementById('cc-seal-content').innerHTML=html;
+}
+
+</script>
+</body>
+</html>

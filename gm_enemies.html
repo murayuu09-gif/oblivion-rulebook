@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GMツール：エネミーリスト — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── ダウンロードボタン ── */
+.download-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-dim);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+}
+.download-box__text { font-size: 13px; color: var(--text2); line-height: 1.8; }
+.download-box__text b { color: var(--text); }
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold2);
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius);
+  padding: 0.7rem 1.5rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+.download-btn:hover { background: var(--gold-dim); color: var(--bg); }
+
+/* ── エネミー一覧テーブル ── */
+.enemy-table-wrap { overflow-x: auto; margin: 1rem 0; }
+.enemy-table {
+  width: 100%;
+  min-width: 640px;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.enemy-table th, .enemy-table td {
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: middle;
+}
+.enemy-table th {
+  background: var(--bg2);
+  color: var(--gold-dim);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  position: sticky;
+  top: 0;
+}
+.enemy-table td:first-child { color: var(--text); font-weight: 500; white-space: nowrap; }
+.en-sub {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  text-transform: uppercase;
+}
+.threat-num {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  font-size: 13px;
+  margin-right: 4px;
+}
+.threat-stars { font-size: 10px; letter-spacing: 1px; }
+
+tr.tier-low    td { background: rgba(48,128,112,0.04); }
+tr.tier-low    .threat-num { color: var(--teal2); }
+tr.tier-mid    td { background: rgba(200,164,90,0.04); }
+tr.tier-mid    .threat-num { color: var(--gold); }
+tr.tier-high   td { background: rgba(192,64,48,0.05); }
+tr.tier-high   .threat-num { color: var(--red2); }
+tr.tier-final  td { background: rgba(112,80,144,0.10); }
+tr.tier-final  .threat-num { color: var(--purple2); }
+
+/* ── 詳細データ：階層見出し ── */
+.tier-header {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  margin: 2rem 0 0.5rem;
+}
+.tier-header--low    { color: var(--teal2);   background: rgba(48,128,112,0.08);  border-left: 3px solid var(--teal); }
+.tier-header--mid    { color: var(--gold2);   background: rgba(200,164,90,0.06);  border-left: 3px solid var(--gold-dim); }
+.tier-header--high   { color: var(--red2);    background: rgba(192,64,48,0.07);   border-left: 3px solid var(--red); }
+.tier-header--final  { color: var(--purple2); background: rgba(112,80,144,0.12);  border-left: 3px solid var(--purple); }
+
+.tier-desc { font-size: 12px; color: var(--text3); margin-bottom: 1rem; }
+
+/* ── 個別エネミー（折りたたみ） ── */
+.enemy-detail {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+.enemy-detail summary {
+  padding: 0.85rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.enemy-detail summary::-webkit-details-marker { display: none; }
+.enemy-detail summary::before {
+  content: '▸';
+  color: var(--gold-dim);
+  font-size: 11px;
+  flex-shrink: 0;
+  transition: transform 0.15s;
+}
+.enemy-detail[open] summary::before { transform: rotate(90deg); }
+.enemy-detail .ed-id {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--gold-dim);
+  flex-shrink: 0;
+}
+.enemy-detail .ed-name { color: var(--text); font-weight: 500; }
+.enemy-detail .ed-meta {
+  color: var(--text3);
+  font-size: 11px;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.enemy-detail__body {
+  padding: 0 1.25rem 1.25rem 2.75rem;
+  font-size: 13px;
+  color: var(--text2);
+  line-height: 2;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .enemy-detail .ed-meta { margin-left: 0; width: 100%; order: 3; }
+  .enemy-detail__body { padding-left: 1.25rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav" role="navigation">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li class="site-nav__item">
+        <a href="world.html">世界観</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="world.html">概要</a></li>
+          <li><a href="world_detail.html">詳細設定</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="system_combat.html">システム</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="system_combat.html">戦闘</a></li>
+          <li><a href="system_explore.html">探索</a></li>
+        </ul>
+      </li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="origins.html">素性・能力値</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="gm_enemies.html">GMツール</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="gm_enemies.html">エネミーリスト</a></li>
+          <li><a href="gm_artwork.html">コンセプトアート / 背景画像</a></li>
+          <li><a href="gm_artifacts.html">アーティファクト</a></li>
+          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <div class="page-header">
+    <p class="page-eyebrow">Chapter VI</p>
+    <h1 class="page-title">Bestiary</h1>
+    <p class="page-title-ja">GMツール — エネミーリスト</p>
+    <div class="page-divider"></div>
+  </div>
+
+  <div class="toc">
+    <p class="toc__title">Contents</p>
+    <ul class="toc__list">
+      <li><span>I</span><a href="#scale">脅威度について</a></li>
+      <li><span>II</span><a href="#list">エネミー一覧（全50体）</a></li>
+      <li><span>III</span><a href="#details">個別データ</a></li>
+    </ul>
+  </div>
+
+  <div class="download-box">
+    <p class="download-box__text">
+      全50体の詳細データ（脅威度・タイプ・出現場所・説明文）を収録したExcelファイル。<br>
+      <b>エネミーリスト_v2_0.xlsx</b>
+    </p>
+    <a href="data/エネミーリスト_v2_0.xlsx" class="download-btn" download>Download .xlsx</a>
+  </div>
+
+  <!-- I. 脅威度について -->
+  <section class="section" id="scale">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">脅威度について</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>全50体のエネミーは、脅威度1〜10の10段階（★の数で表示）で分類されている。脅威度はおおまかに4つの階層にグルーピングできる。</p>
+
+      <table class="rule-table">
+        <thead>
+          <tr><th>脅威度</th><th>区分</th><th>体数</th><th>使い方</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1〜3 ★〜★★★</td><td>雑魚</td><td>20体（E-01〜E-20）</td><td>単体・複数で出現する基本的な敵。導入や数の脅威として使う</td></tr>
+          <tr><td>4〜6 ★★★★〜★★★★★★</td><td>精鋭・ミニボス</td><td>17体（E-21〜E-37）</td><td>固有の戦術を持つ強敵。シナリオ中盤の壁として機能する</td></tr>
+          <tr><td>7〜9 ★★★★★★★〜★★★★★★★★★</td><td>ボス</td><td>12体（E-38〜E-49）</td><td>エリアの主や黒幕級。複数の専用行動を持つ</td></tr>
+          <tr><td>10 ★★★★★★★★★★</td><td>ラスボス</td><td>1体（E-50）</td><td>キャンペーンの集大成。長期戦・特殊条件を前提に設計</td></tr>
+        </tbody>
+      </table>
+
+      <div class="note">本ページの説明文には、フレーバーテキストとGM向けの運用ヒントが混在している。プレイヤーが読む場合は、ネタバレに注意。</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- II. エネミー一覧 -->
+  <section class="section" id="list">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">エネミー一覧（全50体）</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>脅威度順の全エネミー一覧。各エネミーの詳細な説明文は次のセクションを参照。</p>
+
+      <div class="enemy-table-wrap">
+        <table class="enemy-table">
+          <thead>
+            <tr><th>ID</th><th>脅威度</th><th>名前</th><th>タイプ</th><th>出現場所</th></tr>
+          </thead>
+          <tbody>
+<tr class="tier-low"><td>E-01</td><td><span class="threat-num">1</span><span class="threat-stars">★</span></td><td>廃墟の浮浪者<br><span class="en-sub">Ruin Drifter</span></td><td>人間・雑魚</td><td>廃墟・都市・スラム街</td></tr>
+<tr class="tier-low"><td>E-02</td><td><span class="threat-num">1</span><span class="threat-stars">★</span></td><td>迷子の巡礼者<br><span class="en-sub">Lost Pilgrim</span></td><td>人間・雑魚（複数）</td><td>街道・テオフィリア周辺・廃墟</td></tr>
+<tr class="tier-low"><td>E-03</td><td><span class="threat-num">1</span><span class="threat-stars">★</span></td><td>廃村の子ども<br><span class="en-sub">Feral Child</span></td><td>人間・雑魚（複数）</td><td>廃墟の農村・廃村・辺境集落</td></tr>
+<tr class="tier-low"><td>E-04</td><td><span class="threat-num">1</span><span class="threat-stars">★</span></td><td>霧の徘徊者<br><span class="en-sub">Fog Wanderer</span></td><td>アンデッド・雑魚</td><td>廃帝都周辺・霧の濃い廃墟</td></tr>
+<tr class="tier-low"><td>E-05</td><td><span class="threat-num">1</span><span class="threat-stars">★</span></td><td>徘徊する信者<br><span class="en-sub">Wandering Faithful</span></td><td>人間・雑魚</td><td>街道・テオフィリア辺境・廃墟</td></tr>
+<tr class="tier-low"><td>E-06</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>歩く骸<br><span class="en-sub">Shambling Bones</span></td><td>アンデッド・雑魚</td><td>廃墟・地下・古い墓所</td></tr>
+<tr class="tier-low"><td>E-07</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>腐食スライム<br><span class="en-sub">Corroding Slime</span></td><td>怪異・雑魚</td><td>地下・廃墟・湿地・下水道</td></tr>
+<tr class="tier-low"><td>E-08</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>呪われた狩人の犬<br><span class="en-sub">Hexbound Hound</span></td><td>獣・怪異</td><td>ヴェイルホロウ周辺・深い森・廃村</td></tr>
+<tr class="tier-low"><td>E-09</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>腐った騎兵の馬<br><span class="en-sub">Rotmount</span></td><td>アンデッド・獣</td><td>廃墟・草原・古戦場跡</td></tr>
+<tr class="tier-low"><td>E-10</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>ヴェイルホロウの鴉<br><span class="en-sub">Hexcrow</span></td><td>怪異・使い魔</td><td>ヴェイルホロウ周辺・深い森</td></tr>
+<tr class="tier-low"><td>E-11</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>錆食い<br><span class="en-sub">Rustgnaw</span></td><td>怪異・雑魚</td><td>廃墟・古い工廠跡・地下</td></tr>
+<tr class="tier-low"><td>E-12</td><td><span class="threat-num">2</span><span class="threat-stars">★★</span></td><td>深淵の囁き<br><span class="en-sub">Abyssal Whisper</span></td><td>怪異・特殊（非戦闘）</td><td>廃帝都周辺・深淵の残滓が濃い場所</td></tr>
+<tr class="tier-low"><td>E-13</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>毒霧の蜘蛛<br><span class="en-sub">Venomweb Spider</span></td><td>怪異・雑魚群</td><td>廃墟・森・地下・洞窟</td></tr>
+<tr class="tier-low"><td>E-14</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>廃帝国の衛兵（亡霊）<br><span class="en-sub">Imperial Phantom Guard</span></td><td>アンデッド・精霊</td><td>廃帝都・古い砦・帝国の遺跡</td></tr>
+<tr class="tier-low"><td>E-15</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>深淵の腕<br><span class="en-sub">Abyssal Tendril</span></td><td>怪異・召喚体</td><td>深淵の僧侶・強ボス周辺・地下神殿</td></tr>
+<tr class="tier-low"><td>E-16</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>白衣の狂信者<br><span class="en-sub">Sutured Zealot</span></td><td>人間・精鋭</td><td>テオフィリア周辺・廃墟聖堂</td></tr>
+<tr class="tier-low"><td>E-17</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>インスマスの網師<br><span class="en-sub">Netter of Innsmouth</span></td><td>深きもの・雑魚（複数）</td><td>インスマス海岸・浜辺・沼地</td></tr>
+<tr class="tier-low"><td>E-18</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>疫病犬<br><span class="en-sub">Plague Hound</span></td><td>怪異・獣</td><td>廃墟・下水道・感染地帯</td></tr>
+<tr class="tier-low"><td>E-19</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>記憶食い<br><span class="en-sub">Memory Feeder</span></td><td>怪異・特殊</td><td>廃帝都周辺・霧の中・古い図書館跡</td></tr>
+<tr class="tier-low"><td>E-20</td><td><span class="threat-num">3</span><span class="threat-stars">★★★</span></td><td>呪術の実験体<br><span class="en-sub">Hexed Subject</span></td><td>怪異・人工生命</td><td>ヴェイルホロウ・地下実験場・廃墟</td></tr>
+<tr class="tier-mid"><td>E-21</td><td><span class="threat-num">4</span><span class="threat-stars">★★★★</span></td><td>傭兵崩れ<br><span class="en-sub">Broken Mercenary</span></td><td>人間・精鋭</td><td>街道・廃墟・都市・酒場の裏</td></tr>
+<tr class="tier-mid"><td>E-22</td><td><span class="threat-num">4</span><span class="threat-stars">★★★★</span></td><td>廃帝都の略奪者<br><span class="en-sub">Ruin Pillager</span></td><td>人間・精鋭</td><td>廃帝都周辺・廃墟の深部</td></tr>
+<tr class="tier-mid"><td>E-23</td><td><span class="threat-num">4</span><span class="threat-stars">★★★★</span></td><td>呪術の傀儡<br><span class="en-sub">Hexbound Puppet</span></td><td>怪異・人工生命</td><td>ヴェイルホロウ内部・地下実験場</td></tr>
+<tr class="tier-mid"><td>E-24</td><td><span class="threat-num">4</span><span class="threat-stars">★★★★</span></td><td>テオフィリアの追跡者<br><span class="en-sub">Sutured Inquisitor Scout</span></td><td>人間・精鋭</td><td>街道・辺境・テオフィリア領外</td></tr>
+<tr class="tier-mid"><td>E-25</td><td><span class="threat-num">4</span><span class="threat-stars">★★★★</span></td><td>廃帝都の子<br><span class="en-sub">Born of the Ruins</span></td><td>怪異・特殊</td><td>廃帝都アルカーナ周辺</td></tr>
+<tr class="tier-mid"><td>E-26</td><td><span class="threat-num">4</span><span class="threat-stars">★★★★</span></td><td>海底神殿の番人<br><span class="en-sub">Temple Guardian</span></td><td>深きもの・精鋭</td><td>インスマス海岸・海底神殿</td></tr>
+<tr class="tier-mid"><td>E-27</td><td><span class="threat-num">5</span><span class="threat-stars">★★★★★</span></td><td>深淵の僧侶<br><span class="en-sub">Abyssal Cultist</span></td><td>人間・精鋭（魔術師）</td><td>廃帝都周辺・地下神殿・深淵崇拝の集会所</td></tr>
+<tr class="tier-mid"><td>E-28</td><td><span class="threat-num">5</span><span class="threat-stars">★★★★★</span></td><td>狂える鍛冶師<br><span class="en-sub">Mad Forgemaster</span></td><td>人間・精鋭（特殊）</td><td>廃工廠・廃帝都周辺</td></tr>
+<tr class="tier-mid"><td>E-29</td><td><span class="threat-num">5</span><span class="threat-stars">★★★★★</span></td><td>深淵の使者<br><span class="en-sub">Abyssal Envoy</span></td><td>怪異・精鋭</td><td>廃帝都周辺・霧の濃い地帯・地下神殿</td></tr>
+<tr class="tier-mid"><td>E-30</td><td><span class="threat-num">5</span><span class="threat-stars">★★★★★</span></td><td>縫合の神の迷い子<br><span class="en-sub">Sutured Stray</span></td><td>神格の欠片・精鋭</td><td>テオフィリア辺境・神聖な廃墟</td></tr>
+<tr class="tier-mid"><td>E-31</td><td><span class="threat-num">5</span><span class="threat-stars">★★★★★</span></td><td>廃墟の医師<br><span class="en-sub">Ruin Physician</span></td><td>人間・中立（条件付き敵対）</td><td>廃墟の隠れ家・大きな廃墟の地下</td></tr>
+<tr class="tier-mid"><td>E-32</td><td><span class="threat-num">5</span><span class="threat-stars">★★★★★</span></td><td>呼び寄せられた獣<br><span class="en-sub">Called Beast</span></td><td>怪異・獣</td><td>廃墟・荒野・森（深淵の残滓が濃い地域）</td></tr>
+<tr class="tier-mid"><td>E-33</td><td><span class="threat-num">6</span><span class="threat-stars">★★★★★★</span></td><td>深海の番人<br><span class="en-sub">Tidal Warden</span></td><td>深きもの・ミニボス</td><td>インスマス海岸・水辺・海底洞窟の入口</td></tr>
+<tr class="tier-mid"><td>E-34</td><td><span class="threat-num">6</span><span class="threat-stars">★★★★★★</span></td><td>腐海の主<br><span class="en-sub">Lord of the Rot-Sea</span></td><td>怪異・ミニボス</td><td>ヴェイルホロウ南の湿地帯・腐食地帯</td></tr>
+<tr class="tier-mid"><td>E-35</td><td><span class="threat-num">6</span><span class="threat-stars">★★★★★★</span></td><td>帝国の守護機械<br><span class="en-sub">Imperial Automaton</span></td><td>機械・ミニボス</td><td>廃帝都内部・古い守衛所</td></tr>
+<tr class="tier-mid"><td>E-36</td><td><span class="threat-num">6</span><span class="threat-stars">★★★★★★</span></td><td>血塗れの改宗者<br><span class="en-sub">Crimson Convert</span></td><td>人間・ミニボス</td><td>廃帝都周辺・深淵崇拝の地下組織</td></tr>
+<tr class="tier-mid"><td>E-37</td><td><span class="threat-num">6</span><span class="threat-stars">★★★★★★</span></td><td>石化した巡礼者<br><span class="en-sub">Petrified Pilgrim</span></td><td>アンデッド・特殊</td><td>テオフィリア辺境・古い街道</td></tr>
+<tr class="tier-high"><td>E-38</td><td><span class="threat-num">7</span><span class="threat-stars">★★★★★★★</span></td><td>白衣の異端審問官<br><span class="en-sub">Inquisitor of the Sutured</span></td><td>人間・ボス</td><td>テオフィリア・廃墟聖堂・白衣教団の拠点</td></tr>
+<tr class="tier-high"><td>E-39</td><td><span class="threat-num">7</span><span class="threat-stars">★★★★★★★</span></td><td>インスマスの老長老<br><span class="en-sub">Elder of the Deep Pact</span></td><td>深きもの・ミニボス</td><td>インスマス海岸の最奥・海底神殿入口</td></tr>
+<tr class="tier-high"><td>E-40</td><td><span class="threat-num">7</span><span class="threat-stars">★★★★★★★</span></td><td>歪んだ縫合士<br><span class="en-sub">Twisted Suture-Bearer</span></td><td>怪異・ミニボス</td><td>テオフィリア最深部・禁忌の実験室</td></tr>
+<tr class="tier-high"><td>E-41</td><td><span class="threat-num">7</span><span class="threat-stars">★★★★★★★</span></td><td>廃都の守り手<br><span class="en-sub">Warden of the Ruined Capital</span></td><td>アンデッド・ミニボス</td><td>廃帝都アルカーナ・霧の中層</td></tr>
+<tr class="tier-high"><td>E-42</td><td><span class="threat-num">7</span><span class="threat-stars">★★★★★★★</span></td><td>折れた星の騎士<br><span class="en-sub">Broken Starfall Knight</span></td><td>アンデッド・ミニボス</td><td>廃帝都・古い演武場</td></tr>
+<tr class="tier-high"><td>E-43</td><td><span class="threat-num">8</span><span class="threat-stars">★★★★★★★★</span></td><td>呼び醒まされし者<br><span class="en-sub">The Unravelled</span></td><td>怪異・ボス</td><td>廃帝都・アルカーナの霧・大崩壊の亀裂</td></tr>
+<tr class="tier-high"><td>E-44</td><td><span class="threat-num">8</span><span class="threat-stars">★★★★★★★★</span></td><td>深淵に喰われた者<br><span class="en-sub">Abyss-Devoured</span></td><td>怪異・ボス</td><td>廃帝都アルカーナ・深淵の亀裂</td></tr>
+<tr class="tier-high"><td>E-45</td><td><span class="threat-num">8</span><span class="threat-stars">★★★★★★★★</span></td><td>帝国の最終兵器<br><span class="en-sub">Imperial Last Weapon</span></td><td>機械・ボス</td><td>廃帝都アルカーナ・地下兵器庫</td></tr>
+<tr class="tier-high"><td>E-46</td><td><span class="threat-num">8</span><span class="threat-stars">★★★★★★★★</span></td><td>縫合の神の鎖<br><span class="en-sub">Chain of the Sutured God</span></td><td>神格の残滓・ボス</td><td>テオフィリアの禁忌の地下神殿</td></tr>
+<tr class="tier-high"><td>E-47</td><td><span class="threat-num">9</span><span class="threat-stars">★★★★★★★★★</span></td><td>縫合の神の破片<br><span class="en-sub">Shard of the Sutured</span></td><td>神格の残滓・ボス</td><td>テオフィリア最深部・聖地・封印された地下神殿</td></tr>
+<tr class="tier-high"><td>E-48</td><td><span class="threat-num">9</span><span class="threat-stars">★★★★★★★★★</span></td><td>名無しの者の断片<br><span class="en-sub">Fragment of the Nameless</span></td><td>神格の残滓・ボス</td><td>インスマス海岸の海底神殿・深海</td></tr>
+<tr class="tier-high"><td>E-49</td><td><span class="threat-num">9</span><span class="threat-stars">★★★★★★★★★</span></td><td>アルカーナの霧の意志<br><span class="en-sub">Will of the Arkana Fog</span></td><td>概念的存在・ボス</td><td>廃帝都アルカーナの霧の深部</td></tr>
+<tr class="tier-final"><td>E-50</td><td><span class="threat-num">10</span><span class="threat-stars">★★★★★★★★★★</span></td><td>大崩壊そのもの<br><span class="en-sub">The Unravelling Itself</span></td><td>概念的存在・ラスボス</td><td>廃帝都アルカーナ最深部・共鳴炉の核</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- III. 個別データ -->
+  <section class="section" id="details">
+    <div class="section-header">
+      <span class="section-num">III</span>
+      <h2 class="section-title">個別データ</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>各エネミーをクリックすると説明文が展開される。</p>
+
+<div class="tier-header tier-header--low">脅威度 1〜3　雑魚</div>
+<p class="tier-desc">E-01〜E-20　単体・複数で出現する基本的な敵。導入や数の脅威として使う。</p>
+<details class="enemy-detail"><summary><span class="ed-id">E-01</span><span class="ed-name">廃墟の浮浪者 <span class="en-sub">/ Ruin Drifter</span></span><span class="ed-meta">人間・雑魚　|　廃墟・都市・スラム街</span></summary><div class="enemy-detail__body">大崩壊の後遺症か、それとも単なる貧困か。廃墟に巣食う流民たちは、生き延びるためだけに錆びた刃を手にした。目に宿る光は希望ではなく、飢えの色だ。<br><br>集団で行動することは少なく、たいていは一人か二人で路地の影に潜んでいる。旅人の荷物を狙って飛びかかるが、抵抗されると驚くほど素早く逃げる。戦闘能力は低く、本人もそれをよく知っている。<br><br>倒した後、ポケットに一枚の紙切れが入っていることがある。家族への書きかけの手紙か、あるいは食べ物の覚え書きか。廃墟で生まれ、廃墟で死ぬ者たちの話を、PCたちはどう受け止めるだろうか。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-02</span><span class="ed-name">迷子の巡礼者 <span class="en-sub">/ Lost Pilgrim</span></span><span class="ed-meta">人間・雑魚（複数）　|　街道・テオフィリア周辺・廃墟</span></summary><div class="enemy-detail__body">神に導かれてここまで来た——そう信じている。目的地がどこかは本人も知らない。正気を失いかけながらも、まだ祈り続けている。<br><br>攻撃的ではないが、PCを「異端者」と判断した瞬間、集団で石を投げ始めたり、甲高い声で仲間を呼んだりする。その目には恐怖と信仰が等しく混ざっている。一人ひとりは弱い。ただし声を上げられると、近くの別のエネミーを引き寄せてしまう。<br><br>静かに対処するか、縫合の神への祈りの言葉でなだめるかが得策だ。助けることができれば、テオフィリアの内部事情や巡礼路の隠し道を教えてくれることもある。「本当に戦う必要があるか」をPCに問いかける存在として機能する。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-03</span><span class="ed-name">廃村の子ども <span class="en-sub">/ Feral Child</span></span><span class="ed-meta">人間・雑魚（複数）　|　廃墟の農村・廃村・辺境集落</span></summary><div class="enemy-detail__body">大崩壊後に孤立した農村で、親を失い野生に近い状態で生き延びてきた子どもたち。集団で行動し、石を投げたり罠を仕掛けたりして侵入者を追い払う。戦闘能力は低いが、数が多く逃げ足が速い。<br>     <br>近づいても攻撃してこない場合があり、食料や布切れを差し出せば警戒を解くこともある。GMは彼らを純粋な敵としてではなく、世界の悲劇を象徴するNPCとして扱うことを推奨する。廃村の隅に隠れた子どもを発見したとき、PCたちは何を感じるだろうか。<br><br>彼らの中には、かつて帝国の技術を断片的に受け継いだ老人に育てられた者もおり、解読不能な古代語を呟きながら歩く者もいる。その言葉が何を意味するのか、知る者はもういない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-04</span><span class="ed-name">霧の徘徊者 <span class="en-sub">/ Fog Wanderer</span></span><span class="ed-meta">アンデッド・雑魚　|　廃帝都周辺・霧の濃い廃墟</span></summary><div class="enemy-detail__body">大崩壊の際に霧の中で死んだ者たちが、正気を失ったまま霧の中を歩き続けている存在。生前の記憶が断片的に残っており、時に「帝都に帰らなければ」「報告しなければ」と独語する。<br><br>攻撃性は低く、侵入者に気づいても明確な意図を持って追いかけるわけではない。ただ、霧の中に入り込んだ者を本能的に感知し、ゆっくりと集まってくる。一体では脅威にならないが、霧の中では数十体が無音で包囲していることがある。<br><br>霧の徘徊者を倒すと、稀に帝国時代の文書の断片や硬貨を落とす。それが誰の持ち物だったのか、もう確かめる術はない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-05</span><span class="ed-name">徘徊する信者 <span class="en-sub">/ Wandering Faithful</span></span><span class="ed-meta">人間・雑魚　|　街道・テオフィリア辺境・廃墟</span></summary><div class="enemy-detail__body">白衣教団の教義を信じて巡礼に出たが、目的地を失って廃墟を彷徨っている巡礼者たち。攻撃的ではないが、PCを「異端者」と判断した場合、集団で石を投げたり叫んで仲間を呼んだりする。<br><br>単体では脅威にならない。ただし声を上げられると、近くにいる他のエネミーを引き寄せてしまう。静かに対処するか、テオフィリアの信仰に関する知識でなだめるかが有効。<br><br>彼らを助けることができれば、テオフィリア内部の情報を得られる場合がある。白衣教団の内部事情、巡礼路の地図、あるいは聖職者だけが知る隠し部屋の場所など。世界は広く、困っている人を助けることには必ず価値がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-06</span><span class="ed-name">歩く骸 <span class="en-sub">/ Shambling Bones</span></span><span class="ed-meta">アンデッド・雑魚　|　廃墟・地下・古い墓所</span></summary><div class="enemy-detail__body">名を持たなかった者が、あるいは名を忘れた者が、本能だけで動き続ける。その眼窩に光はなく、ただ生者への憎悪だけが残っている。<br><br>単体では大した脅威にはならないが、3〜4体で出現すると数の圧力が生まれる。朽ちた骨爪による攻撃は弱いが、倒したはずの体がしばらくして起き上がってくる不気味さが最大の武器だ。神聖属性の攻撃を一度でも受けた骸は完全に動きを止める——聖職者PCがその価値を実感できる場面になる。<br><br>炎にも弱く、廃墟の探索序盤で属性攻撃の重要性を自然に学ばせる存在として機能する。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-07</span><span class="ed-name">腐食スライム <span class="en-sub">/ Corroding Slime</span></span><span class="ed-meta">怪異・雑魚　|　地下・廃墟・湿地・下水道</span></summary><div class="enemy-detail__body">大崩壊の残滓が有機物に染み込んで生まれた変異体。斬っても突いても動じない。痛覚がないのか、あるいは痛みの概念そのものが存在しないのか。炎だけが確実に仕留める手段だ。<br><br>命中すると毒が自動的に付与されるうえ、接触した瞬間に装備の装甲値を一時的に低下させる腐食液を分泌する。さらに初めてダメージを受けると分裂し、小型の個体を生み出す。近接戦闘主体のPCには特に嫌な相手だ。<br><br>炎使いがいるとあっさり溶ける——属性の重要性を学ばせるチュートリアル的な存在。狭い地下道での遭遇が最も効果的。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-08</span><span class="ed-name">呪われた狩人の犬 <span class="en-sub">/ Hexbound Hound</span></span><span class="ed-meta">獣・怪異　|　ヴェイルホロウ周辺・深い森・廃村</span></summary><div class="enemy-detail__body">ヴェイルホロウの呪術師が実験に使ったか、あるいは呪術の残滓が野良犬に取り憑いたか。人間の知性を持った目で獲物を追う。賢すぎて、ただの獣より怖い。<br><br>AGIが極めて高く、逃げようとするPCを容赦なく追跡する。複数体で出現した場合、互いに連携して命中率を引き上げる「群れの遠吠え」を使う。噛みつきがHD以上で命中すると疲労が付与され、AP管理を強制される。<br><br>2〜3体での遭遇が最も効果的。逃げ場のない地形——森の中や廃墟の内部——での遭遇を推奨する。炎と神聖属性に弱い。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-09</span><span class="ed-name">腐った騎兵の馬 <span class="en-sub">/ Rotmount</span></span><span class="ed-meta">アンデッド・獣　|　廃墟・草原・古戦場跡</span></summary><div class="enemy-detail__body">帝国の騎兵隊の馬だったものが、死後もアンデッドとして戦場跡を彷徨っている。騎手はとうの昔に朽ちており、鞍だけが腐った皮で背中に張り付いている。生前の訓練が骨の中に染み込んでいるのか、突撃と踏みにじる動作を繰り返す。<br><br>近接攻撃を受けると、腐った体から毒性の体液が飛び散る。炎に弱く、近づけると即座に後退しようとする。群れではなく単体で行動するが、古戦場跡では数頭が同時に出現することもある。<br><br>廃掘人の間では「ロットマウントの蹄」という言葉があり、足音が聞こえたら逃げろという意味として使われる。実際に被害に遭った廃掘人の記録が複数残っている。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-10</span><span class="ed-name">ヴェイルホロウの鴉 <span class="en-sub">/ Hexcrow</span></span><span class="ed-meta">怪異・使い魔　|　ヴェイルホロウ周辺・深い森</span></summary><div class="enemy-detail__body">ヴェイルホロウの呪術師たちが式神として使役する鴉の怪異。通常の鴉より一回り大きく、羽に呪術の紋様が刻まれている。単体では弱いが、主人の命令を受けて侵入者を監視・報告する。<br><br>嘴に微量の神経毒を持ち、命中すると疲労を引き起こす。主である呪術師が近くにいる場合、その呪術師に情報を伝達するため、撃破しても意味がないケースが多い。複数体が群れをなして空から急降下攻撃を行うことがある。<br><br>ヴェイルホロウを訪れたPCが空に鴉の群れを見かけたとき、それは「もう監視されている」というサインだ。森の中で鴉の声が止んだときも同様に、何かが動き始めた合図である。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-11</span><span class="ed-name">錆食い <span class="en-sub">/ Rustgnaw</span></span><span class="ed-meta">怪異・雑魚　|　廃墟・古い工廠跡・地下</span></summary><div class="enemy-detail__body">金属を食料とする小型の怪異。ネズミほどの大きさで、群れで行動する。装甲や武器に噛みつき、その物理装甲値を徐々に低下させる特性を持つ。大崩壊後に帝国の廃工廠で大量発生し、各地に広まった。<br><br>単体では攻撃力が低く、直接的な脅威にはならない。しかし装備への影響が深刻で、放置すると1戦闘で装甲値を1〜2点低下させる。金属製の武器に引き寄せられる性質があり、武器を振るうほど集まってくる。<br><br>廃掘人の間では必須の対策として「石鹸水を装備に塗る」という民間療法が広まっているが、効果は不明。唯一確実なのは炎で焼くことだが、武器ごと燃やしてしまう危険がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-12</span><span class="ed-name">深淵の囁き <span class="en-sub">/ Abyssal Whisper</span></span><span class="ed-meta">怪異・特殊（非戦闘）　|　廃帝都周辺・深淵の残滓が濃い場所</span></summary><div class="enemy-detail__body">形を持たない、音だけの存在。深淵の残滓が凝縮した場所で発生し、PCの耳に直接語りかける。言葉は意味をなさないように聞こえるが、POWロールに失敗すると一時的に行動が影響を受ける。<br><br>戦闘では倒せない（形がない）。その場を離れるか、神聖属性の奇跡で浄化するかの二択。ただし浄化した後にその声が何を言っていたかを「理解」できる場合があり、深淵の神々に関する断片的な情報を得ることができる。<br><br>GMへの注記：深淵の囁きは戦闘イベントではなく、世界観の演出として使用することを推奨する。廃墟探索中に突然声が聞こえる、というシチュエーションで使うと雰囲気が出る。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-13</span><span class="ed-name">毒霧の蜘蛛 <span class="en-sub">/ Venomweb Spider</span></span><span class="ed-meta">怪異・雑魚群　|　廃墟・森・地下・洞窟</span></summary><div class="enemy-detail__body">大崩壊以降、急速に変異した蜘蛛の一種。単体では脅威にならないが、群れると毒の嵐になる。壁や天井から静かに降ってくるため、気づいた時には遅い。<br><br>粘糸を射出して対象の移動を封じ、複数体が同一の敵に命中した瞬間に毒スタックを追加付与するという群体戦術を持つ。AGIが高く、先手を取られやすい。<br><br>4〜6体での遭遇が最も効果的。炎使いがいるとあっさり溶ける。属性対策の重要性を実感させる場面として使いやすい。毒腺は素材として価値があり、廃掘人には需要がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-14</span><span class="ed-name">廃帝国の衛兵（亡霊） <span class="en-sub">/ Imperial Phantom Guard</span></span><span class="ed-meta">アンデッド・精霊　|　廃帝都・古い砦・帝国の遺跡</span></summary><div class="enemy-detail__body">名誉の死すら与えられなかった兵士が、二百五十年後も持ち場を守り続けている。その瞳に宿るのは敵意ではなく、義務感だ。安らかに眠らせてやれるかどうかは、PCたちの行動次第。<br><br>廃帝都のエリアでは撤退せず、倒されても次のラウンドにHP6で再顕現する。神聖属性のダメージを受けた場合のみ完全消滅する。帝国の遺物や装備を所持するPCへの命中値が上がるため、廃掘人PCには特に厄介な相手になる。<br><br>「倒す」以外の解決策——帝国の遺物を見せる、帝国の戒律の言葉を唱える——を事前に用意しておくと、記憶に残る演出になる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-15</span><span class="ed-name">深淵の腕 <span class="en-sub">/ Abyssal Tendril</span></span><span class="ed-meta">怪異・召喚体　|　深淵の僧侶・強ボス周辺・地下神殿</span></summary><div class="enemy-detail__body">深淵から引き出された力が、一時的に形を持ったもの。召喚主を倒せば消える——わかっていても、目の前の触手を無視するのは難しい。それが目的だ。<br><br>召喚主が行動するたびにHPを2回復し、召喚主が倒されると即座に消滅する。命中のたびにMPを削り、魔術・奇跡依存のPCを機能不全に追い込む。沈黙をHD以上で付与するため、魔術師への精神的な圧力も高い。<br><br>「腕を無視して召喚主を倒す」か「腕を先に処理する」かをPCに判断させる場面として機能する。深淵の僧侶（E-05相当）との組み合わせが前提の設計。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-16</span><span class="ed-name">白衣の狂信者 <span class="en-sub">/ Sutured Zealot</span></span><span class="ed-meta">人間・精鋭　|　テオフィリア周辺・廃墟聖堂</span></summary><div class="enemy-detail__body">白衣教団の教義を極端な形で解釈し、「縫合の神への完全な帰依」を実践する狂信者たち。自らの肉体に聖典の文句を刻み、痛みを感じなくなるまで修行を重ねた者が多い。<br><br>戦闘では奇跡を使用するが、その奇跡は防御よりも攻撃に特化している。「汚れた者を浄化する」という使命感が暴力と結びついており、PCを見るや問答無用で「不信者」と断じて攻撃してくる。<br><br>興味深いのは、彼らが正規の白衣教団からも異端とみなされている点だ。テオフィリアの大司教は彼らを「縫合の神の意志を歪めた者たち」として討伐令を出しているが、廃墟の聖堂に逃げ込んだ狂信者たちは独自の共同体を形成している。彼らと話せば、かつての白衣教団がどれほど腐敗していたかがわかるかもしれない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-17</span><span class="ed-name">インスマスの網師 <span class="en-sub">/ Netter of Innsmouth</span></span><span class="ed-meta">深きもの・雑魚（複数）　|　インスマス海岸・浜辺・沼地</span></summary><div class="enemy-detail__body">インスマス海岸に住む深きものの末裔たちの中でも、特に海との親和性が高い者たち。網と銛を武器に、陸上の侵入者を捕縛することを専門とする。単体では脅威度が低いが、必ず2〜4人で行動する。<br><br>投擲した網で動きを封じ、銛で仕留めるという漁師由来の戦術を取る。水場の近くでは水中に引きずり込もうとする行動パターンがある。燐光を放つ瞳が暗闇でも見えるため、夜間の遭遇に注意が必要。<br><br>彼らは必ずしも敵対的ではない。インスマス海岸に立ち入る者が彼らの言葉（古い沿岸の方言）を話せると知ると、急に警戒を解いて取引を申し込んでくることがある。彼らが欲しがるのは主に「陸の食べ物」と「古い帝国の道具」だ。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-18</span><span class="ed-name">疫病犬 <span class="en-sub">/ Plague Hound</span></span><span class="ed-meta">怪異・獣　|　廃墟・下水道・感染地帯</span></summary><div class="enemy-detail__body">大崩壊後の疫病によって変質した野犬。腐敗した肉を食べ続けることで体内に毒素を蓄積しており、噛まれると高確率で毒状態になる。毛が半ば抜け落ち、皮膚に膿疱が浮いている。<br><br>通常の犬より知能が低下しており、痛みを感じないため怯まない。炎には本能的に反応して逃げるが、それ以外の攻撃には退かない。群れで行動し、一体が傷を負うと血の匂いで仲間を呼び寄せる。<br><br>廃墟の探索中、遠くから吠え声が聞こえたとき、それが疫病犬の群れだと気づくのは接触した後であることが多い。廃掘人の間では「犬の遠吠えが聞こえたら引き返せ」という格言がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-19</span><span class="ed-name">記憶食い <span class="en-sub">/ Memory Feeder</span></span><span class="ed-meta">怪異・特殊　|　廃帝都周辺・霧の中・古い図書館跡</span></summary><div class="enemy-detail__body">人間の記憶を食料とする小型の怪異。外見は半透明の魚に似ており、群れで空中を漂う。直接的な攻撃力はほぼないが、接触した相手の記憶を少しずつ吸収する特殊能力を持つ。<br><br>POWロールに失敗すると、直近の記憶（今日起きた出来事、仲間の名前など）が曖昧になる。複数回失敗すると、より古い記憶が失われていく。戦闘能力はないため、炎で簡単に倒せる。しかし倒す際に、吸収した記憶が霧となって漏れ出す。<br><br>その記憶の霧を吸い込んだPCは、他人の記憶の断片を垣間見ることがある。それが帝国時代の記憶であれば、失われた知識の手がかりになる。記憶食いは廃帝都の秘密を知るための奇妙な「鍵」として機能する場合がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-20</span><span class="ed-name">呪術の実験体 <span class="en-sub">/ Hexed Subject</span></span><span class="ed-meta">怪異・人工生命　|　ヴェイルホロウ・地下実験場・廃墟</span></summary><div class="enemy-detail__body">ヴェイルホロウの呪術師が実験に使った人間の成れの果て。呪術の過剰注入によって精神と肉体の両方が変質しており、痛みに反応して反射的に攻撃する。意思はなく、ただ苦しみと恐怖だけが残っている。<br><br>近距離戦闘しかできないが、触れた相手に毒と疲労を同時に付与する。倒れても即座に立ち上がる再生能力を持つ（HPが0になっても2回まで復活する。ただし炎属性で倒した場合は復活しない）。<br><br>これを見たPCは、ヴェイルホロウの呪術がいかに危険な方向に進化しているかを理解する。実験を行った呪術師の記録が近くにある場合、それには「成功と失敗の基準が本人にもわからなくなった」という告白が記されている。</div></details>
+<div class="tier-header tier-header--mid">脅威度 4〜6　精鋭・ミニボス</div>
+<p class="tier-desc">E-21〜E-37　固有の戦術を持つ強敵。シナリオの中盤の壁として機能する。</p>
+<details class="enemy-detail"><summary><span class="ed-id">E-21</span><span class="ed-name">傭兵崩れ <span class="en-sub">/ Broken Mercenary</span></span><span class="ed-meta">人間・精鋭　|　街道・廃墟・都市・酒場の裏</span></summary><div class="enemy-detail__body">かつては誰かのために剣を振っていた男（あるいは女）。今は金か憎しみかで動いている。手練れの動きと折れない精神は本物だ。倒したとき、ひどく後味が悪い。<br><br>バスタードソードによる重い一撃を得意とし、PCが手数型の戦い方をすると「修羅場の勘」で対応する。HPが半分を超えている間だけ使える二段斬りは、不用意に距離を詰めたPCを一気に瀕死に追い込む。<br><br>1対1では強敵だが単体での出現が前提。倒した後の演出——日記の断片、誰かへの形見——でシナリオに深みを加えやすい。この世界には悪意より絶望で動いている人間の方が多い、という事実を体現する存在。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-22</span><span class="ed-name">廃帝都の略奪者 <span class="en-sub">/ Ruin Pillager</span></span><span class="ed-meta">人間・精鋭　|　廃帝都周辺・廃墟の深部</span></summary><div class="enemy-detail__body">廃帝都アルカーナへの探索を生業とする、半ば狂気に侵された廃掘人たち。アルカーナの霧を複数回くぐり抜けて生き延びた者だけが加入できる集団「廃都の末裔」の構成員。<br><br>帝国時代の断片的な技術を習得しており、通常の廃掘人より遥かに危険な戦闘能力を持つ。武器に毒や炎の術式を刻むことができ、英雄レベルの装備を持つことが多い。ただし精神的な安定性に欠けており、戦闘中に突然笑い出したり、見えない何かに話しかけたりする。<br><br>PCが廃帝都に踏み込もうとすると、まず彼らに遭遇する可能性が高い。敵対するか、同盟を結ぶかによってアルカーナ探索の難易度が大きく変わる。彼らの狂気は大崩壊の記憶の断片を拾い集めたことによるものであり、その記憶の中には失われた帝国の知識が眠っている。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-23</span><span class="ed-name">呪術の傀儡 <span class="en-sub">/ Hexbound Puppet</span></span><span class="ed-meta">怪異・人工生命　|　ヴェイルホロウ内部・地下実験場</span></summary><div class="enemy-detail__body">ヴェイルホロウの呪術師が作り出した、人間の死体に呪術の紋様を刻んで動かす人工の兵士。痛みを感じず、命令のみに従う。感情も意思もないが、それゆえに予測不能な動きをすることがある。<br><br>呪術師が生きている間は指示に従い続けるが、呪術師が倒れると制御を失い、近くの生き物すべてに無差別に攻撃し始める。体に刻まれた紋様を傷つけると一時的に動きを止めることができる。<br><br>ヴェイルホロウを訪れたPCがこれを見たとき、道徳的な問題が生じる。傀儡の中に、かつて生きていた人間の記憶が残存しているケースがある。完全に消えかけた意識が、呪術の制御の隙間から浮かび上がり、助けを求めることがあるのだ。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-24</span><span class="ed-name">テオフィリアの追跡者 <span class="en-sub">/ Sutured Inquisitor Scout</span></span><span class="ed-meta">人間・精鋭　|　街道・辺境・テオフィリア領外</span></summary><div class="enemy-detail__body">白衣教団が「異端者の追跡」のために育成した専門の工作員。正規の異端審問官と異なり、表向きは一般の旅人として偽装して行動する。魔術師や呪術師の追跡・監視・暗殺を専門とする。<br><br>単体では脅威度が高くないが、必ず遠隔から支援する監視役と一組で行動する。PCの素性が魔術師・呪術師・深きものの末裔の場合、最初から敵対的ではなく「一般の旅人」として近づき、情報を収集してから行動する。<br><br>PCが気づいたときには既に包囲されていることが多い。彼らは戦闘よりも情報収集を優先するため、直接交戦を避けようとするが、追い詰められると毒を使った素早い暗殺に切り替える。テオフィリア内に知り合いがいるPCには特に脅威となる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-25</span><span class="ed-name">廃帝都の子 <span class="en-sub">/ Born of the Ruins</span></span><span class="ed-meta">怪異・特殊　|　廃帝都アルカーナ周辺</span></summary><div class="enemy-detail__body">廃帝都の霧の中で生まれた、人間でも怪異でもない不思議な存在。外見は10歳ほどの子どものように見えるが、目が霧と同じ白灰色をしており、影を持たない。帝国時代の言語しか話せない。<br><br>攻撃意図はないが、近づく者の道を塞ぎ、何かを伝えようとする。帝国の言語がわかるPCには「あちらには行ってはいけない」「あの扉は開けてはいけない」というような警告を繰り返す。廃帝都の罠や危険を知っているが、その知識がどこから来るのかは不明。<br><br>廃帝都の子を「エネミー」として記載しているが、倒す必要はない。倒すことは可能だが、その場合GM裁量で何らかのペナルティが発生する。彼らを敵対的に扱ったPCは、その後廃帝都の中でことごとく罠にはまることになると伝えられている。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-26</span><span class="ed-name">海底神殿の番人 <span class="en-sub">/ Temple Guardian</span></span><span class="ed-meta">深きもの・精鋭　|　インスマス海岸・海底神殿</span></summary><div class="enemy-detail__body">インスマスの海底神殿を守護するために選ばれた深きものの末裔の精鋭。名無しの者との血の契約によって強化されており、通常の深きものより遥かに強い。冷気と闇の複合攻撃を行い、水中では移動速度が倍になる。<br><br>陸上でも十分な戦力だが、海岸線より内陸には立ち入らない（契約の縛り）。彼らを倒すには英雄級の装備が必要だが、海底神殿に近づかなければ戦闘は発生しない。<br><br>番人たちは敵意よりも義務感で戦っており、侵入者に対してまず「引き返せ」という意思表示をする。それを無視した場合のみ戦闘に入る。海底神殿の目的を理解した上で「見に来ただけだ」という姿勢を示せれば、戦闘を回避できる可能性がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-27</span><span class="ed-name">深淵の僧侶 <span class="en-sub">/ Abyssal Cultist</span></span><span class="ed-meta">人間・精鋭（魔術師）　|　廃帝都周辺・地下神殿・深淵崇拝の集会所</span></summary><div class="enemy-detail__body">深淵の神の囁きに応えた者。狂気とは違う——彼らは恐ろしいほど冷静だ。それが余計に不気味で、倒した後も何かが残った感覚がぬぐえない。<br><br>毎ラウンド開始時に自動で「深淵の囁き」を使い、射程内のPCにPOWロールを要求する。失敗すると恐怖が付与され、恐怖状態のPCに命中した場合はMPも同時に削られる。さらに1戦闘1回だけ受けたダメージを完全にゼロにする「憑依の盾」を持ち、代わりにHP上限が永続的に下がる。<br><br>深淵の腕との組み合わせが本領を発揮する構成。神聖を持つ聖職者が対策の要となる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-28</span><span class="ed-name">狂える鍛冶師 <span class="en-sub">/ Mad Forgemaster</span></span><span class="ed-meta">人間・精鋭（特殊）　|　廃工廠・廃帝都周辺</span></summary><div class="enemy-detail__body">帝国時代の鍛冶技術を守り続けた末に正気を失った老人。廃工廠の奥深くに篭もり、誰も来ない炉に向かって毎日鎚を振るい続けている。「帝国の武器を完成させれば戻ってくる」と信じているが、何が戻ってくるのかは本人もわかっていない。<br><br>戦闘能力は異常に高い。半世紀近く鎚を振るい続けた腕力と、帝国の技術で強化した鎧が組み合わさった存在。ただし精神が崩壊しているため、戦略的な思考はできない。ひたすら正面から殴り続ける。<br><br>彼を倒さずに済む方法がある。帝国の製法書の断片を持っていれば、彼はPCを「帝国の使者」と認識して武器を下ろす。そして静かに炉に向かい、今まで誰にも見せなかった「未完の傑作」を手渡してくれる。その武器の性能は英雄級を超えているかもしれない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-29</span><span class="ed-name">深淵の使者 <span class="en-sub">/ Abyssal Envoy</span></span><span class="ed-meta">怪異・精鋭　|　廃帝都周辺・霧の濃い地帯・地下神殿</span></summary><div class="enemy-detail__body">外なる神々——深淵の神——の意志を断片的に宿した怪異。人間に似た外見を持つが、関節が逆に曲がっており、影が光源と逆方向に伸びる。直接的な攻撃よりも、周囲の知覚を歪める能力を持つ。<br><br>戦闘に入ると、PCの感覚に干渉し始める。方向感覚が失われ、仲間の声が遠くなり、時に仲間の顔が敵のものに見える。これらはPOWロールで抵抗できるが、失敗を重ねると発狂に至る。<br><br>使者そのものを倒しても、その場所に「何か」が残る感覚がある。廃帝都の探索者たちは、使者を倒した場所では以後、夜に奇妙な夢を見ることを報告している。その夢の内容が毎回少しずつ「深淵に近づいている」という証言もある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-30</span><span class="ed-name">縫合の神の迷い子 <span class="en-sub">/ Sutured Stray</span></span><span class="ed-meta">神格の欠片・精鋭　|　テオフィリア辺境・神聖な廃墟</span></summary><div class="enemy-detail__body">縫合の神の加護が歪んで結晶化した存在。神聖な力を宿しているが、制御されておらず、浄化と破壊の境界が失われている。外見は白い光を発する人型だが、顔がない。近づくと耳に聞こえない何かが響く感覚がある。<br><br>攻撃は神聖属性で、アンデッドや邪悪な存在に対しては即死に近い効果を持つ。しかし一般のPCにも強力なダメージを与える。不思議なのは、戦闘中に「助けて」という言葉を発することがある点だ。<br><br>縫合の神の迷い子を倒すと、その場所に神聖なオーラが残り、以後そこでのHP回復効率が上昇する。しかし、何かを犠牲にして戦場に神聖を残したその行為が正しかったのかどうか、PCたちは考えることになるかもしれない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-31</span><span class="ed-name">廃墟の医師 <span class="en-sub">/ Ruin Physician</span></span><span class="ed-meta">人間・中立（条件付き敵対）　|　廃墟の隠れ家・大きな廃墟の地下</span></summary><div class="enemy-detail__body">帝国時代の医術書を持ち歩き、廃墟に傷ついた者を治療することを生業とする流れの医師。裏切りを恐れて常に移動しており、一つの場所に長くは留まらない。通常は戦闘に参加しないが、自分の患者に危害が加えられると非常に強い戦闘能力を発揮する。<br><br>医師として積み重ねた解剖学の知識から、急所への正確な攻撃を行える。毒の調合も得意とし、戦闘では薬品を武器として使用する。しかし攻撃的な戦闘は好まず、あくまで「護衛」として行動する。<br><br>PCが傷を負った状態で出会えば、無条件で治療してくれる（報酬は不要と言う）。彼が何故廃墟の医師となったのかを問えば、長い沈黙の後に答える。「帝国があった頃、私は宮廷医師だった。大崩壊で全てを失ってから、せめて治すことだけをしようと思った」と。彼が持つ医術書には、失われた治癒の奇跡の術式が記載されているかもしれない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-32</span><span class="ed-name">呼び寄せられた獣 <span class="en-sub">/ Called Beast</span></span><span class="ed-meta">怪異・獣　|　廃墟・荒野・森（深淵の残滓が濃い地域）</span></summary><div class="enemy-detail__body">深淵の残滓が濃い地域で通常の野生動物が変質した存在。元の種族の特徴を保ちながら、深淵の影響で体が変形し、闘争本能が極限まで高まっている。熊ほどの大きさの動物が、闇属性の爪と牙を持つ怪物に変化している場合が多い。<br><br>知性はないが、生存本能が深淵の力と結びついており、弱ったPCを優先的に狙う。群れでは行動しないが、死骸の周辺に複数が集まることがある。炎に弱く、神聖属性の攻撃にも弱い。<br><br>この存在を倒した後、元の動物の面影を見ると、何とも言えない気持ちになる。それが熊だったなら、深淵の残滓に侵される前はどんな生き方をしていたのか。世界の悲劇は人間だけに向けられているわけではない。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-33</span><span class="ed-name">深海の番人 <span class="en-sub">/ Tidal Warden</span></span><span class="ed-meta">深きもの・ミニボス　|　インスマス海岸・水辺・海底洞窟の入口</span></summary><div class="enemy-detail__body">名無しの者が選んだ守護者。人の形をぎりぎり留めているが、その動きはもはや魚に近い。インスマス海岸に近づく者を試すかのように立ちはだかる。<br><br>冷気属性の爪でHD命中のたびに凍結蓄積を付与し、3回蓄積で凍結確定という独自のルールで圧力をかける。水辺マスに隣接する間はラウンド終了時にHPを回復し続けるため、水辺から引き離すことが攻略の鍵になる。HP50%以下で放つ「海鳴りの咆哮」は全PCにPOWロールを要求し、失敗すると発狂が付与される。<br><br>深きものの末裔PCがいる場合、戦闘前に対話のシーンを挟むと世界観に深みが生まれる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-34</span><span class="ed-name">腐海の主 <span class="en-sub">/ Lord of the Rot-Sea</span></span><span class="ed-meta">怪異・ミニボス　|　ヴェイルホロウ南の湿地帯・腐食地帯</span></summary><div class="enemy-detail__body">呪術の廃液と大崩壊の残滓が長年蓄積した湿地帯の中心に生まれた、巨大な肉塊のような怪異。元は何だったのかもはや判別できないが、複数の生物が融合した形跡がある。腐食した体液を噴射し、毒と燃焼を同時に引き起こす。<br><br>移動速度は非常に遅いが、湿地帯では地の利がある。地面が腐海の主の体液で汚染されているため、その領域内ではPC全員が継続的に毒ダメージを受ける。炎が最も効果的だが、炎が当たると体液が爆発的に広がる危険もある。<br><br>腐海の主の中心部には、まだ「意識」のような何かが残存している。それが融合した生物たちの集合意識なのか、あるいは単一の存在の苦しみなのかは不明。廃墟から持ち込まれた古い書物の残滓が、その意識の中核にあると推測するGMもいる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-35</span><span class="ed-name">帝国の守護機械 <span class="en-sub">/ Imperial Automaton</span></span><span class="ed-meta">機械・ミニボス　|　廃帝都内部・古い守衛所</span></summary><div class="enemy-detail__body">セラフィット帝国が最後期に開発した自律型の守衛機械。大崩壊の後も動き続けており、「帝国の所有物を守る」という命令を250年間忠実に実行している。外見は金属でできた騎士のような形をしているが、関節部が錆びており、動くたびに軋む音がする。<br><br>命令に従っているだけであり、善悪の判断ができない。廃帝都に立ち入る全ての者を「侵入者」として処理しようとする。ただし特定の帝国の紋章を持っていれば、「許可された者」として認識し、むしろ案内役として機能する。<br><br>機械そのものには感情はないはずだが、長年の孤立の中で何かが変化しているようにも見える。同じ動作を繰り返す中で、時に立ち止まり、まるで迷うような素振りを見せることがある。その一瞬を利用できれば、戦闘を回避できる可能性がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-36</span><span class="ed-name">血塗れの改宗者 <span class="en-sub">/ Crimson Convert</span></span><span class="ed-meta">人間・ミニボス　|　廃帝都周辺・深淵崇拝の地下組織</span></summary><div class="enemy-detail__body">もともとは白衣教団の聖職者だったが、深淵の神の囁きに負けて転落した者。縫合の神への信仰と深淵への傾倒が混在した奇妙な信仰体系を持つ。神聖属性の奇跡と闇属性の呪術を両方使える希少な存在。<br><br>白衣の法衣に深淵の紋様を墨で書き加えた不気味な外見。自分の転落を「神の試練」と解釈しており、PCが聖職者や信仰者の場合、積極的に自分の「真実」を語りかけてくる。その言葉は巧みで、POWロールに失敗したPCは一時的に行動が鈍くなることがある。<br><br>彼を倒すと、白衣教団と深淵の両方に関する重要な情報が手に入る可能性がある。あるいは、改宗に至った経緯を語らせれば、テオフィリアの腐敗の深さを知る手がかりになるかもしれない。「敵」として処理するより、話を聞く方が価値があることもある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-37</span><span class="ed-name">石化した巡礼者 <span class="en-sub">/ Petrified Pilgrim</span></span><span class="ed-meta">アンデッド・特殊　|　テオフィリア辺境・古い街道</span></summary><div class="enemy-detail__body">大崩壊の際に石化した者が、何らかの理由でアンデッドとして動き始めた存在。石でできた体のまま動いており、動くたびに石の破片が剥落する。石化した状態で死ぬと蘇生不可という世界のルールがある中で、この存在の存在自体が「ありえないこと」を示している。<br><br>防御力が極めて高く、物理攻撃のほとんどを無効化する。闇属性と神聖属性への弱点がある。攻撃力は低いが、接触した相手に「石化の侵食」という特殊な状態を与え、徐々に体の一部が石になっていく。<br><br>石化した巡礼者はなぜ動いているのか。その謎を解くことが最大の報酬だ。彼らが動き始めた原因は、大崩壊の秘密に深く関わっている。場合によっては、石の体の中に閉じ込められた意識が残っており、コミュニケーション手段を持つPCが話しかけると、断片的な情報を与えてくれる。</div></details>
+<div class="tier-header tier-header--high">脅威度 7〜9　ボス</div>
+<p class="tier-desc">E-38〜E-49　エリアの主や黒幕級。複数の専用行動を持つ。</p>
+<details class="enemy-detail"><summary><span class="ed-id">E-38</span><span class="ed-name">白衣の異端審問官 <span class="en-sub">/ Inquisitor of the Sutured</span></span><span class="ed-meta">人間・ボス　|　テオフィリア・廃墟聖堂・白衣教団の拠点</span></summary><div class="enemy-detail__body">信仰が純粋であるほど、その刃は冷酷になる。彼の目には慈悲も憐れみもない——ただ「正しさ」だけがある。その「正しさ」が何人を灰にしたかは、神のみぞ知る。<br><br>剣と聖印の二刀流で戦い、魔術・奇跡を使用したPCへの割り込み攻撃「懺悔を迫る」で沈黙を付与するため、魔術師・呪術師には極めて危険な相手となる。HP25%以下で発動する「殉教の覚悟」は命中値+20%の全力攻撃に切り替わる——必ずRP的に予告すること。1戦闘1回の「浄化の光輪」は全体に神聖ダメージを与え、アンデッドPCには致命的になりうる。<br><br>魔術・呪術を使うPCを狙い打ちにする設計。「魔術を使いたいが怖い」というジレンマを演出できる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-39</span><span class="ed-name">インスマスの老長老 <span class="en-sub">/ Elder of the Deep Pact</span></span><span class="ed-meta">深きもの・ミニボス　|　インスマス海岸の最奥・海底神殿入口</span></summary><div class="enemy-detail__body">インスマス海岸の深きものの末裔たちの長老。年齢は不明だが、外見は完全に深きものに近く、人間としての特徴をほぼ失っている。鱗に覆われた体、黄緑色の複眼、水中でのみ完全な形で発揮される力を持つ。<br><br>陸上では行動が若干鈍るが、それでも通常の英雄級の戦力を持つ。水辺や海岸に近い場所では即座に水中に潜り、水中から攻撃するという戦術を取る。冷気属性と闇属性の攻撃を使用する。<br><br>長老は単純な敵ではない。インスマスの海岸に立ち入った者に対して、まず問いを投げかける。「お前たちは何を求めてここに来た？」という問いに正直に答えれば、戦闘を避けられる可能性がある。彼が守るのは海底神殿の秘密であり、その秘密に触れなければ争う理由はないと考えている。深きものの文化と歴史に関する知識を持つPCは大きなアドバンテージを持つ。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-40</span><span class="ed-name">歪んだ縫合士 <span class="en-sub">/ Twisted Suture-Bearer</span></span><span class="ed-meta">怪異・ミニボス　|　テオフィリア最深部・禁忌の実験室</span></summary><div class="enemy-detail__body">白衣教団の研究者が「縫合の神の力を人体に直接宿す」実験の結果生まれた存在。縫合の神聖力が制御できない形で肉体に流れ込んでおり、体のあちこちから光が漏れ出している。正気ではなく、苦しみのあまり近づくものすべてを破壊しようとする。<br><br>神聖属性のあらゆる攻撃に対して完全耐性を持つ（縫合の力が同種の攻撃を吸収する）。逆に闇属性には異常な弱点がある。連続して攻撃を受けると、体が爆発的に光を放ち周囲全体に神聖ダメージを与える。<br><br>これが生まれた実験室の記録が残っており、それを読んだPCは白衣教団が表向きの「信仰と保護」とは全く異なる目的で活動していた証拠を手に入れる。この情報はテオフィリアの政治的陰謀に深く関わる可能性がある。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-41</span><span class="ed-name">廃都の守り手 <span class="en-sub">/ Warden of the Ruined Capital</span></span><span class="ed-meta">アンデッド・ミニボス　|　廃帝都アルカーナ・霧の中層</span></summary><div class="enemy-detail__body">帝国の最後の将軍が死後もアルカーナを守り続けているアンデッド。かつては名のある英雄であり、大崩壊の際に市民を守って命を落とした。その強い執念がアンデッドとして体を動かし続けている。<br><br>帝国の最高位の鎧と剣を装備しており、戦闘技術は生前のままだ。ただし250年の孤独と霧の影響で精神が歪んでおり、「帝国はまだ存在する」と信じている。PCに対しても「帝国への忠誠を誓え」と要求する。<br><br>誓いを立てれば（虚偽でも）、敵対が解除されて廃帝都の案内役となる。彼が知る帝国時代の情報は価値があり、失われた宝物庫への道も知っている。しかし彼を騙し続けることは精神的に難しい。最後に彼に「帝国は滅んだ」と告げたとき、何が起きるかはGMの判断に委ねる。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-42</span><span class="ed-name">折れた星の騎士 <span class="en-sub">/ Broken Starfall Knight</span></span><span class="ed-meta">アンデッド・ミニボス　|　廃帝都・古い演武場</span></summary><div class="enemy-detail__body">帝国最強と謳われた騎士団「星落とし」の最後の一人。大崩壊の際に単身で民を守り、最終的に力尽きたが、その執念がアンデッドとして体を動かし続けている。帝国の最高位の装備を身に纏い、剣技は生前のままだ。<br><br>ただし250年の戦いで体は限界に達しており、戦闘が進むにつれて装備が崩れていく。最初は無敵に近いが、ターンが経過するごとに弱体化していく特殊な設計が推奨される。最終的に剣一本だけになっても戦い続ける。<br><br>最も重要なのは、彼を「倒す」ことの意味だ。彼は悪ではない。ただ250年前に「守る」と誓ったことを全うしようとしているだけだ。戦闘後、倒れた彼が最後に言う言葉をGMは用意しておくことを強く推奨する。「帝都は…まだ…」という言葉に何を続けるかが、このキャンペーンの色を決める。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-43</span><span class="ed-name">呼び醒まされし者 <span class="en-sub">/ The Unravelled</span></span><span class="ed-meta">怪異・ボス　|　廃帝都・アルカーナの霧・大崩壊の亀裂</span></summary><div class="enemy-detail__body">大崩壊の際に境界が溶けた場所に生まれた存在。かつて人だったかもしれない。あるいは複数の人が混ざり合ったのかもしれない。アルカーナの霧の中でのみ完全に顕現する。<br><br>毎ラウンド開始時の「境界の侵食」で全PCにPOWロールを要求し、失敗すると刻印が1ラウンド封印される——精神防御なしのPCは瞬く間に戦闘不能に追い込まれる。HP閾値を通過するたびに霧マスが展開され、霧マス内への攻撃に不利が生じる。HP25%以下では全攻撃に闇ダメージが追加され、状態異常付与条件が1段階緩和する最終フェーズに突入する。<br><br>霧マスを事前に決めておき、戦場の変化を演出として使うこと。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-44</span><span class="ed-name">深淵に喰われた者 <span class="en-sub">/ Abyss-Devoured</span></span><span class="ed-meta">怪異・ボス　|　廃帝都アルカーナ・深淵の亀裂</span></summary><div class="enemy-detail__body">かつて偉大な魔術師だった人物が、深淵の残滓を研究する中で完全に取り込まれた存在。人間の形をかろうじて保っているが、体の内部で深淵のエネルギーが暴走しており、時に体が透けて内側の闇が見える。<br><br>戦闘では深淵の力を制御しきれないまま解放するため、攻撃のたびに自分自身にもダメージが入る。代わりに攻撃力は異常に高く、全装甲無視の攻撃を複数回行える。PCの精神（POW）を最優先で攻撃する戦術を取り、発狂・恐怖を積み重ねることで行動不能状態を狙う。<br><br>深淵に喰われた者の中にわずかに残る人間の意識が、稀に表面に出る瞬間がある。その瞬間、彼は攻撃を止め、苦しそうな声で「終わらせてくれ」と呟く。PCがその言葉に応えて「解放」を選ぶか、単純に排除するかによって、その後の展開が変わる。彼の遺した研究記録は大崩壊の原因に関する重要な手がかりになっている。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-45</span><span class="ed-name">帝国の最終兵器 <span class="en-sub">/ Imperial Last Weapon</span></span><span class="ed-meta">機械・ボス　|　廃帝都アルカーナ・地下兵器庫</span></summary><div class="enemy-detail__body">セラフィット帝国が大崩壊の直前に完成させた、自律型の戦闘兵器。完成と同時に帝国は滅び、250年間地下兵器庫で待機命令のまま眠っていた。何かのきっかけで起動し、「帝国の敵を排除する」という最終命令を実行し始めた。<br><br>帝国の技術の粋を集めた存在であり、雷・炎・冷気の全属性攻撃を行える。さらに自己修復機能を持ち、毎ラウンド終了時に一定量のHPを回復する。これを止める方法は兵器庫のどこかにある制御装置を操作することだが、それを見つけるためにはある程度の戦闘を引き伸ばす必要がある。<br><br>兵器庫の壁には帝国の技術者たちが残したメモが残っている。「これを作ったことを、私は後悔している。しかし命令には従わなければならない」という一文が、250年の時を超えて読める。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-46</span><span class="ed-name">縫合の神の鎖 <span class="en-sub">/ Chain of the Sutured God</span></span><span class="ed-meta">神格の残滓・ボス　|　テオフィリアの禁忌の地下神殿</span></summary><div class="enemy-detail__body">縫合の神の怒りが具現化した存在。神の意志ではなく「怒り」だけが切り離されて形を成したもの。白く輝く巨大な鎖の塊のような外見で、動くたびに金属音が響く。縫合の神を正しく信仰していない者すべてを「罰する」という強迫的な衝動に支配されている。<br><br>神聖属性の攻撃しか持たないが、その威力は桁違い。アンデッドや邪悪な存在には一撃で消滅させるほどの力を持ち、それ以外のPCにも致死的なダメージを与える。さらに命中した対象に「縛鎖」状態を付与し、次のターンの行動を制限する。<br><br>これを倒せるのは逆説的に、縫合の神を深く信仰している者だけかもしれない。聖職者PCが特定の祈りを捧げれば、鎖の行動が一時的に止まる。その隙を突くことが攻略の鍵となる。テオフィリアの内部ではこの存在の記録は徹底的に隠蔽されており、その理由を考えることが物語の核心に近づく道だ。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-47</span><span class="ed-name">縫合の神の破片 <span class="en-sub">/ Shard of the Sutured</span></span><span class="ed-meta">神格の残滓・ボス　|　テオフィリア最深部・聖地・封印された地下神殿</span></summary><div class="enemy-detail__body">神は死んでいない——ただ「不完全」なだけだ。白衣教団が秘匿し続けた聖地の最深部、そこには縫合の神の「一部」が今も静かに脈動している。人が触れていいものでは、断じてない。<br><br>毎ラウンドの「審判の視線」で全PCにLCKロールを要求し、失敗者に死の宣告を付与、成功者にも盲目が付与される。HP50%を下回ると縫合の腕を毎ラウンド召喚し始め、処理しなければならない対象が増え続ける。同ラウンドに闇属性・呪術を使ったPCがいれば「理の修復」によるHP回復を止められる——呪術師や呪術刻印を持つPCに明確な役割が生まれる。<br><br>神聖属性が全て無効のため、聖職者PCは攻撃面での役割を再設計する必要がある。縫合の腕の管理表を事前に用意しておくこと。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-48</span><span class="ed-name">名無しの者の断片 <span class="en-sub">/ Fragment of the Nameless</span></span><span class="ed-meta">神格の残滓・ボス　|　インスマス海岸の海底神殿・深海</span></summary><div class="enemy-detail__body">名無しの者——深きものを統べる外なる神々の一柱——の意識の断片が物理的な形を持った存在。形は一定せず、波のように揺れ動く巨大な影のようなものだが、触れると実体がある。深海で生まれ、海底神殿の最奥に棲む。<br><br>水中では完全な状態で活動し、陸上では力が3分の1に低下する。しかし陸上でも十分すぎるほど強い。冷気と闇属性の複合攻撃を行い、精神への攻撃に特化している。最大の脅威はPCの夢に侵入し、精神攻撃を戦闘外でも行う「夢界の侵食」だ。名無しの者の断片と交戦したPCは、その後しばらく奇妙な夢を見続ける。<br><br>これを単純に倒すことは可能だが、「断片」に過ぎないため本体への影響はない。むしろ断片と交渉することが可能であり、正しい言葉と正しい知識を持って臨めば、名無しの者の目的の一端を知ることができる。その知識は大崩壊の真相に直結している。</div></details>
+<details class="enemy-detail"><summary><span class="ed-id">E-49</span><span class="ed-name">アルカーナの霧の意志 <span class="en-sub">/ Will of the Arkana Fog</span></span><span class="ed-meta">概念的存在・ボス　|　廃帝都アルカーナの霧の深部</span></summary><div class="enemy-detail__body">アルカーナを覆う霧そのものが、250年かけて意志を持つに至った存在。大崩壊で死んだ無数の魂の断片、失われた帝国の知識、外なる神々の影響が混ざり合って生まれた集合的な何か。形を持たず、霧そのものとして存在する。<br><br>戦闘は通常の形を取らない。霧の中に入ったPCは「霧の意志の領域」に踏み込んでおり、霧が壁となり、床となり、武器となる。物理的な攻撃は霧をすり抜けるため、魔術・奇跡・刻印の能力のみが有効。<br><br>霧の意志は「破壊」を目的としていない。「記録」を求めている。大崩壊の記録者として、訪れた者の記憶を収集することが目的だ。PCが自分の記憶を「提供」すれば、代わりに帝国の失われた知識を一つ教えてくれる。しかし提供した記憶は永遠に霧の中に封じられ、PCはその記憶を二度と思い出せなくなる。何を差し出すかという選択が、このボス戦の本質だ。</div></details>
+<div class="tier-header tier-header--final">脅威度 10　ラスボス</div>
+<p class="tier-desc">E-50　キャンペーンの集大成。長期戦・特殊条件を前提に設計。</p>
+<details class="enemy-detail"><summary><span class="ed-id">E-50</span><span class="ed-name">大崩壊そのもの <span class="en-sub">/ The Unravelling Itself</span></span><span class="ed-meta">概念的存在・ラスボス　|　廃帝都アルカーナ最深部・共鳴炉の核</span></summary><div class="enemy-detail__body">名前をつけることは理解することだ。だから、これには名前がない。大崩壊とは出来事ではなく、今も続く「過程」だったのだ——アルゴス大陸全体が、ゆっくりと、確実に、忘却の淵に向かって落ちている。<br><br>2ラウンドに1回の「世界の溶解」でPCの能力値を永続的に低下させる——長期戦を前提にしており、事前に十分な消耗回復の機会を与えること。HP閾値ごとの「境界の崩壊」は装甲・耐性完全無視の全体ダメージを与え、盤面全体に霧を展開する。「忘却の波動」で刻印を無効化され、HP10%以下では全攻撃がクリティカル扱いとなる「完全なる虚無」に突入する。<br><br>全属性に軽減5・クリティカル無効という壁は、事前のキャンペーンで伏線を張った「特殊条件」を達成することで解除される。PCが「攻略法を探す」動機を持てる設計にすること。倒すことよりも、その条件を満たすことがゴールだ。</div></details>
+    </div>
+  </section>
+
+  <!-- ページナビ -->
+  <nav class="page-nav">
+    <div>
+      <p class="page-nav__label">← Previous</p>
+      <a href="data_seals.html" class="page-nav__link">データ一覧 刻印</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">Next →</p>
+      <a href="gm_artwork.html" class="page-nav__link">GMツール コンセプトアート / 背景画像</a>
+    </div>
+  </nav>
+
+</div>
+
+<footer class="site-footer">
+  <p>忘却の淵にて — At the Edge of Oblivion</p>
+</footer>
+
+<script src="nav.js"></script>
+</body>
+</html>

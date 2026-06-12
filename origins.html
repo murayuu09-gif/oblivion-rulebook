@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>素性・能力値 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ── 能力値グリッド ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1rem 0 1.5rem;
+}
+.stat-card {
+  background: var(--bg2);
+  padding: 1.125rem 1.25rem;
+}
+.stat-card__head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.5rem;
+}
+.stat-card__abbr {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  min-width: 38px;
+}
+.stat-card__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+}
+.stat-card__desc {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.7;
+}
+.stat-card__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 0.5rem;
+}
+
+/* ── 派生ステータス ── */
+.derived-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin: 1rem 0 1.5rem;
+}
+.derived-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+.derived-card__label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.derived-card__formula {
+  font-size: 13px;
+  color: var(--gold);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+  margin-bottom: 0.4rem;
+}
+.derived-card__desc {
+  font-size: 11px;
+  color: var(--text3);
+  line-height: 1.6;
+}
+
+/* ── 共通参照テーブル ── */
+.ref-table-wrap { overflow-x: auto; margin: 1rem 0; }
+.ref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.ref-table th {
+  background: var(--bg2);
+  color: var(--gold-dim);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+.ref-table td {
+  padding: 0.65rem 1rem;
+  border: 1px solid var(--border);
+  text-align: center;
+  color: var(--text2);
+  font-size: 12px;
+}
+.ref-table tr:nth-child(even) td { background: var(--bg2); }
+.ref-table tr:nth-child(odd) td { background: var(--bg); }
+.ref-table td:first-child { color: var(--text3); }
+.ref-table td.ref-spike { color: var(--gold2); font-weight: 700; }
+
+/* ── 素性カード ── */
+.origin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  margin: 1.5rem 0;
+}
+.origin-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  transition: border-color 0.2s;
+  position: relative;
+}
+.origin-card:hover { border-color: var(--border2); }
+.origin-card--myth { }
+
+.origin-card__en {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.origin-card__name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--gold2);
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+.origin-card__catch {
+  font-size: 11px;
+  color: var(--text3);
+  border-left: 2px solid var(--border2);
+  padding-left: 0.75rem;
+  margin: 0.75rem 0 1rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ── アコーディオン ── */
+.origin-card {
+  cursor: pointer;
+}
+.origin-card__detail {
+  display: none;
+  margin-top: 0.75rem;
+}
+.origin-card.open .origin-card__detail {
+  display: block;
+}
+.origin-card__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  gap: 4px;
+  user-select: none;
+}
+.origin-card__toggle-icon {
+  display: inline-block;
+  transition: transform 0.2s;
+  font-style: normal;
+  font-size: 11px;
+}
+.origin-card.open .origin-card__toggle-icon {
+  transform: rotate(180deg);
+}
+
+.origin-card__body {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.9;
+  margin-bottom: 1.25rem;
+}
+
+/* 能力値バー */
+.stat-bars { margin-bottom: 1.25rem; }
+.stat-bar-row {
+  display: grid;
+  grid-template-columns: 36px 1fr 22px;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 4px;
+}
+.stat-bar-key {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+}
+.stat-bar-track {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--gold-dim);
+}
+.stat-bar-fill--hi { background: var(--gold); }
+.stat-bar-fill--lo { background: var(--border2); opacity: 0.7; }
+.stat-bar-val {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: right;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.stat-bar-val--hi { color: var(--gold); font-weight: 500; }
+.stat-bar-val--lo { opacity: 0.6; }
+
+/* HP/MP表示 */
+.origin-derived {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.origin-derived__item { flex: 1; text-align: center; }
+.origin-derived__label {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--gold-dim);
+  display: block;
+  margin-bottom: 2px;
+}
+.origin-derived__val {
+  font-size: 20px;
+  font-weight: 500;
+  font-family: 'Noto Sans JP', sans-serif;
+  color: var(--text);
+}
+.origin-derived__val--hp { color: var(--red2); }
+.origin-derived__val--mp { color: var(--blue2); }
+.origin-derived__sep { width: 1px; background: var(--border); margin: 0.25rem 0; }
+
+/* タグ */
+.origin-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.origin-tag {
+  font-size: 10px;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 2px 7px;
+  border-radius: 2px;
+  letter-spacing: 0.04em;
+  background: rgba(200,164,90,0.07);
+  color: var(--text3);
+  border: 1px solid var(--border);
+}
+.origin-tag--easy { background: rgba(48,128,112,0.1); color: var(--teal2); border-color: var(--teal); }
+.origin-tag--mid  { background: rgba(200,164,90,0.12); color: var(--gold); border-color: var(--gold-dim); }
+.origin-tag--hard { background: rgba(192,64,48,0.1); color: var(--red2); border-color: var(--red); }
+.origin-tag--myth { background: rgba(112,80,144,0.1); color: var(--purple2); border-color: var(--purple); }
+
+/* 初期装備 */
+.origin-equip {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.origin-equip__row {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 11px;
+  align-items: baseline;
+}
+.origin-equip__label {
+  font-family: 'Noto Sans JP', sans-serif;
+  color: var(--text3);
+  min-width: 60px;
+  flex-shrink: 0;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.origin-equip__val { color: var(--text2); }
+
+/* 命中値テーブル */
+.hit-table-wrap { overflow-x: auto; margin: 1rem 0 0.5rem; }
+.hit-table {
+  width: 100%;
+  min-width: 780px;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.hit-table th, .hit-table td {
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--border);
+  text-align: center;
+  white-space: nowrap;
+}
+.hit-table th {
+  background: var(--bg2);
+  color: var(--gold-dim);
+  font-family: 'Noto Sans JP', sans-serif;
+  font-weight: 500;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+.hit-table td:first-child, .hit-table th:first-child {
+  text-align: left;
+  color: var(--text);
+  font-weight: 500;
+  position: sticky;
+  left: 0;
+  background: var(--bg);
+}
+.hit-table th:first-child { background: var(--bg2); }
+.hit-table td:last-child { text-align: left; color: var(--teal2); font-size: 10px; }
+.hit-cell--strong { color: var(--gold2); font-weight: 700; background: rgba(200,164,90,0.07); }
+.hit-cell--weak   { color: var(--text3); }
+.hit-cell--magic  { background: rgba(112,80,144,0.05); }
+
+.hit-table-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 1.5rem;
+}
+
+/* シナリオボーナス・ペナルティ */
+.bp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1rem 0;
+}
+.bp-card { background: var(--bg2); padding: 1.125rem 1.25rem; }
+.bp-card__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+.bp-card__en { font-family:'Cinzel',serif; font-size:10px; color:var(--gold-dim); letter-spacing:0.15em; }
+.bp-row {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 11px;
+  margin-bottom: 4px;
+  align-items: flex-start;
+  line-height: 1.6;
+}
+.bp-tag {
+  font-size: 10px;
+  font-weight: 500;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 1px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bp-tag--b { background: rgba(48,128,112,0.15); color: var(--teal2); border: 1px solid var(--teal); }
+.bp-tag--p { background: rgba(192,64,48,0.12); color: var(--red2); border: 1px solid var(--red); }
+.bp-text { color: var(--text2); }
+
+@media (max-width: 640px) {
+  .origin-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .derived-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li class="site-nav__item">
+        <a href="world.html">世界観</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="world.html">概要</a></li>
+          <li><a href="world_detail.html">詳細設定</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="system_combat.html">システム</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="system_combat.html">戦闘</a></li>
+          <li><a href="system_explore.html">探索</a></li>
+        </ul>
+      </li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="origins.html" class="active">素性・能力値</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="gm_enemies.html">GMツール</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="gm_enemies.html">エネミーリスト</a></li>
+          <li><a href="gm_artifacts.html">アーティファクト</a></li>
+          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ページヘッダー -->
+  <header class="page-header">
+    <p class="page-eyebrow">Chapter IV</p>
+    <h1 class="page-title">Origins &amp; Stats</h1>
+    <p class="page-title-ja">素性・能力値</p>
+    <div class="page-divider"></div>
+  </header>
+
+  <!-- 目次 -->
+  <div class="toc">
+    <p class="toc__title">Contents</p>
+    <ul class="toc__list">
+      <li><span>I</span><a href="#origins">素性一覧</a></li>
+      <li><span>II</span><a href="#stats">能力値</a></li>
+      <li><span>III</span><a href="#derived">派生ステータス</a></li>
+      <li><span>IV</span><a href="#ref-table">共通参照テーブル</a></li>
+      <li><span>V</span><a href="#out-of-combat">戦闘外判定</a></li>
+      <li><span>VI</span><a href="#hit-table">命中値テーブル</a></li>
+      <li><span>VII</span><a href="#scenario-bp">シナリオ行動ボーナス・ペナルティ</a></li>
+    </ul>
+  </div>
+
+  <!-- I. 能力値 -->
+  <section class="section" id="origins">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">素性一覧</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:0.5rem;">素性は初期能力値・初期装備・コンセプトを決定する。得意武器・属性はあくまで傾向であり、プレイスタイルを縛るものではない。</p>
+      <div class="rule-block" style="margin-bottom:1.5rem;">
+        <p class="rule-block__title">追加ポイント</p>
+        <p>素性選択後、<strong style="color:var(--gold)">7点</strong>（廃人のみ<strong style="color:var(--gold)">10点</strong>）を任意の能力値に配分する。1能力値への上限は+4まで（能力値最大20）。</p>
+      </div>
+      <div class="origin-grid" id="origin-grid"></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <hr class="divider">
+
+  <section class="section" id="stats">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">能力値</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:1.25rem;">能力値は全8種。スケールは<strong style="color:var(--gold)">1〜20</strong>。戦闘外判定では能力値×5を技能値として使用する（命中判定には使わない）。</p>
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">CON</span><span class="stat-card__name">体力</span></div>
+          <p class="stat-card__desc">HP・物理装甲値・魔術耐性の算出に使用する。戦場での生存を支える根幹の能力値。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--red">HP</span>
+            <span class="badge badge--red">装甲値</span>
+            <span class="badge badge--purple">魔術耐性</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">STR</span><span class="stat-card__name">筋力</span></div>
+          <p class="stat-card__desc">HP算出・筋力武器のダメージボーナス判定に使用する。命中出目がSTR以下でボーナスダイス発動。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--red">HP</span>
+            <span class="badge badge--gold">DB判定（筋力武器）</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">DEX</span><span class="stat-card__name">技量</span></div>
+          <p class="stat-card__desc">技量武器のダメージボーナス判定に使用する。戦闘外では罠解除・鍵開けなどの繊細な作業判定。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--gold">DB判定（技量武器）</span>
+            <span class="badge badge--teal">戦闘外判定</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">AGI</span><span class="stat-card__name">敏捷</span></div>
+          <p class="stat-card__desc">イニシアチブの順番と回避判定に使用する。戦闘外では追跡・逃走・バランス判定。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--red">イニシアチブ</span>
+            <span class="badge badge--red">回避</span>
+            <span class="badge badge--teal">戦闘外判定</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">INT</span><span class="stat-card__name">理力</span></div>
+          <p class="stat-card__desc">魔術のダメージボーナス判定とMP算出に使用する。戦闘外では古代文字解読・魔術知識・罠看破判定。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--purple">DB判定（魔術）</span>
+            <span class="badge badge--blue">MP</span>
+            <span class="badge badge--teal">戦闘外判定</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">FTH</span><span class="stat-card__name">信仰</span></div>
+          <p class="stat-card__desc">奇跡のダメージボーナス判定とMP算出に使用する。高いほど奇跡の威力と燃費が向上する。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--purple">DB判定（奇跡）</span>
+            <span class="badge badge--blue">MP</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">POW</span><span class="stat-card__name">精神</span></div>
+          <p class="stat-card__desc">MP算出・魔術耐性算出・精神系状態異常（発狂・恐怖）への抵抗判定に使用する。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--blue">MP</span>
+            <span class="badge badge--purple">魔術耐性</span>
+            <span class="badge badge--blue">状態異常抵抗</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__head"><span class="stat-card__abbr">LCK</span><span class="stat-card__name">運命</span></div>
+          <p class="stat-card__desc">クリティカル率の上昇と瀕死時の生存判定に使用する。戦闘外では偶然の幸運・賭けなどの判定。</p>
+          <div class="stat-card__badges">
+            <span class="badge badge--gold">クリティカル率</span>
+            <span class="badge badge--red">瀕死生存</span>
+            <span class="badge badge--teal">戦闘外判定</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <hr class="divider">
+
+  <section class="section" id="derived">
+    <div class="section-header">
+      <span class="section-num">III</span>
+      <h2 class="section-title">派生ステータス</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <div class="derived-grid">
+        <div class="derived-card">
+          <p class="derived-card__label">HP</p>
+          <p class="derived-card__formula">( CON + STR ) × 2</p>
+          <p class="derived-card__desc">HP0で瀕死状態（行動不能）。毎ラウンド終了時にLCK×5以下でロール、失敗で死亡。石化状態での瀕死は即死亡。</p>
+        </div>
+        <div class="derived-card">
+          <p class="derived-card__label">MP</p>
+          <p class="derived-card__formula">POW + INT + FTH</p>
+          <p class="derived-card__desc">魔術・奇跡の燃料。自然回復なし。アイテムまたは刻印による回復のみ。</p>
+        </div>
+        <div class="derived-card">
+          <p class="derived-card__label">物理装甲値</p>
+          <p class="derived-card__formula">装備の装甲値 + CON → テーブル参照</p>
+          <p class="derived-card__desc">物理ダメージを固定値で軽減。クリティカルは装甲無視。雷属性攻撃は装甲値が半減する。</p>
+        </div>
+        <div class="derived-card">
+          <p class="derived-card__label">魔術耐性</p>
+          <p class="derived-card__formula">POW + CON → テーブル参照</p>
+          <p class="derived-card__desc">魔術・奇跡ダメージを固定値で軽減。物理装甲値は無効。クリティカルは耐性無視。</p>
+        </div>
+        <div class="derived-card">
+          <p class="derived-card__label">クリティカル率</p>
+          <p class="derived-card__formula">1% + LCK5ごとに+1%</p>
+          <p class="derived-card__desc">LCK1〜4：1%　LCK5〜9：2%　LCK10〜14：3%　LCK15〜19：4%　LCK20：5%</p>
+        </div>
+        <div class="derived-card">
+          <p class="derived-card__label">イニシアチブ</p>
+          <p class="derived-card__formula">AGI順（高い順に行動）</p>
+          <p class="derived-card__desc">同値はLCKで比較。それでも同値なら同時行動として処理する。</p>
+        </div>
+      </div>
+      <div class="rule-block" style="margin-top:0.5rem;">
+        <p class="rule-block__title">HP・MP 自然回復</p>
+        <p>1時間ごとにHP・MPそれぞれ+1（自動）。1晩の休息で全回復。戦闘中は自然回復しない。状態異常は戦闘終了時に全リセット（疲労は次ラウンド開始時に自動回復）。</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <hr class="divider">
+
+  <section class="section" id="ref-table">
+    <div class="section-header">
+      <span class="section-num">IV</span>
+      <h2 class="section-title">共通参照テーブル</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:1rem;">物理装甲値・魔術耐性・ダメージボーナスはすべてこのテーブルを参照する。合計値25以上は装備と能力値の両方を特化させた領域。</p>
+      <div class="ref-table-wrap">
+        <table class="ref-table">
+          <thead>
+            <tr><th>合計値</th><th>装甲値（固定軽減）</th><th>ダメージボーナスダイス</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>1〜4</td><td>1</td><td style="color:var(--text3)">なし</td></tr>
+            <tr><td>5〜8</td><td>2</td><td>1d3</td></tr>
+            <tr><td>9〜12</td><td>3</td><td>1d4</td></tr>
+            <tr><td>13〜16</td><td>4</td><td>1d6</td></tr>
+            <tr><td>17〜20</td><td>5</td><td>1d8</td></tr>
+            <tr><td>21〜24</td><td>6</td><td class="ref-spike">2d8</td></tr>
+            <tr><td>25〜</td><td>7</td><td class="ref-spike">3d8</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">ダメージボーナスは命中判定の出目が参照能力値以下のときに発動する。筋力武器→STR、技量武器→DEX、魔術→INT、奇跡→FTH。21以上の領域で一気にダイスが増える設計になっている。</div>
+      <table class="rule-table" style="margin-top:1.5rem;">
+        <thead><tr><th>武器種</th><th>APコスト</th><th>ダメージボーナス（参照能力値）</th></tr></thead>
+        <tbody>
+          <tr><td>短剣</td><td><span class="badge badge--gold">1 AP</span></td><td>DEX</td></tr>
+          <tr><td>直剣</td><td><span class="badge badge--gold">1 AP</span></td><td>STR / DEX（高い方）</td></tr>
+          <tr><td>大剣</td><td><span class="badge badge--gold">2 AP</span></td><td>STR</td></tr>
+          <tr><td>斧・ハンマー</td><td><span class="badge badge--gold">2 AP</span></td><td>STR</td></tr>
+          <tr><td>槍・ハルバード</td><td><span class="badge badge--gold">1 AP</span></td><td>STR / DEX（高い方）</td></tr>
+          <tr><td>盾（応戦時）</td><td><span class="badge badge--gold">1 AP</span></td><td>STR / CON（高い方）</td></tr>
+          <tr><td>弓</td><td><span class="badge badge--gold">1 AP</span></td><td>DEX</td></tr>
+          <tr><td>魔術</td><td><span class="badge badge--gold">1〜3 AP</span></td><td>INT</td></tr>
+          <tr><td>奇跡</td><td><span class="badge badge--gold">1〜3 AP</span></td><td>FTH</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <hr class="divider">
+
+  <section class="section" id="out-of-combat">
+    <div class="section-header">
+      <span class="section-num">V</span>
+      <h2 class="section-title">戦闘外判定</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:1rem;">判定方式は<strong style="color:var(--gold)">能力値×5以下で成功</strong>（d100ロール）。以下の5種の能力値を使用する。</p>
+      <table class="rule-table">
+        <thead><tr><th>能力値</th><th>判定場面の例</th></tr></thead>
+        <tbody>
+          <tr><td>STR 筋力</td><td>重いものを動かす・壁をよじ登る・力比べ・障害物の排除</td></tr>
+          <tr><td>DEX 技量</td><td>罠解除・鍵開け・繊細な作業・スリ・潜入</td></tr>
+          <tr><td>AGI 敏捷</td><td>追跡・逃走・バランス・狭所通過・奇襲察知</td></tr>
+          <tr><td>INT 理力</td><td>古代文字解読・魔術知識・罠看破・情報収集・遺物の鑑定</td></tr>
+          <tr><td>LCK 運命</td><td>偶然の幸運・賭け・運任せの行動全般</td></tr>
+        </tbody>
+      </table>
+      <div class="note">CON・FTH・POWは原則ロールなし（GM裁量で例外あり）。重要情報の取得は原則として判定不要——キャラクターが知っている情報は自由に語れる。判定は「行動の成否」に使い、「情報の解禁」には使わない。</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <hr class="divider">
+
+  <section class="section" id="hit-table">
+    <div class="section-header">
+      <span class="section-num">VI</span>
+      <h2 class="section-title">命中値テーブル</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:1rem;">命中判定はd100ロール。出目が命中値以下で成功。スキル（刻印）・装備で増減する。</p>
+      <div class="hit-table-key">
+        <span><span class="hit-cell--strong">75%</span> 得意武器（65%以上）</span>
+        <span><span class="hit-cell--weak">35%</span> 不得意（40%以下）</span>
+        <span style="color:var(--purple2)">魔術・奇跡 ＊触媒命中補正を加算する前の基本値</span>
+      </div>
+      <div class="hit-table-wrap">
+        <table class="hit-table" id="hit-table-el">
+          <thead>
+            <tr>
+              <th>素性</th>
+              <th>短剣</th><th>直剣</th><th>大剣</th>
+              <th>斧・ハンマー</th><th>槍・ハルバード</th><th>盾</th>
+              <th>弓</th><th>魔術 *</th><th>奇跡 *</th>
+              <th>得意武器</th>
+            </tr>
+          </thead>
+          <tbody id="hit-tbody"></tbody>
+        </table>
+      </div>
+      <div class="note">魔術・奇跡の最終命中値 = 上表の値 ＋ 装備触媒の命中補正。命中値に上限はなく、100%超過分はHD/EX確率の上昇に転換される（例：120%→通常必中・HD:60以下・EX:24以下）。</div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <hr class="divider">
+
+  <section class="section" id="scenario-bp">
+    <div class="section-header">
+      <span class="section-num">VII</span>
+      <h2 class="section-title">シナリオ行動ボーナス・ペナルティ</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p style="margin-bottom:0.5rem;">探索・交渉・トラップなどシナリオ行動の能力値判定に適用される。</p>
+      <div class="rule-block" style="margin-bottom:1.25rem;">
+        <p class="rule-block__title">ボーナス / ペナルティダイスとは</p>
+        <p><strong style="color:var(--teal2)">ボーナスダイス</strong>：d100を2つ振り、良い方（低い方）の出目を採用する。<br>
+        <strong style="color:var(--red2)">ペナルティダイス</strong>：d100を2つ振り、悪い方（高い方）の出目を採用する。<br>
+        交渉系は相手の属性・立場によってGM裁量で適用する。</p>
+      </div>
+      <div class="bp-grid" id="bp-grid"></div>
+    </div>
+  </section>
+
+  <!-- ページナビ -->
+  <nav class="page-nav" aria-label="ページナビゲーション">
+    <div>
+      <p class="page-nav__label">PREV</p>
+      <a href="charcreate.html" class="page-nav__link">← キャラクター作成</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">NEXT</p>
+      <a href="data_weapons.html" class="page-nav__link">データ一覧 →</a>
+    </div>
+  </nav>
+
+</div><!-- /page-wrap -->
+
+<script>
+// ================================================================
+// データ定義
+// ================================================================
+const STAT_KEYS  = ['CON','STR','DEX','AGI','INT','FTH','POW','LCK'];
+
+const origins = [
+  {
+    name:'騎士', en:'Knight',
+    catch:'誇りを盾に、剣を振るう者',
+    body:'帝国時代の騎士文化を受け継ぎ、剣と盾の扱いを幼少より叩き込まれた者。大崩壊後の現代では守るべき領土を持たぬ流れ騎士も多く、誇りと腕だけを頼りに各地を遍歴する。魔術や属性の力を忌避する傾向があり、余計な力に頼らぬ純粋な技と根性を信条とする。重装甲と高いHPで前線に立ち、盾で仲間を守りながら直剣・大剣で反撃するスタイルが基本。',
+    stats:[8,8,6,5,3,4,4,6], hp:32, mp:11, pts:7, cr:'2%',
+    tags:[['前衛向け',''],['高耐久',''],['初心者向け','easy'],['直剣・大剣・盾',''],['無属性','']],
+    weapon:'ショートソード', armor:'板金鎧', gold:500,
+    myth:false
+  },
+  {
+    name:'傭兵', en:'Mercenary',
+    catch:'金のために戦い、腕で生き延びる',
+    body:'口減らしに村を出た者、戦争で家族を失った者、単純に金が必要な者。様々な事情を持つ人々がたどり着く職業が傭兵である。手数と機動力で相手を圧倒するスタイルは経験を積んだ者が編み出した実戦的なもので、華やかさより生き残りを優先した戦い方が特徴。感傷を持たないように見えて、同輩の死には人一倍敏感な者が多い。',
+    stats:[6,6,8,8,3,3,4,6], hp:24, mp:10, pts:7, cr:'2%',
+    tags:[['前衛向け',''],['高機動',''],['中級者向け','mid'],['短剣・直剣',''],['無属性','']],
+    weapon:'ダガー', armor:'革鎧', gold:500,
+    myth:false
+  },
+  {
+    name:'戦士', en:'Warrior',
+    catch:'力こそすべて、一撃に賭ける漢',
+    body:'重量武器の一撃の重さを信奉し、技術より力量で状況を変えることに快感を覚える者たち。言葉数は少ないが仲間への忠誠は本物で、長く生き残った戦士は戦場における空気の読み方と人心の機微に独特の敏感さを持つ。大剣・斧・ハンマーを軽々と振り回し、一撃で戦況を変える破壊力を持つ。',
+    stats:[7,10,4,4,3,3,5,6], hp:34, mp:11, pts:7, cr:'2%',
+    tags:[['前衛向け',''],['高火力',''],['初心者向け','easy'],['大剣・斧・ハンマー',''],['無属性','']],
+    weapon:'グレートソード', armor:'鎖帷子', gold:500,
+    myth:false
+  },
+  {
+    name:'盗賊', en:'Thief',
+    catch:'影に潜み、急所を狙う',
+    body:'都市の影、路地裏、旅人を狙う山賊団……出身は様々だが、共通するのは「正規の道を閉ざされた」という経験。毒の扱いに長けているのは、盗賊ギルドで密かに継承されてきた暗殺術と関係している。「先に見つけた者が生きる」という哲学を持ち、奇襲と離脱の達人として廃墟探索でも不可欠な存在。',
+    stats:[5,4,9,9,4,3,5,7], hp:18, mp:12, pts:7, cr:'2%',
+    tags:[['奇襲型',''],['高回避',''],['中級者向け','mid'],['短剣・弓',''],['毒属性','']],
+    weapon:'ダガー', armor:'革鎧', gold:500,
+    myth:false
+  },
+  {
+    name:'呪術師', en:'Hexer',
+    catch:'禁じられた力を我が物とする異端者',
+    body:'テオフィリアの迫害を逃れてヴェイルホロウの森に身を寄せた者か、独学で禁書に手を染めた孤独な異端者。闇の術は深淵の残滓を直接利用するため、使い続けるほど精神への侵食リスクが高まる。それを知りながら手を止めない者たちは、呪いを制御できるという強い意志と、そうでなければという恐怖の両方を抱えている。',
+    stats:[5,5,6,5,9,5,7,4], hp:20, mp:21, pts:7, cr:'1%',
+    tags:[['魔術・近接複合',''],['変則型',''],['上級者向け','hard'],['杖（触媒）・短剣',''],['闇属性','']],
+    weapon:'木の杖', armor:'呪術師の外套', gold:500,
+    catalyst:'深淵の杖（英雄）推奨',
+    myth:false
+  },
+  {
+    name:'魔法使い', en:'Mage',
+    catch:'知識は力。世界の理を操る者',
+    body:'帝国時代の神学図書館の知識が各地の学院に断片的に伝わっており、そこで学んだ者。あるいは廃帝都アルカーナの廃墟から魔術書を回収し独学で習得した者。知識への渇望が強く、仲間の危機より珍しい魔術書を前にした時の方が目の輝きが増すと言われる。',
+    stats:[4,3,4,5,10,3,10,5], hp:14, mp:23, pts:7, cr:'1%',
+    tags:[['魔術特化',''],['紙装甲',''],['高火力',''],['上級者向け','hard'],['杖（触媒）',''],['炎・雷属性','']],
+    weapon:'木の杖', armor:'魔術師のローブ', gold:500,
+    catalyst:'古代帝国の杖（英雄）/ 霧の杖（伝説）推奨',
+    myth:false
+  },
+  {
+    name:'聖職者', en:'Cleric',
+    catch:'神の御業を地に示す使徒',
+    body:'白衣教団で修練を積んだ者か、辺境の修道院で信仰を深めた者。縫合の神との信仰の回路を通じて聖印から奇跡を行使する。神聖の奇跡はアンデッドや邪悪な存在に絶大な効果を発揮し、大崩壊後の廃墟探索に不可欠な存在。信仰の回路を維持するには戒律の遵守が必要で、「何のために神に仕えているのか」という問いを多くの聖職者が心に抱えている。',
+    stats:[5,4,4,5,4,10,9,5], hp:18, mp:23, pts:7, cr:'1%',
+    tags:[['回復・支援',''],['奇跡特化',''],['中級者向け','mid'],['聖印（触媒）・盾・槍',''],['神聖属性','']],
+    weapon:'白衣教団の聖印', armor:'白衣の法衣', gold:500,
+    catalyst:'白衣教団の聖印（兵士）/ 縫合の聖印（英雄）推奨',
+    myth:false
+  },
+  {
+    name:'深きものの末裔', en:'Deep One',
+    catch:'海の呪いを受け継ぐ、異形の血族',
+    body:'インスマス海岸出身か、どこかで深きものの血が混入した系譜を持つ者。水中での息の長さ・夜間視力・異様な傷の回復力など、通常の人間とは異なる身体的特徴を持つ。大陸内陸では偏見と差別にさらされることも多いが、絶体絶命でも冷静を保てる精神的強さを持つ。呪われた血筋は運命そのものを歪め、LCKは全素性中最低。瀕死に陥れば生還の見込みはほとんどない。',
+    stats:[12,7,5,4,6,3,7,4], hp:38, mp:16, pts:7, cr:'1%',
+    tags:[['HP特化',''],['低LCK',''],['高耐性',''],['上級者向け','hard'],['闇・冷気属性',''],['クトゥルフ神話','myth']],
+    weapon:'ショートソード', armor:'深海の鱗鎧', gold:500,
+    catalyst:'深淵の杖（英雄）※魔術ビルド時のみ',
+    myth:true
+  },
+  {
+    name:'狩人', en:'Hunter',
+    catch:'獲物を逃がさぬ、森の追跡者',
+    body:'大陸各地の森・荒野で育った、文明の周縁に生きる者。獲物を追う感覚と毒の知識は幼少より身についており、廃墟に潜む怪異の追跡にもその本能を発揮する。単独行動を好むが、信頼した仲間への忠誠は非常に深い。長く野生で生き延びてきた者に宿る不思議な幸運が、修羅場での一手を引き寄せるとも言われる。',
+    stats:[5,5,8,8,4,3,5,8], hp:20, mp:12, pts:7, cr:'2%',
+    tags:[['遠距離特化',''],['高AGI',''],['中級者向け','mid'],['弓・短剣',''],['毒属性','']],
+    weapon:'ショートスピア', armor:'革鎧', gold:500,
+    myth:false
+  },
+  {
+    name:'廃人', en:'Derelict',
+    catch:'すべてを失った者だけが、すべてを超えられる',
+    body:'名前の通り、すべてを失った者。かつての騎士だったかもしれない。魔法使いだったかもしれない。愛する者を失った農民だったかもしれない。あらゆる来歴がこの素性に集約されうる。他の素性が何かを持ってここに来た人々であるのに対し、廃人だけが「何も持たないゆえにすべてになれる」。',
+    stats:[5,5,5,5,5,4,5,8], hp:20, mp:14, pts:10, cr:'2%',
+    tags:[['低初期値',''],['追加ポイント10点','mid'],['上級者向け','hard'],['全武器・全属性','']],
+    weapon:'（500G以内で自由購入）', armor:'（500G以内で自由購入）', gold:500,
+    catalyst:'全触媒対応',
+    myth:false
+  },
+];
+
+const hitData = [
+  {name:'騎士',         vals:[55,70,65,55,60,65,45,35,40], best:'直剣・盾・大剣'},
+  {name:'傭兵',         vals:[60,65,60,50,55,50,50,35,35], best:'短剣・直剣'},
+  {name:'戦士',         vals:[50,60,75,70,60,55,40,35,35], best:'大剣・斧'},
+  {name:'盗賊',         vals:[75,55,40,40,45,40,65,40,35], best:'短剣・弓'},
+  {name:'呪術師',       vals:[55,45,35,40,40,40,40,75,45], best:'魔術'},
+  {name:'魔法使い',     vals:[40,40,35,35,35,35,45,75,40], best:'魔術'},
+  {name:'聖職者',       vals:[45,50,40,50,55,60,45,40,75], best:'奇跡・盾'},
+  {name:'深きものの末裔',vals:[55,60,55,60,60,55,40,45,35],best:'直剣・斧・槍'},
+  {name:'狩人',         vals:[65,50,40,45,50,40,75,40,35], best:'弓・短剣'},
+  {name:'廃人',         vals:[45,40,40,40,40,40,40,45,45], best:'（全武器均等）'},
+];
+
+const bpData = [
+  {name:'騎士', en:'Knight', items:[
+    {t:'B',label:'STR判定',text:'力による突破・威圧交渉。体格と訓練が信頼感を与える'},
+    {t:'B',label:'交渉：貴族・騎士団・白衣教団',text:'身分と礼節が通じる相手に有利'},
+    {t:'P',label:'DEX判定',text:'罠解除・鍵開け・潜入。重装備と繊細作業は不向き'},
+    {t:'P',label:'LCK判定',text:'規律の人間は運に頼ることを嫌う'},
+  ]},
+  {name:'傭兵', en:'Mercenary', items:[
+    {t:'B',label:'AGI判定',text:'危険察知・逃走・追跡。場数を踏んだ生存本能'},
+    {t:'B',label:'交渉：裏社会・傭兵・盗賊',text:'同業者として話が通じる'},
+    {t:'P',label:'INT判定',text:'魔術知識・古代文字。学のない者には難解'},
+    {t:'P',label:'交渉：貴族・聖職者',text:'立場と礼儀が通じない相手に不利'},
+  ]},
+  {name:'戦士', en:'Warrior', items:[
+    {t:'B',label:'STR判定',text:'力仕事・障害物排除・威圧。純粋な肉体の強さ'},
+    {t:'B',label:'交渉：競技場・戦場出身者',text:'腕力への敬意が通じる'},
+    {t:'P',label:'DEX判定',text:'罠解除・精密作業。大きな手と荒削りな感覚が邪魔'},
+    {t:'P',label:'INT判定',text:'知識・看破。考えるより先に動く傾向'},
+  ]},
+  {name:'盗賊', en:'Thief', items:[
+    {t:'B',label:'DEX判定',text:'罠解除・鍵開け・スリ・潜入。本領発揮'},
+    {t:'B',label:'LCK判定',text:'修羅場での幸運。生き延びてきた者の第六感'},
+    {t:'P',label:'交渉：騎士団・白衣教団・貴族',text:'素性が知れると信用されない'},
+    {t:'P',label:'INT判定',text:'魔術・古代文字の知識。体で覚えた技術者には縁遠い'},
+  ]},
+  {name:'呪術師', en:'Hexer', items:[
+    {t:'B',label:'INT判定',text:'禁書・古代文字・魔術知識。独学ゆえに広範な知識'},
+    {t:'B',label:'交渉：裏社会・異端者・深淵に触れた者',text:'同じ匂いを持つ者として'},
+    {t:'P',label:'交渉：テオフィリア・白衣教団',text:'異端者として迫害対象になりうる'},
+    {t:'P',label:'STR判定',text:'力仕事・威圧。細い体と怪しい雰囲気'},
+  ]},
+  {name:'魔法使い', en:'Mage', items:[
+    {t:'B',label:'INT判定',text:'古代文字・魔術書・遺物の鑑定。知識量が他の追随を許さない'},
+    {t:'B',label:'INT判定（学者・帝国遺構調査）',text:'専門知識が直結する場面全般'},
+    {t:'P',label:'STR判定',text:'力仕事・威圧。貧弱な体格では話にならない'},
+    {t:'P',label:'AGI判定',text:'逃走・追跡・バランス。運動は専門外'},
+  ]},
+  {name:'聖職者', en:'Cleric', items:[
+    {t:'B',label:'交渉：一般市民・信者・病人',text:'神の使徒として信頼される'},
+    {t:'B',label:'INT判定（神学・奇跡・邪悪な存在）',text:'信仰の蓄積による知識'},
+    {t:'P',label:'交渉：呪術師・裏社会',text:'異端として拒絶される'},
+    {t:'P',label:'DEX判定',text:'潜入・スリ・鍵開け。戒律と育ちが邪魔をする'},
+  ]},
+  {name:'深きものの末裔', en:'Deep One', items:[
+    {t:'B',label:'AGI判定（水中・湿地・海岸）',text:'異形の身体能力が発揮される'},
+    {t:'B',label:'INT判定（深淵・旧支配者・名無しの者）',text:'血が語る記憶'},
+    {t:'P',label:'交渉：内陸の人間全般',text:'異形の外見が偏見と差別を招く'},
+    {t:'P',label:'LCK判定',text:'呪われた血筋はLCKの低さに直結する'},
+  ]},
+  {name:'狩人', en:'Hunter', items:[
+    {t:'B',label:'AGI判定',text:'追跡・索敵・危険察知。野生で磨かれた感覚'},
+    {t:'B',label:'DEX判定（罠の設置・看破）',text:'罠師としての経験が活きる'},
+    {t:'P',label:'交渉：都市・貴族・教団',text:'文明の場に不慣れで言葉が少ない'},
+    {t:'P',label:'INT判定',text:'魔術・神学・古代文字。文字よりも自然を読んで生きてきた'},
+  ]},
+  {name:'廃人', en:'Derelict', items:[
+    {t:'B',label:'LCK判定',text:'すべてを失った者に残るのは運だけ。修羅場での幸運'},
+    {t:'P',label:'交渉：全社会階層',text:'どの階層とも繋がりがなく信用の土台がない'},
+  ]},
+];
+
+// ================================================================
+// 素性カード生成
+// ================================================================
+function buildOriginCards() {
+  const grid = document.getElementById('origin-grid');
+  origins.forEach(o => {
+    const vals = o.stats;
+    const maxV = Math.max(...vals), minV = Math.min(...vals);
+    const bars = STAT_KEYS.map((k,i) => {
+      const v = vals[i];
+      const cls = v===maxV ? '--hi' : v===minV ? '--lo' : '';
+      return `<div class="stat-bar-row">
+        <span class="stat-bar-key">${k}</span>
+        <div class="stat-bar-track"><div class="stat-bar-fill${cls}" style="width:${v/20*100}%"></div></div>
+        <span class="stat-bar-val${cls}">${v}</span>
+      </div>`;
+    }).join('');
+
+    const tags = o.tags.map(([t,c]) =>
+      `<span class="origin-tag${c?` origin-tag--${c}`:''}">${t}</span>`
+    ).join('');
+
+    const card = document.createElement('div');
+    card.className = `origin-card${o.myth?' origin-card--myth':''}`;
+    card.innerHTML = `
+      <p class="origin-card__en">${o.en}</p>
+      <p class="origin-card__name">${o.name}</p>
+      <p class="origin-card__catch">${o.catch}</p>
+      <div class="origin-card__toggle">
+        <span>詳細を見る</span>
+        <i class="origin-card__toggle-icon">▾</i>
+      </div>
+      <div class="origin-card__detail">
+        <p class="origin-card__body">${o.body}</p>
+        <div class="origin-derived">
+          <div class="origin-derived__item">
+            <span class="origin-derived__label">HP</span>
+            <span class="origin-derived__val origin-derived__val--hp">${o.hp}</span>
+          </div>
+          <div class="origin-derived__sep"></div>
+          <div class="origin-derived__item">
+            <span class="origin-derived__label">MP</span>
+            <span class="origin-derived__val origin-derived__val--mp">${o.mp}</span>
+          </div>
+          <div class="origin-derived__sep"></div>
+          <div class="origin-derived__item">
+            <span class="origin-derived__label">CR</span>
+            <span class="origin-derived__val" style="color:var(--gold);font-size:16px">${o.cr}</span>
+          </div>
+          <div class="origin-derived__sep"></div>
+          <div class="origin-derived__item">
+            <span class="origin-derived__label">追加PT</span>
+            <span class="origin-derived__val" style="color:var(--teal2);font-size:16px">${o.pts}</span>
+          </div>
+        </div>
+        <div class="stat-bars">${bars}</div>
+        <div class="origin-tags" style="margin-bottom:0.75rem">${tags}</div>
+        <div class="origin-equip">
+          <div class="origin-equip__row"><span class="origin-equip__label">初期武器</span><span class="origin-equip__val">${o.weapon}</span></div>
+          <div class="origin-equip__row"><span class="origin-equip__label">初期防具</span><span class="origin-equip__val">${o.armor}</span></div>
+          <div class="origin-equip__row"><span class="origin-equip__label">固定支給</span><span class="origin-equip__val">エスト瓶×1</span></div>
+          <div class="origin-equip__row"><span class="origin-equip__label">初期G</span><span class="origin-equip__val" style="color:var(--gold)">${o.gold}G</span></div>
+        </div>
+      </div>
+    `;
+    // アコーディオン開閉
+    card.addEventListener('click', () => {
+      card.classList.toggle('open');
+    });
+    grid.appendChild(card);
+  });
+}
+
+// ================================================================
+// 命中値テーブル生成
+// ================================================================
+function buildHitTable() {
+  const tbody = document.getElementById('hit-tbody');
+  hitData.forEach(row => {
+    const tr = document.createElement('tr');
+    const cells = row.vals.map((v,i) => {
+      const isMagic = i >= 7;
+      const cls = v>=65 ? 'hit-cell--strong' : v<=40 ? 'hit-cell--weak' : '';
+      const magicCls = isMagic ? ' hit-cell--magic' : '';
+      return `<td class="${cls}${magicCls}">${v}%</td>`;
+    }).join('');
+    tr.innerHTML = `<td>${row.name}</td>${cells}<td>${row.best}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ================================================================
+// ボーナス・ペナルティグリッド生成
+// ================================================================
+function buildBpGrid() {
+  const grid = document.getElementById('bp-grid');
+  bpData.forEach(o => {
+    const rows = o.items.map(item =>
+      `<div class="bp-row">
+        <span class="bp-tag bp-tag--${item.t.toLowerCase()}">${item.t==='B'?'ボーナス':'ペナルティ'}</span>
+        <span class="bp-text"><strong style="color:var(--text)">${item.label}</strong>：${item.text}</span>
+      </div>`
+    ).join('');
+    const card = document.createElement('div');
+    card.className = 'bp-card';
+    card.innerHTML = `
+      <div class="bp-card__name">
+        ${o.name}<span class="bp-card__en">${o.en}</span>
+      </div>
+      ${rows}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+buildOriginCards();
+buildHitTable();
+buildBpGrid();
+</script>
+
+<script src="nav.js"></script>
+</body>
+</html>

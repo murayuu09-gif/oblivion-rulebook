@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>武器・防具 — 忘却の淵にて</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.data-controls{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;align-items:center}
+.search-box{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem 1rem;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-box:focus{border-color:var(--gold-dim)}.search-box::placeholder{color:var(--text3)}
+.filter-group{display:flex;flex-wrap:wrap;gap:.5rem}
+.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.1em;padding:4px 12px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);border-radius:2px;cursor:pointer;transition:all .2s}
+.filter-btn:hover{color:var(--gold);border-color:var(--gold-dim)}.filter-btn.active{background:var(--gold-dim);color:var(--gold2);border-color:var(--gold)}
+.result-count,.fav-notice{font-size:11px;font-family:'Noto Sans JP',sans-serif;margin-bottom:1rem}
+.result-count{color:var(--text3)}.fav-notice{color:var(--gold-dim);margin-bottom:1.5rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:3rem}
+.data-card{background:var(--bg2);padding:1.25rem;position:relative;transition:background .15s}
+.data-card:hover{background:var(--bg3)}.data-card.hidden{display:none}.data-card.favorited{background:rgba(200,164,90,.06)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
+.card-id{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text3);flex-shrink:0;margin-top:2px}
+.card-name{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
+.card-name-en{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.15em;display:block;margin-top:2px}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px;flex-shrink:0;transition:color .2s,transform .15s;line-height:1}
+.fav-btn:hover{color:var(--gold);transform:scale(1.2)}.fav-btn.active{color:var(--gold2)}
+.card-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
+.tag{font-size:9px;font-family:'Noto Sans JP',sans-serif;letter-spacing:.08em;padding:2px 7px;border-radius:2px;font-weight:500}
+.tag-soldier{background:rgba(160,144,112,.2);color:var(--text2);border:1px solid var(--border2)}
+.tag-hero{background:rgba(200,164,90,.15);color:var(--gold);border:1px solid var(--gold-dim)}
+.tag-legend{background:rgba(192,64,48,.15);color:var(--red2);border:1px solid var(--red)}
+.tag-fire{background:rgba(200,80,40,.15);color:#e87050;border:1px solid #904030}
+.tag-ice{background:rgba(80,160,200,.15);color:#70b0e0;border:1px solid #4080a0}
+.tag-thunder{background:rgba(200,200,40,.15);color:#d0c050;border:1px solid #908030}
+.tag-poison{background:rgba(80,160,80,.15);color:#70c070;border:1px solid #408040}
+.tag-dark{background:rgba(112,80,144,.2);color:var(--purple2);border:1px solid var(--purple)}
+.tag-holy{background:rgba(200,164,90,.15);color:var(--gold2);border:1px solid var(--gold-dim)}
+.tag-none{background:rgba(100,90,64,.2);color:var(--text2);border:1px solid var(--border2)}
+.card-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:.75rem}
+.stat-item{background:var(--bg3);border-radius:2px;padding:4px 6px;text-align:center}
+.stat-label{font-size:8px;font-family:'Noto Sans JP',sans-serif;color:var(--text3);letter-spacing:.1em;display:block}
+.stat-val{font-size:12px;font-weight:500;color:var(--gold);display:block}
+.card-special{font-size:11px;color:var(--text2);line-height:1.7;margin-bottom:.4rem;padding:4px 8px;background:rgba(200,164,90,.05);border-left:2px solid var(--gold-dim);border-radius:0 2px 2px 0}
+.card-hd{font-size:11px;line-height:1.7;padding:4px 8px;border-radius:2px;margin-bottom:4px;background:rgba(200,164,90,.08);color:var(--text2)}
+.card-hd::before{content:'HD ';color:var(--gold-dim);font-weight:500;font-family:'Cinzel',serif;font-size:9px}
+.card-ex{font-size:11px;line-height:1.7;padding:4px 8px;border-radius:2px;margin-bottom:4px;background:rgba(200,164,90,.14);color:var(--text2)}
+.card-ex::before{content:'EX ';color:var(--gold);font-weight:500;font-family:'Cinzel',serif;font-size:9px}
+.card-flavor{font-size:10px;color:var(--text3);font-style:italic;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;line-height:1.6}
+.tab-group{display:flex;flex-wrap:wrap;gap:0;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.08em;padding:.6rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
+.tab-btn:hover{color:var(--gold)}.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold-dim)}
+.tab-content{display:none}.tab-content.active{display:block}
+.armor-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem}
+.armor-table th{font-family:'Noto Sans JP',sans-serif;font-size:10px;color:var(--gold-dim);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border2);letter-spacing:.1em}
+.armor-table td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.6}
+.armor-table tr:last-child td{border-bottom:none}.armor-table td:first-child{color:var(--text);font-weight:500;white-space:nowrap}
+.armor-table tr:hover td{background:var(--bg3)}
+@media(max-width:640px){.card-grid{grid-template-columns:1fr}}
+
+/* ── キャラクター作成用テーブル ── */
+.cc-section { margin-bottom: 2.5rem; }
+.cc-section-title {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--text3);
+  margin-bottom: 0.6rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--gold-dim);
+}
+.cc-table-wrap {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow-x: auto;
+  margin-bottom: 0.5rem;
+}
+.cc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  min-width: 700px;
+}
+.cc-table th {
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--gold-dim);
+  text-align: left;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--border2);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+.cc-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+  vertical-align: top;
+  line-height: 1.5;
+}
+.cc-table tr:last-child td { border-bottom: none; }
+.cc-table tr:hover td { background: var(--bg3); }
+.cc-table td:first-child { white-space: nowrap; }
+.cc-name { color: var(--text); font-weight: 400; }
+.cc-badge {
+  display: inline-block;
+  font-size: 8px;
+  font-family: 'Noto Sans JP', sans-serif;
+  padding: 1px 5px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-left: 3px;
+}
+.cc-soldier { background: rgba(160,144,112,.2); color: var(--text2); border: 1px solid var(--border2); }
+.cc-hero    { background: rgba(200,164,90,.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+.cc-legend  { background: rgba(192,64,48,.15); color: var(--red2); border: 1px solid var(--red); }
+.cc-waza { font-size: 10px; color: var(--text3); line-height: 1.6; }
+.cc-waza .hd { color: var(--gold-dim); font-weight: 500; }
+.cc-waza .ex { color: var(--gold); font-weight: 500; }
+.cc-waza .mp { font-size: 9px; color: var(--teal2); }
+.cc-waza .none { color: var(--text3); font-style: italic; }
+.cc-price { color: var(--gold); font-family: 'Cinzel', serif; font-size: 10px; white-space: nowrap; }
+.cc-price.legend { color: var(--red2); }
+.cc-cat-note {
+  font-size: 11px;
+  color: var(--text2);
+  line-height: 1.8;
+  padding: 0.6rem 1rem;
+  background: rgba(200,164,90,0.04);
+  border: 1px solid rgba(200,164,90,0.12);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+.cc-cat-note b { color: var(--gold-dim); }
+
+</style>
+</head>
+<body>
+<nav class="site-nav" role="navigation"><div class="site-nav__inner">
+  <a href="index.html" class="site-nav__logo">Oblivion</a>
+  <ul class="site-nav__links">
+    <li><a href="index.html">Top</a></li>
+    <li class="site-nav__item"><a href="world.html">世界観</a><ul class="site-nav__dropdown"><li><a href="world.html">概要</a></li><li><a href="world_detail.html">詳細設定</a></li></ul></li>
+    <li class="site-nav__item"><a href="system_combat.html">システム</a><ul class="site-nav__dropdown"><li><a href="system_combat.html">戦闘</a></li><li><a href="system_explore.html">探索</a></li></ul></li>
+    <li><a href="charcreate.html">キャラクター作成</a></li>
+    <li><a href="origins.html">素性・能力値</a></li>
+    <li class="site-nav__item"><a href="data_weapons.html">データ一覧</a><ul class="site-nav__dropdown"><li><a href="data_weapons.html">武器・防具</a></li><li><a href="data_magic.html">魔術・奇跡</a></li><li><a href="data_seals.html">刻印</a></li></ul></li>
+    <li class="site-nav__item"><a href="gm_enemies.html">GMツール</a><ul class="site-nav__dropdown"><li><a href="gm_enemies.html">エネミーリスト</a></li><li><a href="gm_artifacts.html">アーティファクト</a></li><li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li></ul></li>
+  </ul>
+</div></nav>
+<div class="page-wrap">
+  <div class="page-header">
+    <p class="page-eyebrow">Data — V-A</p>
+    <h1 class="page-title">Weapons & Armor</h1>
+    <p class="page-title-ja">武器・防具</p>
+    <div class="page-divider"></div>
+  </div>
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchTab('weapon')">武器（74種）</button>
+    <button class="tab-btn" onclick="switchTab('armor')">防具（30種）</button>
+    <button class="tab-btn" onclick="switchTab('favorites')">★ お気に入り</button>
+    <button class="tab-btn" onclick="switchTab('charcreate')">📋 キャラクター作成用</button>
+  </div>
+  <div id="tab-weapon" class="tab-content active">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果・属性で検索…" oninput="filterWeapons(this.value)">
+      <div class="filter-group" id="wt-filters">
+        <button class="filter-btn active" onclick="setWF('type','all',this)">すべて</button>
+        <button class="filter-btn" onclick="setWF('type','短剣',this)">短剣</button>
+        <button class="filter-btn" onclick="setWF('type','直剣',this)">直剣</button>
+        <button class="filter-btn" onclick="setWF('type','大剣',this)">大剣</button>
+        <button class="filter-btn" onclick="setWF('type','斧・ハンマー',this)">斧・ハンマー</button>
+        <button class="filter-btn" onclick="setWF('type','槍・ハルバード',this)">槍・ハルバード</button>
+        <button class="filter-btn" onclick="setWF('type','盾',this)">盾</button>
+        <button class="filter-btn" onclick="setWF('type','弓',this)">弓</button>
+      </div>
+      <div class="filter-group" id="wr-filters">
+        <button class="filter-btn active" onclick="setWF('rank','all',this)">全ランク</button>
+        <button class="filter-btn" onclick="setWF('rank','兵士',this)">兵士</button>
+        <button class="filter-btn" onclick="setWF('rank','英雄',this)">英雄</button>
+        <button class="filter-btn" onclick="setWF('rank','伝説',this)">伝説</button>
+      </div>
+    </div>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="wc"></p>
+    <div class="card-grid" id="weapon-grid"></div>
+  </div>
+  <div id="tab-armor" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果で検索…" oninput="filterArmor(this.value)">
+      <div class="filter-group" id="af-filters">
+        <button class="filter-btn active" onclick="setAF('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setAF('頭',this)">頭</button>
+        <button class="filter-btn" onclick="setAF('胴',this)">胴</button>
+        <button class="filter-btn" onclick="setAF('兵士',this)">兵士</button>
+        <button class="filter-btn" onclick="setAF('英雄',this)">英雄</button>
+        <button class="filter-btn" onclick="setAF('伝説',this)">伝説</button>
+      </div>
+    </div>
+    <p class="result-count" id="ac"></p>
+    <div id="armor-container"></div>
+  </div>
+  
+  <div id="tab-charcreate" class="tab-content">
+    <div id="cc-weapon-content"></div>
+  </div>
+  <div id="tab-favorites" class="tab-content">
+    <p class="fav-notice">★ をつけた武器がここに表示されます</p>
+    <div class="card-grid" id="fav-grid"><div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div></div>
+  </div>
+  <nav class="page-nav">
+    <div><p class="page-nav__label">← Previous</p><a href="origins.html" class="page-nav__link">素性・能力値</a></div>
+    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="data_magic.html" class="page-nav__link">魔術・奇跡</a></div>
+  </nav>
+</div>
+<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
+<script src="nav.js"></script>
+<script>
+const W=[
+{t:'短剣',n:'カッター',e:'Cutter',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'急所掠り：命中対象の次の回避判定にPD+1',hmp:'1',ex:'—',emp:'—',fl:'「安くて壊れやすい。それでも刃は刃だ」'},
+{t:'短剣',n:'ダガー',e:'Dagger',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'—',hd:'—',hmp:'—',ex:'生死の一線：命中対象がHP5以下なら死の宣告付与（POWロール）',emp:'2',fl:'「廃掘人が最初に手に入れる一刀」'},
+{t:'短剣',n:'毒刃',e:'Venblade',r:'兵士',a:'毒',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'毒付与',hd:'毒の蓄積：命中時、毒スタック+1追加',hmp:'1',ex:'—',emp:'—',fl:'「メルクリアの暗路で受け継がれた手仕事」'},
+{t:'短剣',n:'忍び刀',e:'Shadow Fang',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'イニシアチブ勝利時 命中+10%',hd:'影の一撃：イニシアチブ勝利ターンのみ、命中対象に盲目付与（POWロール）',hmp:'1',ex:'—',emp:'—',fl:'「先手こそが全てだ」'},
+{t:'短剣',n:'骨砕き',e:'Bonepicker',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'自分付与の状態異常を対象が持つとき ダメージ+1d3',hd:'傷口えぐり：状態異常2種以上持つ対象に追加ダメージ+1d4',hmp:'1',ex:'—',emp:'—',fl:'「廃墟の探索者が愛用する汚い刃」'},
+{t:'短剣',n:'水銀刃',e:'Quicksilver',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'同ターン2回目以降の攻撃 命中+5%',hd:'水銀の連鎖：3回全命中時、次ターン1回目攻撃命中+10%',hmp:'1',ex:'—',emp:'—',fl:'「速さとは、迷わないことだ」'},
+{t:'短剣',n:'爪牙',e:'Talon',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'片手',sp:'命中するたびに次のダメージ+1（最大+4）',hd:'爪の記憶：蓄積+3以上のとき装甲を1点無視',hmp:'1',ex:'—',emp:'—',fl:'「引いた傷が、積み重なって死をつくる」'},
+{t:'短剣',n:'星鉄の短刀',e:'Starstone Dirk',r:'英雄',a:'雷',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'帯電の傷：物理装甲半減中、対象が攻撃するたびに1ダメージ',hmp:'1',ex:'隕石の落下：装甲半減中の対象に1d8＋連鎖1d4',emp:'2',fl:'「大崩壊の夜に降った隕鉄で鍛えられたという」'},
+{t:'短剣',n:'儚月',e:'Fleeting Moon',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'片手',sp:'通常成功をEXとして扱う',hd:'—',hmp:'—',ex:'—',emp:'—',fl:'「避けた瞬間だけ輝く」'},
+{t:'短剣',n:'深淵の舌',e:'Void Whisper',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'命中するたびに使用者もPOWロール（失敗で疲労付与）',hd:'囁きの侵食：命中対象のPOW-2（1R）',hmp:'1',ex:'深淵の共鳴：POW-2発動中、状態異常耐性を完全無効化',emp:'2',fl:'「囁きが止まらない」'},
+{t:'短剣',n:'終焉の一刺し',e:'Last Rite',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'3回',d:'1d6',f:'+3',s:'DEX',p:'—',h:'片手',sp:'アンデッドに+2d4。命中したアンデッドは蘇生不可',hd:'終焉の宣告：命中対象に死の宣告付与（ロール不要）',hmp:'2',ex:'縫合の終焉：死の宣告付与中の対象への命中時、宣告を全消費して即死処理',emp:'3',fl:'「ただ、終わらせるだけだ」'},
+{t:'直剣',n:'ショートソード',e:'Short Sword',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'確かな一撃：対象HP半分以下なら追加ダメージ+1d4',hmp:'1',ex:'—',emp:'—',fl:'「最初の剣。最後まで手放せない剣」'},
+{t:'直剣',n:'ロングソード',e:'Long Sword',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'万能の一手：このターン他に攻撃なら命中+5%',hmp:'1',ex:'—',emp:'—',fl:'「一番使いやすいからだ」'},
+{t:'直剣',n:'バスタードソード',e:'Bastard Sword',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'両手持ち時 ダメージ+1d4',hd:'—',hmp:'—',ex:'両手の解放：両手持ち命中時、対象を1マス後退＋前方1マスの別の敵に1d4',emp:'2',fl:'「片手でも、両手でも」'},
+{t:'直剣',n:'炎の直剣',e:'Flamebrand',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'燃焼付与。冷気カウントリセット',hd:'炎の波及：命中対象が燃焼中なら隣接の別の敵にも燃焼付与',hmp:'1',ex:'—',emp:'—',fl:'「冷気を焼き払う」'},
+{t:'直剣',n:'銀の直剣',e:'Silver Sword',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'アンデッドに+2d4',hd:'銀の浄化：命中したアンデッドの有利な状態異常1種を解除',hmp:'1',ex:'—',emp:'—',fl:'「銀は嘘をつかない」'},
+{t:'直剣',n:'月光剣',e:'Moonlight Blade',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'夜間・暗所での命中+5%・ダメージ+1',hd:'月光の断片：夜間・暗所での命中時、対象の次の攻撃にPD+1',hmp:'1',ex:'—',emp:'—',fl:'「月光だけを反射する」'},
+{t:'直剣',n:'ラピア',e:'Rapier',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'回避行動後の命中+10%',hd:'突きの連鎖：同ターン2回目の命中時、固定値+2追加',hmp:'1',ex:'—',emp:'—',fl:'「突きだけで世界に勝てる」'},
+{t:'直剣',n:'贖罪の剣',e:'Penitent Blade',r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'HP半分以下のとき ダメージ+1d6。アンデッドに+2d4',hd:'痛みの反射：HP半分以下のとき命中対象を1マス後退',hmp:'1',ex:'贖罪の極致：HP半分以下かつEX時、死の宣告付与。使用者HP-2',emp:'2',fl:'「痛みが、力になる」'},
+{t:'直剣',n:'霜の剣',e:'Frostbite',r:'英雄',a:'冷気',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'冷気付与。燃焼を即解除',hd:'深海の震え：命中対象AGI-2（1R）。冷気スタック2以上なら追加ダメージ+1d4',hmp:'1',ex:'永久の氷：凍結状態の対象への命中時、凍結解除を1ターン遅らせる',emp:'2',fl:'「容赦がない」'},
+{t:'直剣',n:'骸の王',e:'Night King',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'INT',p:'—',h:'片手',sp:'INT参照固定（STR/DEX不可）',hd:'骨の歌：命中対象の周囲1マス以内の別の敵1体にも沈黙付与',hmp:'1',ex:'死者の王権：対象のMP-2d6、MP0の場合HP直接ダメージ',emp:'2',fl:'「骨が歌う」'},
+{t:'直剣',n:'大審判者',e:'The Adjudicator',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'STR/DEX',p:'—',h:'片手',sp:'アンデッドに+2d4。命中した相手の状態異常を全解除し、種数×2d6ダメージ追加',hd:'均衡の裁定：ダメージを与えた相手のバフを自分も受ける',hmp:'—',ex:'完全な裁定：好きな状態異常を選んで付与',emp:'3',fl:'「裁くとは、すべてを均すことだ」'},
+{t:'大剣',n:'グレートソード',e:'Greatsword',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'大地の震動：命中対象と前方1マスの敵全員に疲労付与',hmp:'1',ex:'—',emp:'—',fl:'「振れば勝てる。振るまでが問題だ」'},
+{t:'大剣',n:'クレイモア',e:'Claymore',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'+1',s:'STR',p:'—',h:'両手',sp:'—',hd:'古の一撃：命中対象の物理装甲を1R半減',hmp:'1',ex:'—',emp:'—',fl:'「もっとも古い剣型の一つ」'},
+{t:'大剣',n:'断罪剣',e:'Headsman',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'+2',s:'STR',p:'—',h:'両手',sp:'使用後 次のターン開始時AP-1',hd:'処刑の間合い：命中対象を1マス後退。後退不可なら追加ダメージ+1d6',hmp:'1',ex:'—',emp:'—',fl:'「重さが全てだ」'},
+{t:'大剣',n:'炎帝の大剣',e:'Pyroclast',r:'兵士',a:'炎',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'燃焼付与。冷気カウントリセット',hd:'炎帝の号令：命中対象が燃焼中なら前方1マスの敵全員にも命中判定（1d4）',hmp:'1',ex:'—',emp:'—',fl:'「炎は選ばない」'},
+{t:'大剣',n:'腐食剣',e:'Corroder',r:'兵士',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与',hd:'鎧腐食：毒付与中の対象の物理装甲を1点永続減少',hmp:'1',ex:'—',emp:'—',fl:'「錆びさせる」'},
+{t:'大剣',n:'裂地',e:'Earthsplitter',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'前方直線射程1の敵全員にダメージ',hd:'地割れ：薙ぎ払い命中した全対象の次のターン移動APコスト+1',hmp:'1',ex:'—',emp:'—',fl:'「一振りで地面が割れる」'},
+{t:'大剣',n:'石英の大剣',e:'Quartzite Blade',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'地揺れ：命中した対象が盾装備中の場合、盾の物理軽減を1R無効化',hmp:'1',ex:'—',emp:'—',fl:'「硬いものをもっと硬いもので壊す」'},
+{t:'大剣',n:'嘆きの大剣',e:'Mourning Blade',r:'英雄',a:'闇',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'対象のMPが0のとき、ダメージが装甲完全無視',hd:'—',hmp:'—',ex:'—',emp:'—',fl:'「悲しみを剣に変えた」'},
+{t:'大剣',n:'鯨骨の大剣',e:'Whale Bone',r:'英雄',a:'冷気',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+1',s:'STR',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除。凍結状態の敵へダメージ+2d6',hd:'海底の圧力：凍結状態の対象への命中時、追加ダメージ+2d4＋STR-2（1R）',hmp:'1',ex:'深海の断裂：石化付与（ロール不要）。凍結解除時にダメージ+1d6追加',emp:'2',fl:'「海は憶えている」'},
+{t:'大剣',n:'星喰い',e:'Stareater',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d8',f:'—',s:'STR',p:'—',h:'両手',sp:'使用後 次のターンAP-1・命中-10%。クリティカル時ダメージ×3',hd:'引力：命中した対象を1マス引き寄せ',hmp:'1',ex:'星の崩壊：対象を2マス後退＋後退先に1d8ダメージ',emp:'2',fl:'「これを振るった者は、次の日も生きていたためしがない」'},
+{t:'大剣',n:'目覚め',e:"World's End",r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'3d6',f:'—',s:'STR',p:'全',h:'両手',sp:'命中後 使用者HP-5（固定）',hd:'大地の目覚め：前方3マスの敵全員に命中判定。与えたダメージと同量HP回復',hmp:'2',ex:'世界の崩壊：戦闘に参加している全キャラクターにHP最大値の半分のダメージ',emp:'3',fl:'「これを抜いた者は、もう止まれない」'},
+{t:'斧・ハンマー',n:'ハンドアックス',e:'Hand Axe',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'鎧割り：命中対象の物理装甲を1点永続的に減少',hmp:'1',ex:'—',emp:'—',fl:'「木を割るか、頭を割るか」'},
+{t:'斧・ハンマー',n:'戦斧',e:'Battle Axe',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'競技場の咆哮：命中後、次のターンもイニシアチブ最優先',hmp:'1',ex:'—',emp:'—',fl:'「語る必要はない」'},
+{t:'斧・ハンマー',n:'投擲斧',e:'Throwing Axe',r:'兵士',a:'無属性',rng:'1〜3',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'近接・投擲兼用',hd:'正確な投擲：投擲使用時（射程2〜3）、命中+10%・対象を1マス後退',hmp:'1',ex:'—',emp:'—',fl:'「飛ばすか、振るか」'},
+{t:'斧・ハンマー',n:'石割り',e:'Stonecrusher',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'—',hmp:'—',ex:'岩盤砕き：対象のHP最大値が低いほど追加ダメージ増加',emp:'2',fl:'「石を割るものは、鎧も割る」'},
+{t:'斧・ハンマー',n:'雷槌',e:'Thundermaul',r:'兵士',a:'雷',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'落雷：命中後、射程2内の別の敵1体に1d6連鎖',hmp:'1',ex:'—',emp:'—',fl:'「外なる神々の雷を模した」'},
+{t:'斧・ハンマー',n:'儀式の斧',e:'Ritual Cleaver',r:'兵士',a:'神聖',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'—',hmp:'—',ex:'最後の審判：死の宣告付与（ロール不要）。使用者HP-2',emp:'2',fl:'「捧げる。神に、あるいは自分に」'},
+{t:'斧・ハンマー',n:'双斧',e:'Twin Hatchets',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'1回の攻撃で2ヒット（各命中判定独立）',hd:'交差斬り：両方命中時、対象を2マス後退',hmp:'1',ex:'乱舞：両方命中時、さらに追加で1ヒット（合計3ヒット可能）',emp:'2',fl:'「一つで割れないなら、もう一つで割る」'},
+{t:'斧・ハンマー',n:'骨の砕き手',e:'Bonebreaker',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'+2',s:'STR',p:'—',h:'両手',sp:'命中するたびに対象のSTR-1（最大-4）',hd:'腕砕き：STR-1の累積効果発動中の対象へダメージ+1d6',hmp:'1',ex:'—',emp:'—',fl:'「折れた腕は、剣を持てない」'},
+{t:'斧・ハンマー',n:'疫病斧',e:'Plagueaxe',r:'英雄',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与。毒を持つ対象の隣接者にも毒付与（POWロール）',hd:'—',hmp:'—',ex:'—',emp:'—',fl:'「一人から広がる」'},
+{t:'斧・ハンマー',n:'歳輪',e:'Wheel of Ages',r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d12',f:'—',s:'STR',p:'全',h:'両手',sp:'疲労付与。命中対象のイニシアチブを永続的に最低にする',hd:'時の凍結：命中対象の次のターンを完全に消失させる',hmp:'2',ex:'時輪の停止：命中対象のAP-1が2ターン継続。凍結状態なら即石化付与',emp:'3',fl:'「用途不明の帝国遺物」'},
+{t:'槍・ハルバード',n:'ショートスピア',e:'Short Spear',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'牽制：命中対象が次のターン使用者に近づく場合、移動APコスト+1',hmp:'1',ex:'—',emp:'—',fl:'「届く。それだけで強い」'},
+{t:'槍・ハルバード',n:'ロングスピア',e:'Long Spear',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'間合い支配：命中後このターン中、対象が近づく移動をAGIロールで妨害できる',hmp:'1',ex:'—',emp:'—',fl:'「誰も近づけない」'},
+{t:'槍・ハルバード',n:'ハルバード',e:'Halberd',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'大薙ぎ：命中した対象と隣接する別の敵1体にも同ダメージの半分',hmp:'1',ex:'—',emp:'—',fl:'「槍でもなく、斧でもない」'},
+{t:'槍・ハルバード',n:'毒槍',e:'Venom Lance',r:'兵士',a:'毒',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'毒付与',hd:'毒の穿孔：毒状態の対象への命中時、装甲貫通+1追加',hmp:'1',ex:'—',emp:'—',fl:'「逃げ場などない」'},
+{t:'槍・ハルバード',n:'聖槍',e:'Holy Lance',r:'兵士',a:'神聖',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'浄化の穿ち：命中したアンデッドの状態異常1種を解除し追加ダメージ+2d4',hmp:'1',ex:'—',emp:'—',fl:'「廃墟に踏み込む際に持つもの」'},
+{t:'槍・ハルバード',n:'凍てつく穂先',e:'Frozen Tip',r:'兵士',a:'冷気',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除',hd:'氷晶の穿孔：命中対象の冷気スタックを強制的に+2追加',hmp:'1',ex:'—',emp:'—',fl:'「突けば冷気が染み込む」'},
+{t:'槍・ハルバード',n:'地穿ち',e:'Earthpiercer',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+1',s:'STR/DEX',p:'全',h:'両手',sp:'装甲・盾装甲を含む全装甲を無視',hd:'大地の楔：命中した対象を1マス後退。後退不可なら追加1d4',hmp:'1',ex:'—',emp:'—',fl:'「突けば穴が開く」'},
+{t:'槍・ハルバード',n:'波紋の槍',e:'Ripple Lance',r:'英雄',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'直線上の射程2内の敵全員に命中判定',hd:'波紋共鳴：2体以上命中時、最初の命中対象にも追加ダメージ1d4',hmp:'1',ex:'深淵の波動：命中した全対象に恐怖付与（ロール不要）＋POW-2（1ターン）',emp:'2',fl:'「深淵の神の思念が波紋状に広がる」'},
+{t:'槍・ハルバード',n:'魂喰らいの穂',e:'Soul Reaper',r:'英雄',a:'闇',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d4。MP0の対象はHPへ直接ダメージ',hd:'—',hmp:'—',ex:'—',emp:'—',fl:'「魂を刺す」'},
+{t:'槍・ハルバード',n:'嵐の矛',e:'Stormspear',r:'英雄',a:'雷',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'STR/DEX',p:'—',h:'両手',sp:'雷属性：物理装甲半減（1R）。命中後 射程2内の別の敵1体に1d4連鎖',hd:'雷鎖：連鎖先も物理装甲半減。連鎖ダメージが1d6に上昇',hmp:'1',ex:'嵐の解放：命中した全対象の物理装甲半減を2Rに延長＋連鎖ダメージ1d8',emp:'2',fl:'「外なる神々の電磁エネルギーの欠片」'},
+{t:'槍・ハルバード',n:'星の槍',e:'Astral Lance',r:'伝説',a:'神聖',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+3',s:'STR/DEX',p:'全',h:'両手',sp:'アンデッドに+2d4。命中判定前に対象は回避・応戦を宣言できない（相殺のみ可）',hd:'星の縫合：命中対象をこの戦闘中、使用者の隣接マスから離れられなくする',hmp:'2',ex:'星の恩寵：盲目・沈黙・封印・石化付与（ロール不要）',emp:'3',fl:'「縫合の神が星から放った光の矛の、最後の一本」'},
+{t:'盾',n:'木の盾',e:'Wooden Shield',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+1',hd:'必死の防御：HP10以下のとき防御成功で完全無効（1回のみ）',hmp:'1',ex:'—',emp:'—',fl:'「重くて、粗末で、でも命を救う」'},
+{t:'盾',n:'丸盾',e:'Round Shield',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2',hd:'盾払い：防御成功時、対象の次の命中判定にPD+1',hmp:'1',ex:'—',emp:'—',fl:'「バランスが良い」'},
+{t:'盾',n:'タワーシールド',e:'Tower Shield',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+4。使用者の回避判定にPD+1（常時）',hd:'城壁：防御成功時、隣接する味方全員への攻撃も同時に防御できる',hmp:'1',ex:'—',emp:'—',fl:'「動けないが、死なない」'},
+{t:'盾',n:'刺盾',e:'Spiked Shield',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。応戦成功時 反撃ダメージ+1d4',hd:'返し刺し：防御成功後の応戦時、命中+10%',hmp:'1',ex:'—',emp:'—',fl:'「防ぐついでに、刺す」'},
+{t:'盾',n:'炎の紋章盾',e:'Blazon Shield',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'1',h:'片手',sp:'燃焼付与。防御時 物理軽減+2・魔術軽減+2',hd:'炎の盾壁：防御成功時、攻撃者に燃焼付与',hmp:'1',ex:'—',emp:'—',fl:'「触れた者が燃える」'},
+{t:'盾',n:'聖印盾',e:'Blessed Shield',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。アンデッドに+2d4',hd:'—',hmp:'—',ex:'信仰の盾：防御成功時、アンデッドに死の宣告付与（POWロール）',emp:'2',fl:'「信仰が、盾の表面に宿る」'},
+{t:'盾',n:'反射盾',e:'Mirror Ward',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+3・魔術軽減+3。魔術攻撃の相殺成功時 ダメージを攻撃者に反射（半分）',hd:'完全反射：相殺成功時、反射ダメージに命中対象が持つ全魔術耐性軽減を無視',hmp:'1',ex:'鏡の呪縛：相殺成功後、攻撃者の次の魔術コストMP+2＋命中にPD+1',emp:'2',fl:'「帝国時代の対魔術師部隊の遺物」'},
+{t:'盾',n:'深淵の盾',e:'Abyss Ward',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2・魔術軽減+3',hd:'内なる叫び：防御成功時、攻撃者に恐怖付与（POWロール）',hmp:'1',ex:'深淵の侵食：防御成功時、攻撃者に発狂付与（ロール不要）＋使用者POW-1（1R）',emp:'2',fl:'「内側に何かが動いている」'},
+{t:'盾',n:'受難者の盾',e:"Martyr's Aegis",r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'+2',s:'STR/CON',p:'—',h:'片手',sp:'HP半分以下のとき 防御時 物理軽減+3。アンデッドに+2d4',hd:'殉教者の怒り：HP半分以下のとき防御成功後の応戦ダメージ+2d4',hmp:'1',ex:'最後の加護：HP半分以下で防御成功時、隣接する味方全員HP+1d6＋次ターン命中BD+1',emp:'2',fl:'「折れても、まだ守る」'},
+{t:'盾',n:'不滅の守護者',e:'Undying Warden',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d6',f:'+3',s:'STR/CON',p:'—',h:'片手',sp:'防御行動成功で完全無効（1ラウンドに2回まで）。毎ラウンド開始時HP-2',hd:'守護の波動：完全無効発動時、無効化したダメージを射程3内の全敵に等分して反射',hmp:'2',ex:'大崩壊の否定：完全無効を味方全員に1ターン展開。使用者HP-10（固定）',emp:'3',fl:'「縫合の神の加護が宿るとされる帝国時代の盾」'},
+{t:'弓',n:'ショートボウ',e:'Short Bow',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'—',h:'両手',sp:'—',hd:'至近の刻み：射程3以内の対象への命中時、ダメージ+1d4',hmp:'1',ex:'—',emp:'—',fl:'「近ければ外さない」'},
+{t:'弓',n:'ロングボウ',e:'Long Bow',r:'兵士',a:'無属性',rng:'8',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'DEX',p:'—',h:'両手',sp:'—',hd:'狙い定め：射程6以上の対象への命中時、次の同一対象への攻撃命中+10%',hmp:'1',ex:'—',emp:'—',fl:'「遠ければ安全だ」'},
+{t:'弓',n:'複合弓',e:'Composite Bow',r:'兵士',a:'無属性',rng:'6',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'STR/DEX高い方を参照',hd:'力射：STR参照時、対象を1マス後退。DEX参照時、次の命中判定にBD+1',hmp:'1',ex:'—',emp:'—',fl:'「力と技の融合」'},
+{t:'弓',n:'毒矢',e:'Venom Bow',r:'兵士',a:'毒',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'—',s:'DEX',p:'1',h:'両手',sp:'毒付与',hd:'—',hmp:'—',ex:'毒の爆発：毒スタック5（上限）の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視）',emp:'2',fl:'「矢が届けば、毒が仕事をする」'},
+{t:'弓',n:'炎矢',e:'Flaming Bow',r:'兵士',a:'炎',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'+1',s:'DEX',p:'1',h:'両手',sp:'燃焼付与。冷気カウントリセット',hd:'—',hmp:'—',ex:'延焼：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与（POWロール）',emp:'2',fl:'「空を燃やしながら飛ぶ」'},
+{t:'弓',n:'狙撃弓',e:'Sniper Bow',r:'兵士',a:'無属性',rng:'10',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'両手',sp:'射程5以上の相手への命中+10%',hd:'急所穿ち：射程8以上からの命中時、物理装甲を半分無視',hmp:'1',ex:'—',emp:'—',fl:'「距離は恐怖ではなく、優位だ」'},
+{t:'弓',n:'連射弓',e:'Rapid Bow',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'両手',sp:'最大攻撃回数3回',hd:'乱れ矢：3回全命中時、追加で1回無料攻撃',hmp:'1',ex:'—',emp:'—',fl:'「速さが、量になる」'},
+{t:'弓',n:'魂狩り弓',e:'Soulseeking Bow',r:'英雄',a:'闇',rng:'6',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d4。MP0の場合HP直接ダメージ',hd:'—',hmp:'—',ex:'魂の断絶：封印付与（ロール不要）',emp:'2',fl:'「魂を射抜く」'},
+{t:'弓',n:'冬の弓',e:"Winter's Bow",r:'英雄',a:'冷気',rng:'7',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除',hd:'氷の軌跡：冷気スタック2の対象への命中時、移動APコスト+2（1R）＋AGI判定にPD+1',hmp:'1',ex:'冬の終わり：凍結状態の対象への命中時、凍結解除と同時に追加ダメージ1d8',emp:'2',fl:'「名無しの者の冷気を宿す」'},
+{t:'弓',n:'星読みの弓',e:'Starreader',r:'英雄',a:'無属性',rng:'7',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'DEX',p:'—',h:'両手',sp:'常時クリティカル率+5%。クリティカル発生時、次の攻撃もクリティカル率+10%追加',hd:'—',hmp:'—',ex:'—',emp:'—',fl:'「星の軌道を矢に宿す」'},
+{t:'弓',n:'天弓',e:"Heaven's Arc",r:'伝説',a:'神聖',rng:'∞',ap:'1AP',mh:'2回',d:'1d8',f:'+3',s:'DEX',p:'—',h:'両手',sp:'アンデッドに+2d4。クリティカルしたらAP消費なしで追加攻撃可',hd:'天の裁き：視界内の対象全員への同時命中判定',hmp:'4',ex:'大崩壊の再現：使用者は即座に死亡する。使用者の全能力値の合計の固定ダメージ',emp:'3',fl:'「縫合の神が矢を放ったという神話の再現」'},
+];
+
+const A=[
+{sl:'頭',n:'布の頭巾',e:'Cloth Hood',r:'兵士',ph:0,mg:0,w:'軽',ef:'なし',fl:'「何もないよりはましだ」'},
+{sl:'頭',n:'革兜',e:'Leather Cap',r:'兵士',ph:1,mg:0,w:'軽',ef:'なし',fl:'「廃掘人の定番。安くて軽い」'},
+{sl:'頭',n:'鉄兜',e:'Iron Helm',r:'兵士',ph:2,mg:0,w:'中',ef:'なし',fl:'「重い。でも頭を守る」'},
+{sl:'頭',n:'騎士兜',e:'Knight Helm',r:'兵士',ph:3,mg:0,w:'重',ef:'使用者の回避判定にPD+1（常時・視界制限）',fl:'「視界が狭い」'},
+{sl:'頭',n:'白衣の頭巾',e:'White Hood',r:'兵士',ph:0,mg:2,w:'軽',ef:'POWロールにBD+1',fl:'「信仰の証」'},
+{sl:'頭',n:'魔術師の帽子',e:'Mage Hat',r:'兵士',ph:0,mg:1,w:'軽',ef:'INT判定にBD+1',fl:'「各地に伝わっている」'},
+{sl:'頭',n:'深淵の仮面',e:'Abyssal Mask',r:'兵士',ph:1,mg:2,w:'中',ef:'恐怖・発狂のPOWロールにBD+1',fl:'「何かを封印するために作られた」'},
+{sl:'頭',n:'狩人の帽子',e:"Hunter's Hat",r:'兵士',ph:0,mg:0,w:'軽',ef:'イニシアチブ判定にBD+1',fl:'「軽く、視界を塞がない」'},
+{sl:'頭',n:'角兜',e:'Horned Helm',r:'兵士',ph:2,mg:0,w:'重',ef:'STR判定にBD+1。使用者の回避判定にPD+1（常時・重さの代償）',fl:'「角は威圧のためだ」'},
+{sl:'頭',n:'呪術師の仮面',e:"Hexer's Visage",r:'兵士',ph:0,mg:1,w:'軽',ef:'POWロールにBD+1。発狂付与のPOWロールにBD+1（重複・計BD+2）',fl:'「内側に呪文が刻まれている」'},
+{sl:'頭',n:'帝国の兜',e:'Imperial Helm',r:'英雄',ph:3,mg:1,w:'重',ef:'使用者の回避判定にPD+1（常時）。HP計算時CON+1として扱う',fl:'「廃掘人の垂涎品」'},
+{sl:'頭',n:'廃人の頭巾',e:'Derelict Hood',r:'英雄',ph:0,mg:0,w:'軽',ef:'全状態異常のPOWロールにBD+1',fl:'「何も守らないが、何にも縛られない」'},
+{sl:'頭',n:'深海の仮面',e:'Abyssal Visor',r:'英雄',ph:1,mg:2,w:'中',ef:'冷気付与のPOWロールにBD+2。水中・深海での命中判定にBD+1',fl:'「陸では異様に映る」'},
+{sl:'頭',n:'傭兵の頭巾',e:"Sellsword's Cowl",r:'英雄',ph:0,mg:0,w:'軽',ef:'DEX判定にBD+1。同ターン1回目の攻撃命中+5%',fl:'「顔を隠せば、過去も隠せる」'},
+{sl:'頭',n:'縫合の冠',e:'Sutured Crown',r:'伝説',ph:2,mg:3,w:'中',ef:'FTH判定にBD+1。MP計算時POW+2として扱う',fl:'「縫合の神の加護を宿す冠」'},
+{sl:'胴',n:'布の服',e:'Cloth Robe',r:'兵士',ph:0,mg:1,w:'軽',ef:'なし',fl:'「着ないよりはまし、という程度だ」'},
+{sl:'胴',n:'革鎧',e:'Leather Armor',r:'兵士',ph:2,mg:0,w:'軽',ef:'なし',fl:'「廃掘人の基本装備」'},
+{sl:'胴',n:'鎖帷子',e:'Chain Mail',r:'兵士',ph:3,mg:0,w:'中',ef:'なし',fl:'「軽い金属鎧としては優秀」'},
+{sl:'胴',n:'板金鎧',e:'Plate Armor',r:'兵士',ph:4,mg:0,w:'重',ef:'使用者の回避判定にPD+1（常時）',fl:'「生き残る確率は上がる」'},
+{sl:'胴',n:'白衣の法衣',e:'White Cassock',r:'兵士',ph:0,mg:3,w:'軽',ef:'FTH判定にBD+1',fl:'「魔術的防護が織り込まれている」'},
+{sl:'胴',n:'魔術師のローブ',e:'Mage Robe',r:'兵士',ph:0,mg:2,w:'軽',ef:'INT判定にBD+1。MP最大値+2',fl:'「各学院が復元を試みている」'},
+{sl:'胴',n:'呪術師の外套',e:"Hexer's Coat",r:'兵士',ph:1,mg:2,w:'軽',ef:'POWロールにBD+1',fl:'「内側に呪文が縫い込まれている」'},
+{sl:'胴',n:'深海の鱗鎧',e:'Deep Scale Mail',r:'兵士',ph:3,mg:2,w:'中',ef:'HP計算時CON+1として扱う',fl:'「人間には少し重い」'},
+{sl:'胴',n:'鱗片鎧',e:'Scale Armor',r:'兵士',ph:3,mg:0,w:'中',ef:'槍・ハルバードを使用中、命中判定にBD+1',fl:'「動きやすく、そこそこ守る」'},
+{sl:'胴',n:'毒染めの外套',e:'Toxweave Cloak',r:'兵士',ph:0,mg:1,w:'軽',ef:'毒付与のPOWロールにBD+2。毒状態のダメージを1軽減',fl:'「素材の正体は知らない方がいい」'},
+{sl:'胴',n:'影走りの外套',e:"Shadowdancer's Wrap",r:'兵士',ph:1,mg:0,w:'軽',ef:'回避行動を宣言した場合、AGIロールにBD+1',fl:'「当たらないことを選ぶ」'},
+{sl:'胴',n:'帝国の重鎧',e:'Imperial Plate',r:'英雄',ph:5,mg:1,w:'重',ef:'使用者の回避判定にPD+2（常時）。HP計算時CON+2として扱う',fl:'「廃掘人の最高の戦利品の一つ」'},
+{sl:'胴',n:'継ぎ接ぎの鎧',e:'Patchwork Plate',r:'英雄',ph:2,mg:2,w:'中',ef:'物理・魔術両方を軽減（各2）。装備中、DEX判定にPD+1（嵩張る）',fl:'「格好悪いが、生き残るためには十分だ」'},
+{sl:'胴',n:'深淵の鱗甲',e:'Void Scale Plate',r:'英雄',ph:2,mg:3,w:'中',ef:'闇属性ダメージを1軽減。恐怖・発狂のPOWロールにBD+1',fl:'「深淵を知る者だけが、深淵を纏える」'},
+{sl:'胴',n:'縫合の鎧',e:'Sutured Plate',r:'伝説',ph:4,mg:4,w:'重',ef:'使用者の回避判定にPD+1（常時）。アンデッド・邪悪の命中にPD+1（オーラ）。ラウンド終了時HP+1（自動回復）',fl:'「縫合の神の祝福が染み込んだ鎧」'},
+];
+
+const AC={炎:'fire',冷気:'ice',雷:'thunder',毒:'poison',闇:'dark',神聖:'holy',無属性:'none'};
+const RC=r=>r==='兵士'?'tag-soldier':r==='英雄'?'tag-hero':'tag-legend';
+const favs=new Set(JSON.parse(localStorage.getItem('wfav')||'[]'));
+function saveFavs(){try{localStorage.setItem('wfav',JSON.stringify([...favs]));}catch(e){}}
+const ws={type:'all',rank:'all',search:''};
+const as={filter:'all',search:''};
+
+function buildCard(d){
+  const id=`W_${d.t}_${d.n}`;const isFav=favs.has(id);
+  return `<div class="data-card${isFav?' favorited':''}" data-id="${id}" data-type="${d.t}" data-rank="${d.r}" data-search="${[d.t,d.n,d.e,d.a,d.sp||'',d.hd||'',d.ex||'',d.fl].join(' ').toLowerCase()}">
+<div class="card-head"><span class="card-id">${d.t}</span><div style="flex:1"><span class="card-name">${d.n}</span><span class="card-name-en">${d.e}</span></div><button class="fav-btn${isFav?' active':''}" onclick="toggleFav('${id}',this)">★</button></div>
+<div class="card-badges"><span class="tag ${RC(d.r)}">${d.r}</span><span class="tag tag-${AC[d.a]||'none'}">${d.a}</span><span class="tag tag-none">${d.ap}</span><span class="tag tag-none">${d.mh}</span>${d.h==='両手'?'<span class="tag tag-none">両手</span>':''}${d.p&&d.p!=='—'?`<span class="tag tag-fire">貫通${d.p}</span>`:''}</div>
+<div class="card-stats"><div class="stat-item"><span class="stat-label">射程</span><span class="stat-val">${d.rng}</span></div><div class="stat-item"><span class="stat-label">ダイス</span><span class="stat-val">${d.d||'—'}</span></div><div class="stat-item"><span class="stat-label">固定値</span><span class="stat-val">${d.f||'—'}</span></div><div class="stat-item"><span class="stat-label">参照</span><span class="stat-val" style="font-size:10px">${d.s}</span></div></div>
+${d.sp&&d.sp!=='—'?`<div class="card-special">${d.sp}</div>`:''}
+${d.hd&&d.hd!=='—'?`<div class="card-hd">${d.hd}${d.hmp&&d.hmp!=='—'?` <span style="color:var(--teal2);font-size:9px">MP${d.hmp}</span>`:''}</div>`:''}
+${d.ex&&d.ex!=='—'?`<div class="card-ex">${d.ex}${d.emp&&d.emp!=='—'?` <span style="color:var(--teal2);font-size:9px">MP${d.emp}</span>`:''}</div>`:''}
+<div class="card-flavor">${d.fl}</div></div>`;
+}
+
+function render(){document.getElementById('weapon-grid').innerHTML=W.map(buildCard).join('');updateCount();}
+function updateCount(){const t=document.querySelectorAll('#weapon-grid .data-card').length,v=document.querySelectorAll('#weapon-grid .data-card:not(.hidden)').length;document.getElementById('wc').textContent=v<t?`${v} / ${t} 件表示`:`全${t}件`;}
+function filterWeapons(q){ws.search=q.toLowerCase();applyW();}
+function setWF(k,v,btn){ws[k]=v;document.querySelectorAll(`#w${k[0]}-filters .filter-btn`).forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyW();}
+function applyW(){document.querySelectorAll('#weapon-grid .data-card').forEach(c=>{const mt=ws.type==='all'||c.dataset.type===ws.type,mr=ws.rank==='all'||c.dataset.rank===ws.rank,ms=!ws.search||c.dataset.search.includes(ws.search);c.classList.toggle('hidden',!(mt&&mr&&ms));});updateCount();}
+
+function buildAT(data){return `<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;"><table class="armor-table"><thead><tr><th>防具名</th><th>レア</th><th>物理軽減</th><th>魔術軽減</th><th>重量</th><th>特殊効果</th></tr></thead><tbody>${data.map(a=>`<tr><td>${a.n}<br><span style="font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim)">${a.e}</span></td><td><span class="tag ${RC(a.r)}">${a.r}</span></td><td style="color:var(--gold);text-align:center">${a.ph}</td><td style="color:var(--blue2);text-align:center">${a.mg}</td><td style="text-align:center">${a.w}</td><td style="font-size:11px;max-width:280px">${a.ef}</td></tr>`).join('')}</tbody></table></div>`;}
+
+function renderArmor(data){const h=data.filter(a=>a.sl==='頭'),b=data.filter(a=>a.sl==='胴');let html='';if(h.length){html+=`<p style="font-size:12px;color:var(--text3);margin-bottom:.75rem;font-family:'Noto Sans JP',sans-serif;">頭部防具 — ${h.length}種</p>`;html+=buildAT(h);}if(b.length){html+=`<p style="font-size:12px;color:var(--text3);margin:1.5rem 0 .75rem;font-family:'Noto Sans JP',sans-serif;">胴体防具 — ${b.length}種</p>`;html+=buildAT(b);}document.getElementById('armor-container').innerHTML=html||'<p style="color:var(--text3);font-size:13px;padding:1rem 0;">該当なし</p>';document.getElementById('ac').textContent=`${data.length}件`;}
+function filterArmor(q){as.search=q.toLowerCase();applyA();}
+function setAF(v,btn){as.filter=v;document.querySelectorAll('#af-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyA();}
+function applyA(){const filtered=A.filter(a=>{const ms=as.filter==='all'||a.sl===as.filter||a.r===as.filter,mq=!as.search||[a.n,a.e,a.ef,a.fl].join(' ').toLowerCase().includes(as.search);return ms&&mq;});renderArmor(filtered);}
+
+function toggleFav(id,btn){if(favs.has(id)){favs.delete(id);btn.classList.remove('active');btn.closest('.data-card').classList.remove('favorited');}else{favs.add(id);btn.classList.add('active');btn.closest('.data-card').classList.add('favorited');}saveFavs();renderFavorites();}
+function renderFavorites(){const fd=W.filter(d=>favs.has(`W_${d.t}_${d.n}`));document.getElementById('fav-grid').innerHTML=fd.length?fd.map(buildCard).join(''):'<div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div>';}
+function switchTab(n){['weapon','armor','favorites','charcreate'].forEach((nm,i)=>{document.querySelectorAll('.tab-btn')[i].classList.toggle('active',nm===n);document.getElementById('tab-'+nm).classList.toggle('active',nm===n);});}
+
+render();renderArmor(A);renderFavorites();
+// ── キャラクター作成用 ──────────────────────────────────────
+const WEAPON_TYPES = ['短剣','直剣','大剣','斧・ハンマー','槍・ハルバード','盾','弓'];
+const PRICES = {
+  'カッター':50,'ダガー':80,'毒刃':120,'忍び刀':110,'骨砕き':90,'水銀刃':150,'爪牙':100,
+  '星鉄の短刀':380,'儚月':500,'深淵の舌':450,'終焉の一刺し':0,
+  'ショートソード':80,'ロングソード':100,'バスタードソード':130,'炎の直剣':160,'銀の直剣':140,'月光剣':180,'ラピア':120,
+  '贖罪の剣':420,'霜の剣':460,'骸の王':550,'大審判者':0,
+  'グレートソード':120,'クレイモア':140,'断罪剣':160,'炎帝の大剣':180,'腐食剣':150,'裂地':170,'石英の大剣':130,
+  '嘆きの大剣':480,'鯨骨の大剣':520,'星喰い':580,'目覚め':0,
+  'ハンドアックス':70,'戦斧':110,'投擲斧':90,'石割り':130,'雷槌':170,'儀式の斧':180,
+  '双斧':440,'骨の砕き手':500,'疫病斧':480,'歳輪':0,
+  'ショートスピア':70,'ロングスピア':90,'ハルバード':150,'毒槍':140,'聖槍':160,'凍てつく穂先':170,'地穿ち':180,
+  '波紋の槍':420,'魂喰らいの穂':560,'嵐の矛':520,'星の槍':0,
+  '木の盾':40,'丸盾':80,'タワーシールド':140,'刺盾':120,'炎の紋章盾':160,'聖印盾':150,
+  '反射盾':480,'深淵の盾':520,'受難者の盾':400,'不滅の守護者':0,
+  'ショートボウ':60,'ロングボウ':100,'複合弓':130,'毒矢':110,'炎矢':120,'狙撃弓':160,'連射弓':150,
+  '魂狩り弓':540,'冬の弓':460,'星読みの弓':500,'天弓':0,
+};
+function priceStr(name){const p=PRICES[name];if(p===undefined)return'—';if(p===0)return'入手不可';return p+'G';}
+function priceClass(name){const p=PRICES[name];return p===0?'cc-price legend':'cc-price';}
+function dmgStr(d,f){const dd=d&&d!=='—'?d:'';const ff=f&&f!=='—'?f:'';if(!dd&&!ff)return'—';if(dd&&ff)return dd+ff;return dd||ff;}
+function wazaCell(hd,hmp,ex,emp){
+  let parts=[];
+  if(hd&&hd!=='—'){const mp=(hmp&&hmp!=='—')?` <span class="mp">MP${hmp}</span>`:'';parts.push(`<span class="hd">HD</span> ${hd}${mp}`);}
+  if(ex&&ex!=='—'){const mp=(emp&&emp!=='—')?` <span class="mp">MP${emp}</span>`:'';parts.push(`<span class="ex">EX</span> ${ex}${mp}`);}
+  return parts.length?parts.join('<br>'):'<span class="none">なし</span>';
+}
+function spCell(sp){return sp&&sp!=='—'?sp:'<span class="none">なし</span>';}
+function badgeCC(r){const cls={'兵士':'cc-soldier','英雄':'cc-hero','伝説':'cc-legend'}[r]||'';return `<span class="cc-badge ${cls}">${r}</span>`;}
+
+function renderCCWeapon(){
+  let html='';
+  WEAPON_TYPES.forEach(type=>{
+    const rows=W.filter(d=>d.t===type);
+    if(!rows.length)return;
+    html+=`<div class="cc-section"><p class="cc-section-title">${type}</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr>
+<th>名前</th><th>AP</th><th>攻撃回数</th><th>射程</th><th>ダメージ</th><th>固有効果</th><th>戦技</th><th>価格</th>
+</tr></thead><tbody>`;
+    rows.forEach(d=>{
+      html+=`<tr>
+<td><span class="cc-name">${d.n}</span>${badgeCC(d.r)}</td>
+<td>${d.ap}</td>
+<td>${d.mh}</td>
+<td>${d.rng}</td>
+<td>${dmgStr(d.d,d.f)}</td>
+<td style="font-size:10px;max-width:180px">${spCell(d.sp)}</td>
+<td class="cc-waza" style="max-width:220px">${wazaCell(d.hd,d.hmp,d.ex,d.emp)}</td>
+<td class="${priceClass(d.n)}">${priceStr(d.n)}</td>
+</tr>`;
+    });
+    html+='</tbody></table></div></div>';
+  });
+
+  // 防具
+  const ARMOR_PRICES={'布の頭巾':30,'革兜':60,'鉄兜':100,'騎士兜':140,'白衣の頭巾':50,'魔術師の帽子':80,'深淵の仮面':120,'狩人の帽子':70,'角兜':110,'呪術師の仮面':130,'帝国の兜':400,'廃人の頭巾':320,'深海の仮面':420,'傭兵の頭巾':360,'縫合の冠':0,'布の服':20,'革鎧':70,'鎖帷子':120,'板金鎧':170,'白衣の法衣':60,'魔術師のローブ':90,'呪術師の外套':110,'深海の鱗鎧':130,'鱗片鎧':100,'毒染めの外套':120,'影走りの外套':80,'帝国の重鎧':500,'継ぎ接ぎの鎧':340,'深淵の鱗甲':460,'縫合の鎧':0};
+  function aprice(n){const p=ARMOR_PRICES[n];if(p===undefined)return'—';if(p===0)return'入手不可';return p+'G';}
+  function apcls(n){return ARMOR_PRICES[n]===0?'cc-price legend':'cc-price';}
+  ['頭','胴'].forEach(part=>{
+    const rows=A.filter(a=>a.sl===part);
+    html+=`<div class="cc-section"><p class="cc-section-title">防具（${part}）</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>名前</th><th>物理軽減</th><th>魔術軽減</th><th>重量</th><th>固有効果</th><th>価格</th></tr></thead><tbody>`;
+    rows.forEach(a=>{
+      const ef=a.ef&&a.ef!=='なし'?a.ef:'<span class="none">なし</span>';
+      html+=`<tr>
+<td><span class="cc-name">${a.n}</span>${badgeCC(a.r)}</td>
+<td style="text-align:center">${a.ph||'0'}</td>
+<td style="text-align:center">${a.mg||'0'}</td>
+<td>${a.w}</td>
+<td style="font-size:10px;max-width:220px">${ef}</td>
+<td class="${apcls(a.n)}">${aprice(a.n)}</td>
+</tr>`;
+    });
+    html+='</tbody></table></div></div>';
+  });
+  document.getElementById('cc-weapon-content').innerHTML=html;
+}
+
+renderCCWeapon();
+</script>
+</body>
+</html>
