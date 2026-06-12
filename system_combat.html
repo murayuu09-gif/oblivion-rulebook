@@ -723,7 +723,7 @@
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>状態異常は一度付与されると、解除条件を満たさない限り永続する（戦闘終了時に全てリセットされる点を除く）。付与条件「HD以上」は命中値×1/2以下、「EX以上」は命中値×1/5以下の出目を指す。「付与判定あり」の場合、対象は能力値ロールで抵抗できる。</p>
+      <p>状態異常は一度付与されると、解除条件を満たさない限り永続する（戦闘終了時に全てリセットされる点を除く）。</p>
 
       <p style="margin-top:1.5rem; margin-bottom:0.5rem;"><b style="color:var(--text);">物理系</b></p>
       <div class="status-grid">
@@ -731,31 +731,31 @@
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">毒</p>
           <p class="status-card__effect">ラウンド終了時に1ダメージ（装甲無視・累積上限なし）</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>解毒アイテム・特定刻印</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>解毒アイテム</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">疲労</p>
           <p class="status-card__effect">全ての判定にペナルティダイス（PD）+1</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>次ラウンド開始時に自動回復</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>次ラウンド開始時に自動回復</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">冷気</p>
           <p class="status-card__effect">単体での効果はないが、3回付与されると「凍結」に変化する。燃焼は即座に解除する</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>炎属性でカウントリセット</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>炎属性でカウントリセット</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">凍結</p>
           <p class="status-card__effect">行動不能（永続）。冷気が3スタックすると発生する</p>
-          <div class="status-card__meta"><span><b>付与：</b>冷気3回付与</span><span><b>解除：</b>炎属性・特定刻印</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>炎属性</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">燃焼</p>
           <p class="status-card__effect">ラウンド終了時に2d3ダメージ（装甲無視）。冷気属性で即座に解除する</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>冷気属性・特定刻印</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>冷気属性</span></div>
         </div>
       </div>
 
@@ -764,14 +764,14 @@
         <div class="status-card">
           <span class="status-card__cat">Mental</span>
           <p class="status-card__name">恐怖</p>
-          <p class="status-card__effect">命中・回避判定にペナルティダイス。毎ラウンド開始時にPOWロールに成功すると解除される</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>POWロール成功</span></div>
+          <p class="status-card__effect">命中・回避判定にPD+1。毎ラウンド開始時にPOWロールに成功すると解除される</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>POWロール成功</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Mental</span>
           <p class="status-card__name">発狂</p>
-          <p class="status-card__effect">毎ラウンド開始時にPOWロール。失敗で行動不能、成功で解除される</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>POWロール成功</span></div>
+          <p class="status-card__effect">毎ラウンド開始時にPOWロール。失敗でAP-1、成功で解除される</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>POWロール成功</span></div>
         </div>
       </div>
 
@@ -780,20 +780,20 @@
         <div class="status-card">
           <span class="status-card__cat">Debuff</span>
           <p class="status-card__name">盲目</p>
-          <p class="status-card__effect">命中判定にペナルティダイス+2</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>特定刻印</span></div>
+          <p class="status-card__effect">命中判定にペナルティダイス+2。手番にAP2消費で解除可能。</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>AP消費</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Debuff</span>
           <p class="status-card__name">沈黙</p>
-          <p class="status-card__effect">魔術・奇跡を使用できなくなる</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>特定刻印</span></div>
+          <p class="status-card__effect">魔術・奇跡を使用できなくなる。手番にAP2消費で解除可能。</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>AP消費</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Debuff</span>
           <p class="status-card__name">封印</p>
           <p class="status-card__effect">取得している刻印の効果が全て無効化される</p>
-          <div class="status-card__meta"><span><b>付与：</b>HD以上</span><span><b>解除：</b>特定刻印</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
         </div>
       </div>
 
@@ -803,19 +803,19 @@
           <span class="status-card__cat">Special</span>
           <p class="status-card__name">死の宣告</p>
           <p class="status-card__effect">付与時にLCKロールに失敗すると確定。付与から3ラウンド後に即死する</p>
-          <div class="status-card__meta"><span><b>付与：</b>EX以上＋付与判定</span><span><b>解除：</b>特定刻印のみ</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Special</span>
           <p class="status-card__name">石化</p>
           <p class="status-card__effect">付与時にPOWロールに失敗すると確定。行動不能になり、瀕死時は即死亡が確定する</p>
-          <div class="status-card__meta"><span><b>付与：</b>EX以上＋付与判定</span><span><b>解除：</b>特定刻印・ラウンド経過</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>不可</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Special</span>
           <p class="status-card__name">狂喜</p>
           <p class="status-card__effect">ダメージボーナスが1段階上昇する代わりに、防御行動（RA）が一切できなくなる</p>
-          <div class="status-card__meta"><span><b>付与：</b>EX以上</span><span><b>解除：</b>ラウンド経過のみ</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
         </div>
       </div>
 
@@ -825,11 +825,11 @@
           <tr><th>属性</th><th>効果</th><th>追加アクション</th><th>備考</th></tr>
         </thead>
         <tbody>
-          <tr><td>炎</td><td>燃焼を付与（HD以上）。対象の冷気カウントをリセットする</td><td>1APで味方の冷気カウントをリセット可能</td><td>冷気が3スタックする前に介入できる</td></tr>
-          <tr><td>冷気</td><td>冷気を付与（HD以上）。対象の燃焼を即座に解除する</td><td>1APで味方の燃焼を解除可能</td><td>冷気は3回付与で凍結に変化</td></tr>
+          <tr><td>炎</td><td>対象の冷気カウントをリセットする</td><td>1APで味方の冷気カウントをリセット可能</td><td></td></tr>
+          <tr><td>冷気</td><td>。対象の燃焼を即座に解除する</td><td>1APで味方の燃焼を解除可能</td><td>冷気は3回付与で凍結に変化</td></tr>
           <tr><td>雷</td><td>物理装甲値を半減する（魔術耐性には無効）</td><td>—</td><td>装甲値半減後、残りダメージを通常通り適用</td></tr>
-          <tr><td>毒</td><td>毒を付与する（HD以上）</td><td>—</td><td>累積上限なし</td></tr>
-          <tr><td>闇</td><td>恐怖を付与する（EX以上）</td><td>—</td><td>エネミー側の追加ダメージは個別に記載</td></tr>
+          <tr><td>毒</td><td></td><td>—</td><td>累積上限なし</td></tr>
+          <tr><td>闇</td><td></td><td>—</td><td>エネミー側の追加ダメージは個別に記載</td></tr>
           <tr><td>神聖</td><td>アンデッド・邪悪な存在に+2d4の固定ダメージ</td><td>—</td><td>エネミー側の追加ダメージは個別に記載</td></tr>
           <tr><td>無属性</td><td>素の物理ダメージ</td><td>—</td><td>—</td></tr>
         </tbody>
