@@ -503,43 +503,150 @@
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>攻撃を受けた際、命中判定のロールが行われる前に「リアクション行動（RA）」を宣言できる。何もしなければ攻撃は素通りする——備える者だけが、被害を抑えられる。</p>
+       <p style="font-size:13px; color:var(--text2); margin-bottom:1rem;">攻撃を受けた際、攻撃側の命中判定ロールが行われる<strong style="color:var(--gold)">前</strong>に宣言する。何も宣言しなければ攻撃は素通りし、装甲値による軽減のみが適用される。</p>
+      <div class="note" style="margin-bottom:1.5rem;">宣言のタイミングは「攻撃側がダイスを振る前」。ダイス目を見てから選ぶことはできない。</div>
 
+      <!-- RA一覧テーブル -->
       <table class="rule-table">
         <thead>
-          <tr><th>防御行動</th><th>APコスト</th><th>基準能力値</th><th>効果</th><th>対象</th></tr>
+          <tr>
+            <th>RA</th>
+            <th>APコスト</th>
+            <th>基準</th>
+            <th>判定方法</th>
+            <th>対象</th>
+          </tr>
         </thead>
         <tbody>
           <tr>
-            <td>回避</td>
-            <td><span class="ap-badge ap-badge--0">0 AP</span></td>
+            <td><strong style="color:var(--text)">回避</strong></td>
+            <td>0 AP</td>
             <td>AGI</td>
-            <td>対抗ロール。通常成功はAGI×5以下、HDはAGI×1/2（×5）以下、EXはAGI×1/5（×5）以下で成功。クリティカルは回避不可</td>
+            <td>対抗ロール（成功度に応じた閾値以下で成功）</td>
             <td>全般</td>
           </tr>
           <tr>
-            <td>防御</td>
-            <td><span class="ap-badge ap-badge--0">0 AP</span></td>
+            <td><strong style="color:var(--text)">防御</strong></td>
+            <td>0 AP</td>
             <td>CON / STR</td>
-            <td>装甲値で確実にダメージを軽減する。盾装備でさらに強化される</td>
+            <td>ロールなし（常に発動）</td>
             <td>全般</td>
           </tr>
           <tr>
-            <td>応戦</td>
-            <td><span class="ap-badge ap-badge--1">1 AP</span></td>
+            <td><strong style="color:var(--text)">応戦</strong></td>
+            <td>1 AP</td>
             <td>武器種による</td>
-            <td>双方のダメージを比較し、防御側が上回れば1d4の反撃ダメージを与える</td>
-            <td>近接専用</td>
+            <td>ダメージ比較（反撃判定あり）</td>
+            <td>近接専用・近接武器のみ</td>
           </tr>
           <tr>
-            <td>相殺</td>
-            <td><span class="ap-badge ap-badge--1">1 AP</span></td>
+            <td><strong style="color:var(--text)">相殺</strong></td>
+            <td>1 AP</td>
             <td>INT</td>
-            <td>双方のダメージを比較し、防御側が上回れば1d4の反撃ダメージを与える</td>
-            <td>遠距離専用（触媒）</td>
+            <td>ダメージ比較（反撃判定あり）</td>
+            <td>遠距離専用・触媒のみ</td>
           </tr>
         </tbody>
       </table>
+
+      <!-- 回避 -->
+      <div class="rule-block" style="border-left-color:var(--teal);">
+        <p class="rule-block-title" style="color:var(--teal2);">◆ 回避　— 対抗ロール</p>
+        <p>攻撃側の命中判定の成功度に応じて、回避側に必要な成功度が変わる。<br>
+        回避成功時はダメージが<strong style="color:var(--gold)">完全に無効</strong>になる。失敗時は装甲軽減なしで全ダメージを受ける。</p>
+        <table class="rule-table" style="margin-top:0.75rem;">
+          <thead>
+            <tr><th>攻撃側の成功度</th><th>回避側の必要ロール</th><th>成功時</th><th>失敗時</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>通常成功</td><td>AGI × 5 以下</td><td rowspan="3" style="color:var(--teal2);">ダメージ完全無効</td><td rowspan="3" style="color:var(--red2);">全ダメージ（装甲軽減なし）</td></tr>
+            <tr><td>ハード（HD）</td><td>AGI × 1/2（× 5）以下</td></tr>
+            <tr><td>イクストリーム（EX）</td><td>AGI × 1/5（× 5）以下</td></tr>
+            <tr><td style="color:var(--red2);">クリティカル</td><td style="color:var(--red2);">回避不可</td><td>—</td><td style="color:var(--red2);">全ダメージ（装甲無視）</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:0.5rem; font-size:12px; color:var(--text3);">※ 回避構え（1AP消費）を事前に行うと、この回避ロールにボーナスダイスが付く。</p>
+      </div>
+
+      <!-- 防御 -->
+      <div class="rule-block" style="border-left-color:var(--blue);">
+        <p class="rule-block-title" style="color:var(--blue2);">◆ 防御　— 装甲軽減（ロールなし）</p>
+        <p>ロール不要で常に発動する安定択。物理装甲値または魔術耐性でダメージを固定軽減する。<br>
+        盾を装備している場合は盾で判定を行い、防御時に盾の追加軽減効果を乗せることができる。</p>
+        <table class="rule-table" style="margin-top:0.75rem;">
+          <thead>
+            <tr><th>攻撃の種類</th><th>軽減に使う値</th><th>クリティカル時</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>物理攻撃</td><td>物理装甲値（装備の装甲値 ＋ CON → 共通テーブル参照）</td><td rowspan="2" style="color:var(--red2);">装甲値・耐性ともに無視</td></tr>
+            <tr><td>魔術・奇跡攻撃</td><td>魔術耐性（POW ＋ CON → 共通テーブル参照）</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:0.5rem; font-size:12px; color:var(--text3);">※ 「何もしない」場合も防御と同じ扱い（装甲値のみ軽減）。</p>
+      </div>
+
+      <!-- 応戦 -->
+      <div class="rule-block" style="border-left-color:var(--purple);">
+        <p class="rule-block-title" style="color:var(--purple2);">◆ 応戦　— ダメージ比較・反撃（近接専用）</p>
+        <p>防御側も自分の近接武器のダメージを算出し、攻撃側のダメージと比較する。<br>
+        近接武器のみ使用可。触媒（杖・聖印）での応戦は不可。</p>
+        <div class="flow" style="margin-top:0.75rem;">
+          <div class="flow-step">
+            <div class="flow-dot">1</div>
+            <div class="flow-content">
+              <p class="flow-label">双方のダメージを算出する</p>
+              <p class="flow-desc">攻撃側：命中判定の成功度に応じたダメージを算出<br>防御側：命中判定の成功度に応じたダメージを算出(戦技不可)</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">2</div>
+            <div class="flow-content">
+              <p class="flow-label">ダメージを比較する</p>
+              <p class="flow-desc">防御側のダメージ ＞ 攻撃側のダメージ　→　反撃発生<br>防御側のダメージ ≦ 攻撃側のダメージ　→　差分ダメージを受ける</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">3</div>
+            <div class="flow-content">
+              <p class="flow-label">反撃ダメージを与える（反撃発生時）</p>
+              <p class="flow-desc">攻撃者に <strong style="color:var(--gold)">1d4 ダメージ</strong>（装甲貫通1）<br>反撃の大きさはダメージ差に関わらず常に 1d4 固定</p>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px; color:var(--text3); margin-top:0.25rem;">※ 応戦で受けた攻撃のダメージは物理装甲値で軽減されない。</p>
+      </div>
+
+      <!-- 相殺 -->
+      <div class="rule-block" style="border-left-color:var(--gold-dim);">
+        <p class="rule-block-title" style="color:var(--gold);">◆ 相殺　— ダメージ比較・反撃（遠距離専用）</p>
+        <p>応戦の魔術版。遠距離攻撃（弓・魔術・奇跡）に対して同一の攻撃方法を使って相殺する。<br>
+        同一の種類でのみ可能。</p>
+        <div class="flow" style="margin-top:0.75rem;">
+          <div class="flow-step">
+            <div class="flow-dot">1</div>
+            <div class="flow-content">
+              <p class="flow-label">双方のダメージを算出する</p>
+              <p class="flow-desc">攻撃側：命中判定の成功度に応じたダメージを算出<br>防御側：命中判定の成功度に応じたダメージを算出(戦技不可)　魔術・奇跡の場合は1つ選んで使用する</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">2</div>
+            <div class="flow-content">
+              <p class="flow-label">ダメージを比較する</p>
+              <p class="flow-desc">防御側のダメージ ＞ 攻撃側のダメージ　→　反撃発生<br>防御側のダメージ ≦ 攻撃側のダメージ　→　差分ダメージを受ける</p>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-dot">3</div>
+            <div class="flow-content">
+              <p class="flow-label">反撃ダメージを与える（反撃発生時）</p>
+              <p class="flow-desc">攻撃者に <strong style="color:var(--gold)">1d4 ダメージ</strong>（装甲貫通1）<br>反撃の大きさはダメージ差に関わらず常に 1d4 固定</p>
+            </div>
+          </div>
+        </div>
+        <p style="font-size:12px; color:var(--text3); margin-top:0.25rem;">※ 応戦で受けた攻撃のダメージは魔術耐性で軽減されない。</p>
+      </div>
+
 
       <p style="margin-top:2rem;">装備は右手・左手の2スロット制。片手武器は両手のスロットに装備でき、両手武器は右手のみを占有する（左手は使用不可）。防具は頭・胴のみで、手・足のスロットは存在しない。</p>
 
