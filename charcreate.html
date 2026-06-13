@@ -522,6 +522,17 @@
   color: var(--gold);
   margin-bottom: 1rem;
 }
+.seal-group-title {
+  grid-column: 1 / -1;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--gold);
+  border-bottom: 1px solid var(--border2);
+  padding-bottom: 4px;
+  margin-top: 0.5rem;
+}
+.seal-group-title:first-child { margin-top: 0; }
 
 /* ---- 基本情報 ---- */
 .cc-info-grid {
@@ -907,7 +918,7 @@
           <span class="step-title">刻印を選ぶ</span>
           <div class="step-rule"></div>
         </div>
-        <p class="seal-limit-note">汎用刻印・素性専用刻印あわせて<strong style="color:var(--gold)" id="seal-max-label">4種</strong>選択。同一刻印の重複不可。「淵を覗いた者（P04）」と「理性の砦（P16）」は選択関係（片方のみ）。</p>
+        <p class="seal-limit-note">汎用刻印・自素性専用刻印あわせて<strong style="color:var(--gold)" id="seal-max-label">4種</strong>選択。同一刻印の重複不可。他素性の専用刻印は選択不可。「星読み（G13）」と「星に愛された者（Hu03・狩人専用）」は選択関係（片方のみ）。封印状態では全刻印の効果が無効化される。</p>
         <div class="seal-count" id="seal-count">0 / 4 選択済み</div>
         <div class="seal-grid" id="seal-grid"></div>
       </div>
@@ -1183,26 +1194,70 @@ const ARMORS = [
 // 武器種カテゴリ一覧（セレクトのグループ用）
 const WEAPON_TYPES = ["短剣", "直剣", "大剣", "斧・ハンマー", "槍・ハルバード", "盾", "弓"];
 
-const SEAL_GROUPS = { P04:'P16', P16:'P04' };
-
+// 刻印データ（汎用20種＋素性専用40種＝計60種）Ver.2.2
+// origin: null=汎用（全素性選択可） / 素性名=その素性専用
+// excl: 選択関係（片方のみ取得可）のID
 const SEALS = [
-  { id:'P01', name:'疾風の歩法',    when:'常時',             desc:'AGI12以上のとき1ラウンドのAP+1（計4AP）' },
-  { id:'P02', name:'不死の肉体',    when:'常時',             desc:'物理装甲値計算時CON参照値+2' },
-  { id:'P03', name:'術式の残滓',    when:'常時',             desc:'MP最大値+4。魔術・奇跡使用後のMP+1（ラウンド終了時）' },
-  { id:'P04', name:'淵を覗いた者',  when:'常時',             desc:'恐怖・発狂・狂喜の判定にボーナスダイス　※P16と選択関係', excl:'P16' },
-  { id:'P05', name:'星読み',        when:'常時',             desc:'LCKによるクリティカル率ボーナスを+1%追加（LCK10以上のみ）' },
-  { id:'P06', name:'刻まれた技',    when:'命中判定時',       desc:'選択した武器種の命中値+5%（常時）' },
-  { id:'P07', name:'廃墟の流儀',    when:'敵が状態異常のとき', desc:'状態異常の敵への攻撃でダメージ+1d4' },
-  { id:'P08', name:'屍を踏む者',    when:'敵撃破時',         desc:'敵撃破直後、次の攻撃命中値+10%（次ターン終了まで）' },
-  { id:'P09', name:'弱点を読む',    when:'攻撃命中時',       desc:'命中時、その敵の状態異常1種をGMが開示（1T1回）' },
-  { id:'P10', name:'一撃に賭ける',  when:'自ターン開始時',   desc:'そのターン攻撃しない場合、次ターン最初の攻撃DBダイス1段階上昇' },
-  { id:'P11', name:'まだ終わらない',when:'HP0時',            desc:'戦闘中1回のみ、HP0時にLCKロール成功でHP1で踏み留まる' },
-  { id:'P12', name:'守護者の構え',  when:'防御行動時',       desc:'盾装備時、防御行動の物理軽減値+1' },
-  { id:'P13', name:'廃人の慣れ',    when:'被ダメージ後',     desc:'1回のダメージが5以下の場合、ダメージを1軽減（最小0）' },
-  { id:'P14', name:'術式の壁',      when:'魔術攻撃を受けた時', desc:'魔術耐性計算時POW参照値+2' },
-  { id:'P15', name:'汚染の洗礼',    when:'毒付与判定時',     desc:'毒の付与判定にボーナスダイス（有利）' },
-  { id:'P16', name:'理性の砦',      when:'精神系状態異常付与判定時', desc:'恐怖・発狂の付与判定にボーナスダイス　※P04と選択関係', excl:'P04' },
-  { id:'P17', name:'消えない炎',    when:'状態異常継続中',   desc:'毒・燃焼・疲労中、ラウンド終了時POWロール成功で解除チャンス' },
+  {id:'G01', name:'疾風の歩法', origin:null, when:'常時', desc:'AGI12以上のとき、1ラウンドのAP+1（計4AP）になる。AGIが12を下回った場合、AP3に戻る。　／　G03との併用不可', excl:null},
+  {id:'G02', name:'先手の回路', origin:null, when:'攻撃時', desc:'そのラウンド中、まだ手番が来ていない目標に攻撃をする場合、命中判定にBD+1。各ラウンド1回のみ発動。　／　効果の通り', excl:null},
+  {id:'G03', name:'踏み込みの術式', origin:null, when:'ラウンド終了時', desc:'AGI11以下のとき、ラウンド終了時にAPが1以上余っていれば次ラウンドのAP+1。　／　G01との併用不可', excl:null},
+  {id:'G04', name:'残滓の循環', origin:null, when:'HD/EX成功後', desc:'HD/EX成功をしたラウンド終了時にMP1回復（最大1）。', excl:null},
+  {id:'G05', name:'刻まれた技', origin:null, when:'命中判定時（常時）', desc:'取得時に武器種を1種選択する。その武器種の命中値+5%（常時）。同じ武器種を対象に重複取得不可（別の武器種は別途取得可）。　／　スキル枠を1消費。9武器種すべてが選択対象。', excl:null},
+  {id:'G06', name:'屍を踏む者', origin:null, when:'敵撃破直後', desc:'戦闘中に敵を撃破した直後、次の攻撃の命中値+10%（1回限り・次のラウンド終了まで）。　／　1ラウンドに複数撃破しても1回分のみ。', excl:null},
+  {id:'G07', name:'渾身の一撃', origin:null, when:'ラウンド開始時（宣言制）', desc:'そのラウンドの攻撃回数を最大1回に制限する代わりに、その1回の攻撃に固定ダメージ+2を加算し、さらに命中判定にBD+1を得る。宣言はラウンド開始時のみ有効。　／　攻撃を行わなかった場合も宣言消費。武器変更で効果消失。AP消費は通常通り。', excl:null},
+  {id:'G08', name:'研ぎ澄まされた一手', origin:null, when:'命中判定・通常成功時', desc:'HD・EXでない通常成功の攻撃に、固定ダメージ+2を加算する。HD・EX・クリティカル時は発動しない。装甲軽減後に加算。　／　武器種・属性問わず全攻撃に適用。', excl:null},
+  {id:'G09', name:'廃都の継承者', origin:null, when:'クリティカル命中時', desc:'クリティカル命中時、通常のダメージ（装甲無視）に加えてさらにダメージボーナスダイスを1回追加する（合計：装甲無視＋ダメージボーナスダイス×3）。　／　クリティカル以外には適用しない。1ラウンド1回。', excl:null},
+  {id:'G10', name:'深淵の洞察', origin:null, when:'命中判定前（宣言制）', desc:'1ラウンドに1回、命中判定の前に宣言することで、その判定においてEX・クリティカルが発生しない代わりに、命中値+15%を得る。　／　宣言後に攻撃をキャンセルしても消費扱い。封印状態では無効。G19との重複宣言不可（同一判定）。', excl:null},
+  {id:'G11', name:'試練の鋼', origin:null, when:'常時', desc:'同一戦闘中、同じ相手に対して2回以上命中している場合、その相手への命中値+5%。　／　別の相手に移ると蓄積リセット。命中数は命中のみカウント（ダメージ0でも可）。', excl:null},
+  {id:'G12', name:'共鳴刻', origin:null, when:'HD/EX戦技発動後', desc:'HD戦技またはEX戦技が発動したラウンド、そのラウンド中の次の攻撃1回の命中値+10%。　／　同一ラウンド内にHD/EXが複数発動しても命中ボーナスは1回分のみ。', excl:null},
+  {id:'G13', name:'星読み', origin:null, when:'常時', desc:'LCKによるクリティカル率ボーナスを+1%追加する（通常のLCKボーナスに上乗せ）。　／　LCK10以上のキャラクターのみ取得可。狩人専用Hu03「星に愛された者」との選択関係（片方のみ）。', excl:'Hu03'},
+  {id:'G14', name:'不死の肉体', origin:null, when:'常時', desc:'物理装甲値の計算時、CONの参照値を+2として扱う（共通テーブル上の数値が上がる場合のみ有効）。装備の装甲値自体は変わらない。　／　テーブル段階が上がらない場合は効果なし。', excl:null},
+  {id:'G15', name:'肉体の錬磨', origin:null, when:'常時', desc:'HP計算時、STRとCONの合計値を+2として扱う（テーブル段階が上がる場合のみ有効）。さらに瀕死状態でのLCKロールに+10%のボーナスを得る。　／　G14「不死の肉体」との重複取得可。瀕死ボーナスはテーブル段階を問わず適用。', excl:null},
+  {id:'G16', name:'まだ終わらない', origin:null, when:'HP0時（瀕死判定前）', desc:'1戦闘に1回のみ、HP0になった時点でLCKロールを行い、成功すればHP1で踏み留まる（瀕死状態にならない）。　／　石化状態での瀕死は無効。1戦闘1回限り。封印状態では無効。', excl:null},
+  {id:'G17', name:'死の淵から', origin:null, when:'HP最大値の1/4以下の時（常時）', desc:'HP最大値の1/4以下の間、全ての命中判定にボーナスダイス（BD+1）を得る。毎ラウンド開始時に判定する。　／　回復でHPが1/4を超えた瞬間、効果は消失する。封印状態では無効。', excl:null},
+  {id:'G18', name:'術式の残滓', origin:null, when:'常時', desc:'MP最大値+4。さらに魔術・奇跡使用後、ラウンド終了時にMP+1自動回復する。　／　INT・FTH・POWのいずれか8以上のキャラクターのみ取得可。', excl:null},
+  {id:'G19', name:'過充填', origin:null, when:'魔術・奇跡使用前（宣言制）', desc:'魔術・奇跡使用時、通常のMP消費に加えてMP+2を追加消費することで、その魔術・奇跡のHD発動条件を命中値×1/2から命中値×3/5に緩和する。超級魔術・奇跡にも適用可能。　／　追加MP2が払えない場合は使用不可。1回の詠唱につき1回のみ。G10との重複宣言不可（同一判定）。', excl:null},
+  {id:'G20', name:'魔術遮蔽', origin:null, when:'魔術攻撃を受けた時', desc:'魔術耐性の計算時、POWの参照値を+2として扱う（共通テーブル上の数値が上がる場合のみ有効）。　／　奇跡攻撃・物理攻撃には無効。テーブル段階が上がらない場合は効果なし。', excl:null},
+  {id:'K01', name:'誓いの盾', origin:'騎士', when:'防御行動時', desc:'盾を装備して防御行動を取った時、隣接する味方1名への次の攻撃を代わりに受けられる（1回のみ）。代わりに受けた攻撃に通常の防御行動可。　／　盾装備が必須。移動後は効果消失。1ラウンドに1回のみ。', excl:null},
+  {id:'K02', name:'名誉の一閃', origin:'騎士', when:'命中判定時', desc:'直剣・大剣・槍のいずれかで通常成功した時（HDでもEXでもない）、ダメージ+1d4を加算する。HD・EX・クリティカル時は発動しない。G08「研ぎ澄まされた一手」と重複発動可（両方適用）。　／　対象武器種は直剣・大剣・槍のみ。', excl:null},
+  {id:'K03', name:'不抜の意志', origin:'騎士', when:'恐怖・発狂・封印が付与された瞬間', desc:'恐怖・発狂・封印のいずれかが付与された瞬間、POWロールを行う。成功すれば1ラウンドだけ状態異常を無視して行動できる（解除ではない。次ラウンドから効果が戻る）。　／　状態異常は残存する。1戦闘に2回まで発動可。封印中でも付与された瞬間のみ有効。', excl:null},
+  {id:'K04', name:'守護の誓約', origin:'騎士', when:'常時', desc:'戦闘開始時に「守護対象」を1名宣言する。その対象がダメージを受けた時、自分の命中判定にBD+1を1ラウンド得る（1ラウンド1回まで）。　／　守護対象が戦闘不能または距離3以上離れると効果消失。自分自身は指定不可。', excl:null},
+  {id:'M01', name:'傭兵の流儀', origin:'傭兵', when:'同ラウンド2回目以降の攻撃時', desc:'同ラウンド中にすでに命中した攻撃がある場合、2回目以降の命中判定にBD+1を得る。　／　1回目が外れた場合は不発動。近接・遠距離問わず有効。', excl:null},
+  {id:'M02', name:'生存の計算', origin:'傭兵', when:'常時（HP量による切り替え）', desc:'HP最大値の1/2以上ある時、回避の対抗ロールにBD+1を得る。HP1/4以下の時は全命中判定にBD+1を得る。　／　1/4〜1/2の間は両方不発動。', excl:null},
+  {id:'M03', name:'傭兵の前払い', origin:'傭兵', when:'キャラクター作成時（1回のみ）', desc:'初期ゴールドを200G追加で得る（合計700G）。傭兵として前払いで受け取った依頼料。　／　キャラクター作成時にのみ適用。周回開始時も再適用される。', excl:null},
+  {id:'M04', name:'報酬の分だけ', origin:'傭兵', when:'ラウンド開始時（累積制）', desc:'戦闘中に撃破した敵の数×1%を全命中値に加算する（最大+5%・戦闘終了でリセット）。　／　最大5体分（+5%）。戦闘終了でリセット。', excl:null},
+  {id:'W01', name:'渾身の鉄槌', origin:'戦士', when:'大剣・斧・ハンマーで攻撃した時', desc:'大剣・斧・ハンマーによる攻撃時、固定ダメージ+2を加算し、さらに命中判定にBD+1を得る。　／　対象武器種のみ。EX・HD問わず常時発動。AP消費は通常通り。', excl:null},
+  {id:'W02', name:'鉄の肌', origin:'戦士', when:'物理ダメージを受けた直後', desc:'1回の物理ダメージが6以上だった場合に限り、そのダメージを1軽減する。　／　魔術・奇跡・クリティカル（装甲無視）には無効。', excl:null},
+  {id:'W03', name:'暴風の体躯', origin:'戦士', when:'大剣・斧・ハンマーで攻撃したラウンド中', desc:'大剣・斧・ハンマーで攻撃した後（命中・外れ問わず）、そのラウンド中の回避の対抗ロールにPD+1を受ける代わりに、次ラウンド開始時にAP+1を得る（基本3APが4APになる。疾風の歩法G01と重複可で最大5AP）。　／　攻撃しなければペナルティも付与も発生しない。AP+1は次ラウンド開始時に付与・そのラウンド終了時に消える。', excl:null},
+  {id:'W04', name:'生ける戦場', origin:'戦士', when:'ラウンド開始時・疲労付与中', desc:'ラウンド開始時に疲労が付与されている場合、手番に1APを消費して疲労を解除できる。解除したラウンドの最初の攻撃に命中+10%。　／　疲労していない場合は不発動。1AP消費が必要。', excl:null},
+  {id:'T01', name:'毒の血脈', origin:'盗賊', when:'短剣・弓の攻撃命中時', desc:'短剣・弓で攻撃が命中した時（通常成功以上）、対象にPOWロールを課す。失敗で毒付与。1ラウンド1回のみ。　／　POWロール不要の毒付与とは別枠。', excl:null},
+  {id:'T02', name:'影の足音', origin:'盗賊', when:'ラウンド開始時・イニシアチブ最上位の時', desc:'そのラウンド中まだ手番が来ていない目標に攻撃をする場合（G02と同条件）、短剣・弓による命中値+10%。さらにGM判断で奇襲状態にある場合、HD/EX発動条件が1段階易しくなる。　／　奇襲状態の判定はGMに委ねる。イニシアチブ最上位でない場合は発動しない。', excl:null},
+  {id:'T03', name:'蜘蛛の巣', origin:'盗賊', when:'命中時・対象が状態異常持ちの場合', desc:'命中した対象が疲労・封印・盲目・毒のいずれかを持つ場合、ダメージ+1。さらに同ラウンド2回目以降の攻撃に命中+5%（同じ敵への攻撃のみ）。　／　状態異常が解除されると追加ダメージ消失。', excl:null},
+  {id:'T04', name:'逃げ足の哲学', origin:'盗賊', when:'ラウンド開始時（宣言制）', desc:'ラウンド開始時に宣言することで、そのラウンドの自分の手番を最後にする。代わりに手番中の最初の攻撃1回の命中値+10%と、そのラウンド中の移動AP消費0を得る（1ラウンド1回）。　／　宣言後はキャンセル不可。防御行動には影響しない。', excl:null},
+  {id:'H01', name:'深淵の裂傷', origin:'呪術師', when:'魔術命中時', desc:'魔術が命中した時、その対象の次の判定（命中・回避・POWロール問わず）にPD+1が付与される（1ラウンド1回）。', excl:null},
+  {id:'H02', name:'呪いの増幅', origin:'呪術師', when:'魔術が命中した時', desc:'魔術攻撃が命中した時、固定ダメージ+2を加算し、さらに命中判定にBD+1を得る。　／　HD・EX・クリティカル問わず常時発動。対象は魔術のみ。', excl:null},
+  {id:'H03', name:'魂食い', origin:'呪術師', when:'魔術がEX成功した時', desc:'魔術攻撃がEX成功した時、与えたダメージの1/4（切捨て・最小1）をMPとして回収する。　／　EX成功時のみ。最大値超過分は無効。', excl:null},
+  {id:'H04', name:'歪んだ触媒', origin:'呪術師', when:'魔術使用前（宣言制）', desc:'魔術使用時、MP消費+1とAP消費+1を宣言することで、命中値+10%またはダメージボーナス1段階上昇のいずれかを選択できる。　／　1回の魔術につき1種の効果のみ選択可。MPおよびAPが不足する場合は使用不可。', excl:null},
+  {id:'Ma01', name:'知識の回廊', origin:'魔法使い', when:'常時（MP量による切り替え）', desc:'MPが最大値の1/2以上ある時、魔術の命中値+5%。MPが最大値の1/4以下の時、魔術のダメージボーナス1段階上昇。　／　1/4〜1/2の間は両方不発動。1/4以下なら固定ダメージ+1d3を追加。', excl:null},
+  {id:'Ma02', name:'元素の親和', origin:'魔法使い', when:'選択属性の魔術命中時', desc:'取得時に属性を1種選択（炎・冷気・雷・闇・神聖・毒）。その属性の魔術が命中した時、ダメージ+1d4。さらに選ばなかった属性の魔術攻撃を受けた時、被ダメージ+1d4。　／　選択属性以外・無属性魔術への攻撃ダメージ増加には無効。被ダメージ増加は選択属性以外すべてに適用。', excl:null},
+  {id:'Ma03', name:'遠視の刻印', origin:'魔法使い', when:'常時', desc:'魔術・奇跡・弓の射程+1。さらに探索時のもの探し・視界確認などの行動判定に有効（GMの判断で適用）。　／　触媒の射程補正とは別枠で加算。射程∞には無効。煙幕・霧によるペナルティ軽減効果は削除。', excl:null},
+  {id:'Ma04', name:'帝国の術式', origin:'魔法使い', when:'魔術がEX成功した時', desc:'魔術攻撃がEX成功した時、通常のEX効果に加えてMP+2を回収する。さらにそのラウンド中の次の魔術詠唱のAPコストを1軽減する（最小0AP・1ラウンド1回）。　／　EX成功時のみ。G19との差別化：G19はHD条件緩和（攻めの投資）、Ma04はEX後の回収（成功報酬）。', excl:null},
+  {id:'C01', name:'縫合の回路', origin:'聖職者', when:'奇跡使用後', desc:'奇跡使用後、ラウンド終了時に味方1名（HP最低の者）のHP+1d4を自動回復する。奇跡が外れた場合も発動する。　／　戦闘中のみ有効。自分自身への適用は最もHPが低い場合のみ。', excl:null},
+  {id:'C02', name:'聖別の一撃', origin:'聖職者', when:'奇跡・神聖属性武器がHD成功した時', desc:'アンデッド・邪悪への攻撃がHD成功した時、通常のHD戦技に加えてダメージ+1d6を追加する。　／　アンデッド・邪悪の定義はGM判断。通常の敵には発動しない。', excl:null},
+  {id:'C03', name:'浄化の手', origin:'聖職者', when:'アイテムで状態異常を解除する時', desc:'アイテムで状態異常を解除する際、同一アイテムで1種追加で解除できる（例：清醒の香→恐怖と発狂を同時解除）。　／　刻印・属性相互作用での解除には適用されない。アイテムによる解除のみ。', excl:null},
+  {id:'C04', name:'迫害者の烙印', origin:'聖職者', when:'魔術・奇跡攻撃が命中した時', desc:'呪術師・深きものの末裔に対する魔術・奇跡攻撃が命中した時、ダメージ+1d4を追加する。　／　対象素性：呪術師・深きものの末裔のみ。他の素性には発動しない。', excl:null},
+  {id:'D01', name:'深海の血脈', origin:'深きものの末裔', when:'常時', desc:'状態異常を受けていない場合、ラウンド開始時にHP+1回復する（自動）。さらに凍結状態の敵への近接攻撃の命中値+5%を得る。　／　状態異常が1種でも付与されている間はHP回復が止まる。凍結した敵への命中+5%は状態異常に関わらず常時。', excl:null},
+  {id:'D02', name:'深淵の適応', origin:'深きものの末裔', when:'常時', desc:'命中判定・回避の対抗ロール・POWロールのうち、そのラウンド中に最初に判定に失敗した時、次の同種の判定にBD+1を得る（1ラウンド1回・種別ごとに独立）。　／　失敗した瞬間に発動。成功には発動しない。', excl:null},
+  {id:'D03', name:'一心の刻印', origin:'深きものの末裔', when:'常時（武器種選択制）', desc:'取得時に武器種を1種選択する（近接武器種のみ）。その武器種の命中判定に常時+10%を得る。代わりに選択した武器種以外の武器は使用できなくなる。　／　選択できる武器種：短剣・直剣・大剣・斧・ハンマー・槍・ハルバード・盾のいずれか1種。弓・魔術・奇跡は選択不可。一度選択したら変更不可。', excl:null},
+  {id:'D04', name:'虚無の眼', origin:'深きものの末裔', when:'EX成功した時', desc:'直剣・斧・ハンマー・槍・盾のいずれかでEX成功した時、通常のEX戦技に加えて対象に発狂付与のPOWロールを課す。　／　対象武器種のみ。', excl:null},
+  {id:'Hu01', name:'獲物の気配', origin:'狩人', when:'戦闘開始時・ラウンド開始時', desc:'戦闘開始時、対象の現在HPを「多い／半分以下／瀕死寸前」の3段階でGMが秘密裏に通知する。HP半分以下の敵への弓・短剣の命中値+5%。　／　GM判断により情報精度が変わることがある。', excl:null},
+  {id:'Hu02', name:'毒の矢筒', origin:'狩人', when:'弓の攻撃命中時', desc:'弓で攻撃が命中した時（通常成功以上）、対象にPOWロールを課す。失敗で毒付与。1ラウンド1回のみ。　／　弓のみ有効。', excl:null},
+  {id:'Hu03', name:'星に愛された者', origin:'狩人', when:'常時', desc:'LCKによるクリティカル率ボーナスを+1%追加する。さらに瀕死状態でのLCKロールにBD+1を得る。　／　汎用G13「星読み」との選択関係（片方のみ取得可）。LCK10以上不要（取得制限なし）。', excl:'G13'},
+  {id:'Hu04', name:'追跡の本能', origin:'狩人', when:'攻撃命中直後', desc:'命中した敵を「標的」として設定する（1体のみ）。以降、標的への命中判定+5%。別の敵を命中させると前の標的のボーナスは消える。　／　命中しなければ設定されない。逃走・戦闘不能で解除。', excl:null},
+  {id:'De01', name:'何も残らなかった', origin:'廃人', when:'常時', desc:'追加ポイントを振り分けた能力値の種類数×1%を全命中値に加算する（最大+8%・8種の能力値すべてに1点以上振り分けた場合）。　／　「種類数」とは1点以上振り分けた能力値の数。集中投資すると恩恵が減る。', excl:null},
+  {id:'De02', name:'空の器', origin:'廃人', when:'ラウンド開始時', desc:'HP＋MPの合計が最大値の1/2以下の場合、そのラウンド中の全命中判定とPOWロールにBD+1を得る。　／　HP・MPそれぞれではなく合計値で判定。他のBDとも重複。', excl:null},
+  {id:'De03', name:'傷だらけの肉体', origin:'廃人', when:'常時', desc:'物理ダメージを受けた時（1以上）、その後の同一戦闘中において、同じ武器種からの物理ダメージを1軽減する（最小1・武器種ごとに1種記録・上書き制）。　／　状態異常ダメージは対象外。純粋な物理ダメージのみ。', excl:null},
+  {id:'De04', name:'ゼロからの一手', origin:'廃人', when:'戦闘開始・第1ラウンドのみ', desc:'第1ラウンドのみ：自分の最も低い能力値×5%を全命中判定に加算する。　／　廃人の低い初期値を逆手に取る。追加ポイントを一極集中させると最低能力値が小さくなるため、De01と対比設計。', excl:null},
 ];
 
 // ================================================================
@@ -1403,6 +1458,11 @@ function migrateEquipState() {
   delete state.equipCatalyst;
   delete state.equipItems;
   if (!state.soldFixed) state.soldFixed = { R:false, body:false };
+
+  // 旧刻印ID（P01〜P17）は新データ（G/K/M/W/T/H/C/D/Ma/Hu/De）に存在しないため除去
+  if (Array.isArray(state.seals)) {
+    state.seals = state.seals.filter(id => SEALS.some(s => s.id === id));
+  }
 }
 
 async function deleteChar() {
@@ -1519,6 +1579,14 @@ function onSelectOrigin(idx) {
     state.equipHead = null;
     state.soldFixed = { R:false, body:false };
     buildEquipRows();
+
+    // 素性変更により選択不可になった刻印（他素性専用）を選択から除外
+    const newOriginName = ORIGINS[idx].name;
+    state.seals = state.seals.filter(id => {
+      const s = SEALS.find(seal => seal.id === id);
+      return s && (s.origin === null || s.origin === newOriginName);
+    });
+    buildSealGrid();
   }
   selectOriginBtn(idx);
   renderStats();
@@ -1689,14 +1757,20 @@ function buildEquipRows() {
   const isDerelict = fixed && fixed.derelict;
 
   EQUIP_SLOTS.forEach(def => {
-    const cur = state[def.id]; // {name, isFixed} | null
+    const cur = state[def.id]; // {name, isFixed, catKey?} | null
     const categories = def.categories();
 
     // 現在選択中のカテゴリキーを特定
+    // 1. 品名が確定していればその品名が属するカテゴリ
+    // 2. 品名未確定でもcatKeyが保存されていればそれを使う
     let curCatKey = '';
     if (cur) {
-      for (const cat of categories) {
-        if (cat.items.some(it => it.name === cur.name)) { curCatKey = cat.key; break; }
+      if (cur.name) {
+        for (const cat of categories) {
+          if (cat.items.some(it => it.name === cur.name)) { curCatKey = cat.key; break; }
+        }
+      } else if (cur.catKey) {
+        curCatKey = cur.catKey;
       }
     }
 
@@ -1751,7 +1825,7 @@ function buildEquipRows() {
       if (catKey === NONE_VAL) {
         state[def.id] = null;
       } else {
-        state[def.id] = { name:null, isFixed:false }; // カテゴリのみ確定、品名未選択
+        state[def.id] = { name:null, isFixed:false, catKey }; // カテゴリのみ確定、品名未選択
       }
       buildEquipRows();
     });
@@ -1762,9 +1836,9 @@ function buildEquipRows() {
       itemSel.addEventListener('change', e => {
         const val = e.target.value;
         if (val === NONE_VAL) {
-          state[def.id] = null;
+          state[def.id] = { name:null, isFixed:false, catKey: curCatKey };
         } else {
-          state[def.id] = { name: val, isFixed: false };
+          state[def.id] = { name: val, isFixed: false, catKey: curCatKey };
         }
         renderGold();
         buildEquipRows();
@@ -1820,23 +1894,42 @@ function buildSealGrid() {
   if (lbl) lbl.textContent = max + '種';
   updateSealCount();
 
-  SEALS.forEach(s => {
-    const isSelected = state.seals.includes(s.id);
-    const isExcl     = s.excl && state.seals.includes(s.excl);
-    const maxReached = state.seals.length >= max && !isSelected;
-    const disabled   = (isExcl || maxReached) && !isSelected;
+  const o = getOrigin();
+  const originName = o ? o.name : null;
 
-    const div = document.createElement('div');
-    div.className = 'seal-opt' + (isSelected ? ' selected' : '') + (disabled ? ' disabled' : '');
-    div.innerHTML = `
-      <span class="seal-opt__id">${s.id}</span>
-      <span class="seal-opt__name">${s.name}</span>
-      <span class="seal-opt__when">${s.when}</span>
-      <span class="seal-opt__desc">${s.desc}</span>
-    `;
-    if (!disabled) div.onclick = () => toggleSeal(s.id);
-    grid.appendChild(div);
-  });
+  // 表示対象：汎用（origin===null）＋自素性専用（origin===originName）
+  const visible = SEALS.filter(s => s.origin === null || s.origin === originName);
+
+  const renderGroup = (title, list) => {
+    if (list.length === 0) return;
+    const head = document.createElement('div');
+    head.className = 'seal-group-title';
+    head.textContent = title;
+    grid.appendChild(head);
+
+    list.forEach(s => {
+      const isSelected = state.seals.includes(s.id);
+      const isExcl     = s.excl && state.seals.includes(s.excl);
+      const maxReached = state.seals.length >= max && !isSelected;
+      const disabled   = (isExcl || maxReached) && !isSelected;
+
+      const div = document.createElement('div');
+      div.className = 'seal-opt' + (isSelected ? ' selected' : '') + (disabled ? ' disabled' : '');
+      div.innerHTML = `
+        <span class="seal-opt__id">${s.id}</span>
+        <span class="seal-opt__name">${s.name}</span>
+        <span class="seal-opt__when">${s.when}</span>
+        <span class="seal-opt__desc">${s.desc}</span>
+      `;
+      if (!disabled) div.onclick = () => toggleSeal(s.id);
+      grid.appendChild(div);
+    });
+  };
+
+  renderGroup('汎用刻印（全素性共通）', visible.filter(s => s.origin === null));
+  if (originName) {
+    renderGroup(`${originName}専用刻印`, visible.filter(s => s.origin === originName));
+  }
 }
 
 function toggleSeal(id) {
