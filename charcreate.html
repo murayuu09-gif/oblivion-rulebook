@@ -3,1032 +3,1501 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>キャラクターシート — 忘却の淵にて</title>
+<title>キャラクター作成 — 忘却の淵にて</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
 <style>
-/* ── キャラクターシート専用スタイル ── */
-
-/* タブ */
-.cs-tab-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border);
+/* ── CSS Variables (same as site style) ── */
+:root {
+  --bg:   #0e0d0b;
+  --bg2:  #141310;
+  --bg3:  #1a1815;
+  --bg4:  #201e1a;
+  --text:  #e8e0d0;
+  --text2: #b8b0a0;
+  --text3: #787060;
+  --border:  #2a2620;
+  --border2: #3a3530;
+  --gold:     #c8a45a;
+  --gold2:    #e0c070;
+  --gold-dim: #906830;
+  --red:    #904030;
+  --red2:   #d06040;
+  --blue:   #305090;
+  --blue2:  #6090d0;
+  --teal:   #306840;
+  --teal2:  #50a870;
+  --purple: #604080;
+  --purple2:#9060c0;
+  --radius: 3px;
+  --max-w:  960px;
 }
-.cs-tab-btn {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 11px;
-  letter-spacing: .08em;
-  padding: .6rem 1.1rem;
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: var(--text3);
-  cursor: pointer;
-  transition: all .2s;
-  margin-bottom: -1px;
-  white-space: nowrap;
-}
-.cs-tab-btn:hover { color: var(--gold); }
-.cs-tab-btn.active { color: var(--gold); border-bottom-color: var(--gold-dim); }
-.cs-tab-content { display: none; }
-.cs-tab-content.active { display: block; }
-
-/* セクション */
-.cs-section { margin-bottom: 2rem; }
-.cs-section-title {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: .25em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: .75rem;
-  padding-left: .5rem;
-  border-left: 2px solid var(--gold-dim);
-}
-
-/* カード */
-.cs-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem 1.5rem;
-}
-
-/* フォームフィールド */
-.cs-field { display: flex; flex-direction: column; gap: 5px; }
-.cs-field label {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 10px;
-  letter-spacing: .08em;
-  color: var(--text3);
-}
-.cs-field input[type=text],
-.cs-field input[type=number],
-.cs-field select,
-.cs-field textarea {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 2px;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 14px; }
+body {
+  background: var(--bg);
   color: var(--text);
   font-family: 'Noto Sans JP', sans-serif;
-  font-size: 13px;
-  padding: 6px 10px;
-  outline: none;
-  transition: border-color .2s;
-  width: 100%;
-}
-.cs-field input:focus,
-.cs-field select:focus,
-.cs-field textarea:focus { border-color: var(--gold-dim); }
-.cs-field textarea { resize: vertical; min-height: 70px; }
-.cs-field input[type=number] { -moz-appearance: textfield; }
-.cs-field input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
-
-/* グリッドレイアウト */
-.cs-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.cs-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.cs-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-
-/* 素性ボタン */
-.origin-btn-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  margin-bottom: 1rem;
-}
-.origin-btn {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 11px;
-  letter-spacing: .04em;
-  padding: 7px 4px;
-  border: 1px solid var(--border);
-  background: var(--bg3);
-  color: var(--text3);
-  border-radius: 2px;
-  cursor: pointer;
-  transition: all .2s;
-  text-align: center;
-}
-.origin-btn:hover { color: var(--gold); border-color: var(--gold-dim); }
-.origin-btn.active {
-  background: rgba(200,164,90,.12);
-  border-color: var(--gold-dim);
-  color: var(--gold2);
-  font-weight: 500;
+  line-height: 1.6;
+  min-height: 100vh;
 }
 
-/* 素性説明 */
-.origin-desc-box {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: .75rem 1rem;
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.7;
-  min-height: 52px;
+/* ── NAV ── */
+.site-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(14,13,11,0.95);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(8px);
+}
+.site-nav__inner {
+  max-width: var(--max-w); margin: 0 auto;
+  padding: 0 2rem;
+  display: flex; align-items: center; gap: 2rem;
+  height: 52px;
+}
+.site-nav__logo {
+  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.3em;
+  color: var(--gold); text-decoration: none; flex-shrink: 0;
+}
+.site-nav__links { display: flex; list-style: none; gap: 0; margin-left: auto; }
+.site-nav__links a {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 11px; letter-spacing: 0.1em;
+  color: var(--text3); text-decoration: none; padding: 0 1rem; line-height: 52px;
+  display: block; transition: color 0.2s; white-space: nowrap;
+}
+.site-nav__links a:hover, .site-nav__links a.active { color: var(--gold); }
+
+/* ── PAGE WRAPPER ── */
+.page-wrap { max-width: var(--max-w); margin: 0 auto; padding: 80px 2rem 4rem; }
+.page-header { padding: 2.5rem 0 2rem; text-align: center; }
+.page-eyebrow {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.5em;
+  color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.75rem;
+}
+.page-title { font-family: 'Cinzel', serif; font-size: 32px; color: var(--gold2); letter-spacing: 0.08em; }
+.page-title-ja {
+  font-family: 'Noto Serif JP', serif; font-size: 14px; color: var(--text3);
+  letter-spacing: 0.3em; margin-top: 0.3rem; font-weight: 300;
+}
+.page-divider { width: 40px; height: 1px; background: var(--gold-dim); margin: 1.5rem auto 0; opacity: 0.5; }
+
+/* ── STEPS NAV ── */
+.steps-nav {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 2rem; overflow-x: auto;
+}
+.step-btn {
+  flex-shrink: 0;
+  font-family: 'Noto Sans JP', sans-serif; font-size: 11px; letter-spacing: 0.08em;
+  padding: 0.65rem 1.1rem; background: none; border: none;
+  border-bottom: 2px solid transparent; color: var(--text3); cursor: pointer;
+  transition: all 0.2s; margin-bottom: -1px; white-space: nowrap;
+}
+.step-btn:hover { color: var(--gold); }
+.step-btn.active { color: var(--gold); border-bottom-color: var(--gold-dim); }
+.step-num {
+  font-family: 'Cinzel', serif; font-size: 8px; color: var(--gold-dim);
+  margin-right: 5px; letter-spacing: 0.2em;
+}
+.step-panel { display: none; }
+.step-panel.active { display: block; }
+
+/* ── COMMON COMPONENTS ── */
+.section-label {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.35em;
+  color: var(--gold-dim); text-transform: uppercase; margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.field-group { margin-bottom: 1.25rem; }
+.field-label {
+  display: block; font-size: 10px; letter-spacing: 0.1em; color: var(--text3);
+  margin-bottom: 4px; font-family: 'Noto Sans JP', sans-serif;
+}
+.field-input, .field-select, .field-textarea {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--radius); color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif; font-size: 13px;
+  padding: 0.55rem 0.9rem; outline: none; transition: border-color 0.2s;
+  appearance: none;
+}
+.field-input:focus, .field-select:focus, .field-textarea:focus { border-color: var(--gold-dim); }
+.field-textarea { resize: vertical; min-height: 80px; line-height: 1.8; }
+.field-select option { background: var(--bg2); }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; }
+
+/* ── ORIGIN CARDS ── */
+.origin-select-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem;
+}
+.origin-opt {
+  background: var(--bg2); padding: 1.125rem 1.25rem; cursor: pointer;
+  transition: background 0.15s; position: relative; border: none;
+  text-align: left; color: inherit; width: 100%;
+}
+.origin-opt:hover { background: var(--bg3); }
+.origin-opt.selected { background: rgba(200,164,90,0.08); }
+.origin-opt.selected::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--gold-dim);
+}
+.origin-opt__en {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.25em;
+  color: var(--gold-dim); text-transform: uppercase; display: block; margin-bottom: 2px;
+}
+.origin-opt__name {
+  font-family: 'Noto Serif JP', serif; font-size: 15px; color: var(--text);
+  display: block; margin-bottom: 3px;
+}
+.origin-opt__catch { font-size: 10px; color: var(--text3); line-height: 1.5; }
+.origin-check {
+  position: absolute; right: 0.75rem; top: 0.75rem;
+  width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: var(--gold); background: transparent;
+  transition: all 0.2s;
+}
+.origin-opt.selected .origin-check { background: var(--gold-dim); border-color: var(--gold); }
+
+/* origin info panel */
+.origin-info {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: none;
+}
+.origin-info.visible { display: block; }
+.origin-info__header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem; }
+.origin-info__title { font-family: 'Noto Serif JP', serif; font-size: 18px; color: var(--gold2); }
+.origin-info__stats { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem; }
+.stat-chip {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 2px; padding: 3px 8px; text-align: center;
+}
+.stat-chip__key { font-size: 8px; color: var(--text3); display: block; letter-spacing: 0.1em; font-family: 'Cinzel', serif; }
+.stat-chip__val { font-size: 14px; font-weight: 500; color: var(--gold); display: block; }
+.origin-info__derived { display: flex; gap: 1rem; margin-top: 0.75rem; flex-wrap: wrap; }
+.derived-pill {
+  background: var(--bg3); border: 1px solid var(--border2); border-radius: 2px;
+  padding: 4px 12px; text-align: center;
+}
+.derived-pill__key { font-size: 8px; color: var(--text3); display: block; letter-spacing: 0.15em; font-family: 'Cinzel', serif; }
+.derived-pill__val { font-size: 16px; font-weight: 500; display: block; }
+.origin-info__equip { margin-top: 0.75rem; font-size: 11px; color: var(--text2); }
+.origin-info__equip span { color: var(--gold-dim); margin-right: 4px; }
+
+/* ── STAT ALLOCATION ── */
+.stat-alloc-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+  background: var(--border); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem;
+}
+@media (max-width: 600px) { .stat-alloc-grid { grid-template-columns: repeat(2, 1fr); } }
+.stat-alloc-cell {
+  background: var(--bg2); padding: 0.875rem 1rem;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.stat-alloc-cell__key { font-family: 'Cinzel', serif; font-size: 10px; color: var(--gold-dim); letter-spacing: 0.15em; }
+.stat-alloc-cell__name { font-size: 10px; color: var(--text3); }
+.stat-alloc-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+.stat-base { font-size: 16px; color: var(--text); font-weight: 500; min-width: 26px; text-align: right; }
+.stat-plus { font-size: 11px; color: var(--gold-dim); }
+.stat-add-input {
+  width: 44px; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 2px; color: var(--gold); font-size: 14px; font-weight: 500;
+  text-align: center; padding: 2px 4px; outline: none;
+}
+.stat-add-input:focus { border-color: var(--gold-dim); }
+.stat-total { font-size: 16px; color: var(--gold2); font-weight: 700; min-width: 26px; }
+
+.pt-tracker {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.75rem 1rem; display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1rem; flex-wrap: wrap;
+}
+.pt-label { font-size: 11px; color: var(--text3); font-family: 'Noto Sans JP', sans-serif; }
+.pt-bar-wrap { flex: 1; min-width: 120px; }
+.pt-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.pt-bar-fill { height: 100%; background: var(--gold-dim); border-radius: 2px; transition: width 0.2s; }
+.pt-nums { font-size: 13px; }
+.pt-used { color: var(--gold); font-weight: 700; }
+.pt-max { color: var(--text3); }
+.pt-half-note { font-size: 10px; color: var(--text3); white-space: nowrap; }
+
+/* ── DERIVED STATS DISPLAY ── */
+.derived-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1px; background: var(--border); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem;
+}
+.derived-cell {
+  background: var(--bg2); padding: 0.75rem 1rem;
+}
+.derived-cell__label { font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.25em; color: var(--gold-dim); text-transform: uppercase; display: block; margin-bottom: 2px; }
+.derived-cell__formula { font-size: 10px; color: var(--text3); margin-bottom: 3px; }
+.derived-cell__val { font-size: 22px; font-weight: 700; }
+.derived-cell__val--hp { color: var(--red2); }
+.derived-cell__val--mp { color: var(--blue2); }
+.derived-cell__val--ap { color: var(--teal2); }
+.derived-cell__val--cr { color: var(--gold); }
+.derived-cell__val--def { color: var(--text); }
+
+/* ── EQUIPMENT ── */
+.equip-section { margin-bottom: 1.5rem; }
+.equip-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem; }
+.equip-budget {
+  font-size: 11px; color: var(--text3);
+}
+.equip-budget b { color: var(--gold); }
+.equip-warning { font-size: 11px; color: var(--red2); display: none; }
+
+.equip-slot { margin-bottom: 0.75rem; }
+.equip-slot-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; letter-spacing: 0.08em; }
+.equip-row { display: flex; gap: 0.5rem; align-items: center; }
+.equip-select { flex: 1; }
+.equip-sell-note { font-size: 10px; color: var(--gold-dim); white-space: nowrap; }
+
+.equip-info-box {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.65rem 1rem; margin-top: 0.5rem; font-size: 11px; color: var(--text2); line-height: 1.7;
+  min-height: 40px;
+}
+.equip-info-box .hd-tag { color: var(--gold-dim); font-weight: 500; }
+.equip-info-box .ex-tag { color: var(--gold); font-weight: 500; }
+.equip-info-box .sp-tag { color: var(--teal2); }
+
+/* catalyst spells */
+.spell-pool { margin-top: 0.75rem; display: none; }
+.spell-pool-label { font-size: 10px; color: var(--text3); margin-bottom: 6px; letter-spacing: 0.08em; }
+.spell-select-group { display: flex; flex-direction: column; gap: 6px; }
+.spell-slot-row { display: flex; gap: 0.5rem; align-items: center; }
+.spell-slot-idx { font-family: 'Cinzel', serif; font-size: 9px; color: var(--text3); width: 18px; flex-shrink: 0; }
+
+/* ── HIT TABLE ── */
+.hit-display {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  overflow: hidden; margin-bottom: 1.5rem;
+}
+.hit-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.hit-table th {
+  background: var(--bg3); font-family: 'Noto Sans JP', sans-serif; font-size: 9px;
+  color: var(--gold-dim); letter-spacing: 0.1em; padding: 5px 8px;
+  border-bottom: 1px solid var(--border); text-align: center;
+}
+.hit-table td { padding: 6px 8px; text-align: center; color: var(--text2); border-bottom: 1px solid var(--border); font-size: 12px; }
+.hit-table tr:last-child td { border-bottom: none; }
+.hit-cell--hi { color: var(--gold2); font-weight: 700; background: rgba(200,164,90,0.07); }
+.hit-cell--lo { color: var(--text3); opacity: 0.7; }
+.hit-selected { background: rgba(200,164,90,0.12); }
+
+/* ── SEALS ── */
+.seal-pool-label { font-size: 10px; color: var(--text3); margin-bottom: 6px; letter-spacing: 0.08em; }
+.seal-slot { margin-bottom: 0.75rem; }
+.seal-slot-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; letter-spacing: 0.08em; }
+.seal-info-box {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 0.6rem 0.9rem; margin-top: 4px; font-size: 10px; color: var(--text2); line-height: 1.65;
   display: none;
 }
-.origin-desc-box.visible { display: block; }
-.origin-desc-box .catch {
-  font-style: italic;
-  color: var(--gold-dim);
-  font-size: 11px;
-  margin-bottom: 4px;
-  font-family: 'Noto Serif JP', serif;
-}
-.origin-desc-box .equip {
-  font-size: 11px;
-  color: var(--text3);
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid var(--border);
-}
+.seal-info-box.visible { display: block; }
+.seal-info-trigger { color: var(--gold-dim); font-size: 9px; }
 
-/* 能力値カード */
-.stat-card {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 8px 6px 6px;
-  text-align: center;
-  position: relative;
+/* ── PDF OUTPUT ── */
+.print-btn-row { display: flex; gap: 0.75rem; margin-bottom: 2rem; flex-wrap: wrap; align-items: center; }
+.btn-primary {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 12px; letter-spacing: 0.1em;
+  padding: 0.6rem 1.5rem; background: var(--gold-dim); color: var(--gold2);
+  border: 1px solid var(--gold); border-radius: var(--radius); cursor: pointer;
+  transition: all 0.2s;
 }
-.stat-card label {
-  font-family: 'Cinzel', serif;
-  font-size: 8px;
-  letter-spacing: .15em;
-  color: var(--gold-dim);
-  display: block;
-  margin-bottom: 2px;
+.btn-primary:hover { background: var(--gold); color: var(--bg); }
+.btn-secondary {
+  font-family: 'Noto Sans JP', sans-serif; font-size: 12px; letter-spacing: 0.1em;
+  padding: 0.6rem 1.5rem; background: transparent; color: var(--text2);
+  border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer;
+  transition: all 0.2s;
 }
-.stat-card .stat-name {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 9px;
-  color: var(--text3);
-  display: block;
-  margin-bottom: 4px;
-}
-.stat-card input {
-  width: 100%;
-  font-size: 22px;
-  font-weight: 500;
-  text-align: center;
-  border: none;
-  background: transparent;
-  color: var(--gold2);
-  font-family: 'Cinzel', serif;
-  -moz-appearance: textfield;
-  outline: none;
-}
-.stat-card input::-webkit-inner-spin-button { -webkit-appearance: none; }
-.stat-card .stat-x5 {
-  font-size: 10px;
-  color: var(--text3);
-  font-family: 'Noto Sans JP', sans-serif;
-}
-.stat-adj {
-  display: flex;
-  justify-content: center;
-  gap: 4px;
-  margin-top: 4px;
-}
-.adj-btn {
-  width: 20px;
-  height: 16px;
-  font-size: 9px;
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  background: var(--bg2);
-  color: var(--text3);
-  cursor: pointer;
-  transition: all .15s;
-  line-height: 1;
-}
-.adj-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.btn-secondary:hover { border-color: var(--gold-dim); color: var(--gold); }
 
-/* ポイント表示 */
-.pts-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: .75rem;
-}
-.pts-label {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: .15em;
-  color: var(--text3);
-}
-.pts-val {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  color: var(--gold2);
-  font-weight: 600;
-}
-.pts-val.over { color: var(--red2); }
+/* ── PREVIEW SHEET ── */
+#sheet-preview { display: none; }
+#sheet-preview.visible { display: block; }
 
-/* 派生ステータス */
-.derived-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
-  margin-bottom: .75rem;
+.sheet {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 1.5rem; margin-bottom: 2rem; font-size: 12px;
 }
-.derived-box {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 6px 8px;
+.sheet-title {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em;
+  color: var(--gold-dim); text-transform: uppercase; margin-bottom: 1.25rem;
   text-align: center;
 }
-.derived-box .d-label {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 9px;
-  color: var(--text3);
-  display: block;
-  margin-bottom: 3px;
-  letter-spacing: .05em;
+.sheet-row { display: flex; gap: 1rem; margin-bottom: 0.875rem; flex-wrap: wrap; }
+.sheet-field { flex: 1; min-width: 120px; }
+.sheet-field-label { font-size: 9px; color: var(--text3); letter-spacing: 0.1em; margin-bottom: 2px; }
+.sheet-field-val {
+  border-bottom: 1px solid var(--border2); padding-bottom: 3px;
+  color: var(--text); font-size: 13px; min-height: 22px; word-break: break-all;
 }
-.derived-box .d-val {
-  font-family: 'Cinzel', serif;
-  font-size: 18px;
-  font-weight: 600;
+.sheet-divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+.sheet-stat-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.sheet-stat-box {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 2px;
+  padding: 5px 10px; text-align: center; flex: 1; min-width: 70px;
 }
-.d-hp { color: var(--red2); }
-.d-mp { color: var(--blue2); }
-.d-cr { color: var(--gold2); }
-.d-pa { color: var(--text2); }
-.d-mr { color: var(--purple2); }
+.sheet-stat-key { font-family: 'Cinzel', serif; font-size: 9px; color: var(--gold-dim); letter-spacing: 0.15em; display: block; }
+.sheet-stat-val { font-size: 18px; font-weight: 700; color: var(--gold); display: block; }
+.sheet-derived-row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.sheet-derived-box {
+  flex: 1; min-width: 80px; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 2px; padding: 5px 10px; text-align: center;
+}
+.sheet-section-head { font-size: 9px; color: var(--gold-dim); letter-spacing: 0.2em; font-family: 'Cinzel', serif; text-transform: uppercase; margin-bottom: 0.5rem; border-bottom: 1px solid var(--border); padding-bottom: 3px; }
 
-/* HP/MPトラッカー */
-.tracker-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-  margin-top: .75rem;
-}
-.tracker-box {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 6px 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.tracker-box label {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: .15em;
-  color: var(--text3);
-  white-space: nowrap;
-}
-.tracker-box input {
-  flex: 1;
-  font-size: 15px;
-  font-weight: 500;
-  text-align: center;
-  border: none;
-  background: transparent;
-  color: var(--text);
-  font-family: 'Cinzel', serif;
-  -moz-appearance: textfield;
-  outline: none;
-  min-width: 0;
-}
-.tracker-box input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.sheet-equip-row { display: flex; gap: 1rem; margin-bottom: 0.4rem; }
+.sheet-equip-label { font-size: 9px; color: var(--text3); width: 60px; flex-shrink: 0; }
+.sheet-equip-val { color: var(--text2); font-size: 11px; }
+.sheet-equip-detail { font-size: 10px; color: var(--text3); margin-left: 4px; }
 
-/* 命中値テーブル */
-.hit-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-  overflow-x: auto;
-}
-.hit-table th {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 9px;
-  color: var(--gold-dim);
-  padding: 5px 6px;
-  border-bottom: 1px solid var(--border2);
-  text-align: center;
-  white-space: nowrap;
-  letter-spacing: .06em;
-}
-.hit-table td {
-  padding: 6px 6px;
-  text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  color: var(--text2);
-}
-.hit-table td.hi { color: var(--gold2); font-weight: 600; }
-.hit-table td.lo { color: var(--text3); }
-.hit-table td.modified { color: var(--teal2); }
+.sheet-hit-mini { overflow-x: auto; }
+.sheet-hit-table { border-collapse: collapse; font-size: 10px; width: 100%; }
+.sheet-hit-table th { font-size: 8px; color: var(--gold-dim); padding: 3px 5px; border: 1px solid var(--border); text-align: center; background: var(--bg3); white-space: nowrap; }
+.sheet-hit-table td { padding: 3px 5px; border: 1px solid var(--border); text-align: center; color: var(--text2); }
+.sheet-hit-table td.hi { color: var(--gold2); font-weight: 700; }
+.sheet-hit-table td.sel { background: rgba(200,164,90,0.12); }
 
-/* 武器行 */
-.weapon-head {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr 1fr 1.5fr 1fr;
-  gap: 6px;
-  padding: 4px 0 6px;
-  border-bottom: 1px solid var(--border2);
-  margin-bottom: 4px;
-}
-.weapon-head span {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 9px;
-  color: var(--gold-dim);
-  text-align: center;
-  letter-spacing: .08em;
-}
-.weapon-head span:first-child { text-align: left; }
-.weapon-row {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr 1fr 1.5fr 1fr;
-  gap: 6px;
-  padding: 4px 0;
-  border-bottom: 1px solid var(--border);
-}
-.weapon-row:last-child { border-bottom: none; }
-.weapon-row input {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 12px;
-  padding: 4px 6px;
-  outline: none;
-  width: 100%;
-  text-align: center;
-  transition: border-color .2s;
-}
-.weapon-row input:first-child { text-align: left; }
-.weapon-row input:focus { border-color: var(--gold-dim); }
+.sheet-seal-list { display: flex; flex-direction: column; gap: 4px; }
+.sheet-seal-item { font-size: 11px; color: var(--text2); }
+.sheet-seal-name { color: var(--text); font-weight: 500; }
+.sheet-seal-detail { font-size: 10px; color: var(--text3); margin-top: 1px; line-height: 1.5; }
 
-/* 刻印スロット */
-.seal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.seal-slot {
-  background: var(--bg3);
-  border: 1px dashed var(--border2);
-  border-radius: var(--radius);
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: border-color .2s;
-}
-.seal-slot.filled {
-  border-style: solid;
-  border-color: var(--gold-dim);
-  background: rgba(200,164,90,.04);
-}
-.seal-num {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  color: var(--text3);
-  min-width: 16px;
-}
-.seal-slot input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 12px;
-  outline: none;
-  min-width: 0;
-}
-.seal-slot input::placeholder { color: var(--text3); }
+.sheet-memo { font-size: 12px; color: var(--text2); white-space: pre-wrap; line-height: 1.8; word-break: break-all; }
 
-/* 状態異常チップ */
-.status-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.status-chip {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 11px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border2);
-  background: var(--bg3);
-  color: var(--text3);
-  cursor: pointer;
-  transition: all .2s;
-  user-select: none;
-}
-.status-chip:hover { border-color: var(--gold-dim); color: var(--text2); }
-.status-chip.on-poison { background: rgba(192,64,48,.2); border-color: var(--red); color: var(--red2); }
-.status-chip.on-burn   { background: rgba(200,80,40,.2); border-color: #904030; color: #e87050; }
-.status-chip.on-cold   { background: rgba(80,160,200,.15); border-color: #4080a0; color: #70b0e0; }
-.status-chip.on-freeze { background: rgba(80,160,200,.3); border-color: #2060a0; color: #aad4f0; }
-.status-chip.on-fear   { background: rgba(112,80,144,.2); border-color: var(--purple); color: var(--purple2); }
-.status-chip.on-mad    { background: rgba(112,80,144,.3); border-color: var(--purple); color: var(--purple2); }
-.status-chip.on-blind  { background: rgba(100,90,64,.3); border-color: var(--border2); color: var(--text2); }
-.status-chip.on-silence { background: rgba(100,90,64,.3); border-color: var(--border2); color: var(--text2); }
-.status-chip.on-seal   { background: rgba(200,80,40,.15); border-color: #904030; color: #e87050; }
-.status-chip.on-death  { background: rgba(192,64,48,.3); border-color: var(--red); color: var(--red2); }
-.status-chip.on-stone  { background: rgba(100,90,64,.4); border-color: var(--border2); color: var(--text); }
-.status-chip.on-frenzy { background: rgba(200,164,90,.2); border-color: var(--gold-dim); color: var(--gold2); }
-
-/* AP表示 */
-.ap-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.ap-badge {
-  font-family: 'Cinzel', serif;
-  font-size: 10px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--border2);
-  color: var(--text2);
-}
-.ap-badge.ap-3 { border-color: var(--gold-dim); color: var(--gold); }
-.ap-badge.ap-1 { border-color: var(--teal); color: var(--teal2); }
-.ap-badge.ap-0 { border-color: var(--border); color: var(--text3); }
-
-/* DBテーブル */
-.db-display {
-  font-family: 'Cinzel', serif;
-  font-size: 13px;
-  color: var(--gold2);
-}
-.db-display.none { color: var(--text3); font-size: 11px; }
-
-/* 印刷ボタン */
-.print-bar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
-}
-.print-btn {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 11px;
-  letter-spacing: .06em;
-  padding: 6px 16px;
-  border: 1px solid var(--border2);
-  border-radius: 2px;
-  background: var(--bg2);
-  color: var(--text3);
-  cursor: pointer;
-  transition: all .2s;
-}
-.print-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
-
-/* メモエリア */
-.cs-textarea {
-  width: 100%;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 2px;
-  color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 12px;
-  line-height: 1.8;
-  padding: 8px 12px;
-  resize: vertical;
-  min-height: 80px;
-  outline: none;
-  transition: border-color .2s;
-}
-.cs-textarea:focus { border-color: var(--gold-dim); }
-
-/* note */
-.cs-note {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 11px;
-  color: var(--text3);
-  line-height: 1.7;
-  padding: .5rem .75rem;
-  border-left: 2px solid var(--border2);
-  margin-top: .75rem;
-}
-
-@media (max-width: 600px) {
-  .cs-grid-2, .cs-grid-3, .cs-grid-4 { grid-template-columns: 1fr 1fr; }
-  .origin-btn-grid { grid-template-columns: repeat(3, 1fr); }
-  .derived-grid { grid-template-columns: repeat(3, 1fr); }
-  .seal-grid { grid-template-columns: 1fr; }
-  .weapon-head, .weapon-row { grid-template-columns: 2fr 1fr 1fr; }
-  .weapon-head span:nth-child(4), .weapon-row input:nth-child(4),
-  .weapon-head span:nth-child(5), .weapon-row input:nth-child(5) { display: none; }
+/* ── PRINT STYLES ── */
+@media print {
+  body { background: #fff; color: #000; font-size: 10pt; }
+  .site-nav, .steps-nav, .step-btn, .page-header, .print-btn-row,
+  .step-panel:not(#panel-preview) { display: none !important; }
+  #sheet-preview { display: block !important; }
+  .sheet { background: #fff; border: 1px solid #ccc; break-inside: avoid; padding: 1cm; }
+  .sheet-stat-box, .sheet-derived-box { background: #f5f5f5; border: 1px solid #ccc; }
+  .sheet-hit-table td, .sheet-hit-table th { border-color: #ccc; }
+  .sheet-field-val { border-color: #ccc; color: #000; }
+  :root {
+    --text: #000; --text2: #333; --text3: #666;
+    --gold: #8b6a0a; --gold2: #5a4200; --gold-dim: #8b6a0a;
+    --bg3: #f5f5f5; --border: #ccc; --border2: #aaa;
+    --red2: #800; --blue2: #006; --teal2: #060;
+  }
 }
 </style>
 </head>
 <body>
 
-<!-- ナビゲーション -->
 <nav class="site-nav" role="navigation">
   <div class="site-nav__inner">
     <a href="index.html" class="site-nav__logo">Oblivion</a>
     <ul class="site-nav__links">
       <li><a href="index.html">Top</a></li>
-      <li class="site-nav__item">
-        <a href="world.html">世界観</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="world.html">概要</a></li>
-          <li><a href="world_detail.html">詳細設定</a></li>
-        </ul>
-      </li>
-      <li class="site-nav__item">
-        <a href="system_combat.html">システム</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="system_combat.html">戦闘</a></li>
-          <li><a href="system_explore.html">探索</a></li>
-        </ul>
-      </li>
-      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="system_combat.html">システム</a></li>
       <li><a href="origins.html">素性・能力値</a></li>
-      <li class="site-nav__item">
-        <a href="data_weapons.html">データ一覧</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="data_weapons.html">武器・防具</a></li>
-          <li><a href="data_magic.html">魔術・奇跡</a></li>
-          <li><a href="data_seals.html">刻印</a></li>
-        </ul>
-      </li>
-      <li class="site-nav__item">
-        <a href="gm_enemies.html">GMツール</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="gm_enemies.html">エネミーリスト</a></li>
-          <li><a href="gm_artifacts.html">アーティファクト</a></li>
-          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
-        </ul>
-      </li>
+      <li><a href="charcreate.html" class="active">キャラクター作成</a></li>
+      <li><a href="data_weapons.html">データ一覧</a></li>
     </ul>
   </div>
 </nav>
 
 <div class="page-wrap">
   <div class="page-header">
-    <p class="page-eyebrow">Character Sheet</p>
+    <p class="page-eyebrow">Chapter III</p>
     <h1 class="page-title">Character Creation</h1>
-    <p class="page-title-ja">キャラクターシート</p>
+    <p class="page-title-ja">キャラクター作成</p>
     <div class="page-divider"></div>
   </div>
 
-  <div class="print-bar">
-    <button class="print-btn" onclick="window.print()">印刷 / PDF保存</button>
+  <!-- STEP NAV -->
+  <div class="steps-nav">
+    <button class="step-btn active" onclick="gotoStep(0)"><span class="step-num">I</span>パーソナルデータ</button>
+    <button class="step-btn" onclick="gotoStep(1)"><span class="step-num">II</span>素性選択</button>
+    <button class="step-btn" onclick="gotoStep(2)"><span class="step-num">III</span>能力値振り分け</button>
+    <button class="step-btn" onclick="gotoStep(3)"><span class="step-num">IV</span>装備選択</button>
+    <button class="step-btn" onclick="gotoStep(4)"><span class="step-num">V</span>刻印選択</button>
+    <button class="step-btn" onclick="gotoStep(5)"><span class="step-num">VI</span>確認・出力</button>
   </div>
 
-  <!-- タブ -->
-  <div class="cs-tab-group">
-    <button class="cs-tab-btn active" onclick="switchTab('basic')">基本情報</button>
-    <button class="cs-tab-btn" onclick="switchTab('stats')">能力値</button>
-    <button class="cs-tab-btn" onclick="switchTab('equip')">装備</button>
-    <button class="cs-tab-btn" onclick="switchTab('seals')">刻印</button>
-    <button class="cs-tab-btn" onclick="switchTab('combat')">戦闘管理</button>
+  <!-- ── STEP 0: パーソナルデータ ── -->
+  <div id="panel-0" class="step-panel active">
+    <p class="section-label">パーソナルデータ</p>
+    <div class="row2">
+      <div class="field-group">
+        <label class="field-label" for="player-name">プレイヤー名</label>
+        <input id="player-name" class="field-input" type="text" placeholder="プレイヤー名を入力">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="char-name">キャラクター名</label>
+        <input id="char-name" class="field-input" type="text" placeholder="キャラクター名を入力">
+      </div>
+    </div>
+    <div class="field-group">
+      <label class="field-label" for="char-memo">メモ（性別・性格・生い立ちなど）</label>
+      <textarea id="char-memo" class="field-textarea" placeholder="キャラクターについて自由に記述してください。" style="min-height:140px;"></textarea>
+    </div>
+    <div style="display:flex; justify-content:flex-end; margin-top:0.5rem;">
+      <button class="btn-primary" onclick="gotoStep(1)">次へ：素性選択 →</button>
+    </div>
   </div>
 
-  <!-- ── タブ：基本情報 ── -->
-  <div id="tab-basic" class="cs-tab-content active">
-
-    <div class="cs-section">
-      <p class="cs-section-title">Character Info</p>
-      <div class="cs-card">
-        <div class="cs-grid-2" style="margin-bottom:12px">
-          <div class="cs-field"><label>キャラクター名</label><input type="text" id="c-name" placeholder="名前を入力…"></div>
-          <div class="cs-field"><label>プレイヤー名</label><input type="text" id="c-player" placeholder="PL名"></div>
-        </div>
-        <div class="cs-grid-3">
-          <div class="cs-field"><label>周回数</label><input type="text" id="c-ng" placeholder="新規 / 1周目後…"></div>
-          <div class="cs-field"><label>初期ゴールド</label><input type="text" id="c-gold" value="500G"></div>
-          <div class="cs-field"><label>所持ゴールド</label><input type="text" id="c-gold-cur" placeholder="—"></div>
-        </div>
-      </div>
+  <!-- ── STEP 1: 素性選択 ── -->
+  <div id="panel-1" class="step-panel">
+    <p class="section-label">素性を選択</p>
+    <div class="origin-select-grid" id="origin-grid"></div>
+    <div class="origin-info" id="origin-info"></div>
+    <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+      <button class="btn-secondary" onclick="gotoStep(0)">← 戻る</button>
+      <button class="btn-primary" onclick="gotoStep(2)">次へ：能力値振り分け →</button>
     </div>
-
-    <div class="cs-section">
-      <p class="cs-section-title">Origin — 素性</p>
-      <div class="cs-card">
-        <div class="origin-btn-grid">
-          <button class="origin-btn" data-o="騎士" onclick="selectOrigin(this)">騎士</button>
-          <button class="origin-btn" data-o="傭兵" onclick="selectOrigin(this)">傭兵</button>
-          <button class="origin-btn" data-o="戦士" onclick="selectOrigin(this)">戦士</button>
-          <button class="origin-btn" data-o="盗賊" onclick="selectOrigin(this)">盗賊</button>
-          <button class="origin-btn" data-o="呪術師" onclick="selectOrigin(this)">呪術師</button>
-          <button class="origin-btn" data-o="魔法使い" onclick="selectOrigin(this)">魔法使い</button>
-          <button class="origin-btn" data-o="聖職者" onclick="selectOrigin(this)">聖職者</button>
-          <button class="origin-btn" data-o="深きものの末裔" onclick="selectOrigin(this)">深きもの</button>
-          <button class="origin-btn" data-o="狩人" onclick="selectOrigin(this)">狩人</button>
-          <button class="origin-btn" data-o="廃人" onclick="selectOrigin(this)">廃人</button>
-        </div>
-        <div class="origin-desc-box" id="origin-desc"></div>
-      </div>
-    </div>
-
-    <div class="cs-section">
-      <p class="cs-section-title">Background — 背景・動機</p>
-      <div class="cs-card">
-        <div class="cs-field"><label>なぜ廃墟へ向かうのか</label><textarea id="c-bg" placeholder="キャラクターの来歴と動機を自由に記入…"></textarea></div>
-      </div>
-    </div>
-
   </div>
 
-  <!-- ── タブ：能力値 ── -->
-  <div id="tab-stats" class="cs-tab-content">
+  <!-- ── STEP 2: 能力値振り分け ── -->
+  <div id="panel-2" class="step-panel">
+    <p class="section-label">能力値振り分け</p>
 
-    <div class="cs-section">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem">
-        <p class="cs-section-title" style="margin-bottom:0">Ability Scores — 能力値</p>
-        <div class="pts-bar" style="margin-bottom:0">
-          <span class="pts-label" style="margin-right:8px">追加ポイント残り</span>
-          <span class="pts-val" id="pts-rem">7</span>
-          <span class="pts-label" style="margin-left:4px">/ <span id="pts-max">7</span></span>
-        </div>
+    <div class="pt-tracker">
+      <span class="pt-label">追加ポイント残余</span>
+      <div class="pt-bar-wrap">
+        <div class="pt-bar"><div class="pt-bar-fill" id="pt-bar-fill" style="width:0%"></div></div>
       </div>
-      <div class="cs-card">
-        <div class="cs-grid-4" style="margin-bottom:12px">
-          <div class="stat-card"><label>CON</label><span class="stat-name">体力</span><input type="number" id="s-CON" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-CON">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('CON',1)">＋</button><button class="adj-btn" onclick="adj('CON',-1)">－</button></div></div>
-          <div class="stat-card"><label>STR</label><span class="stat-name">筋力</span><input type="number" id="s-STR" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-STR">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('STR',1)">＋</button><button class="adj-btn" onclick="adj('STR',-1)">－</button></div></div>
-          <div class="stat-card"><label>DEX</label><span class="stat-name">技量</span><input type="number" id="s-DEX" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-DEX">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('DEX',1)">＋</button><button class="adj-btn" onclick="adj('DEX',-1)">－</button></div></div>
-          <div class="stat-card"><label>AGI</label><span class="stat-name">敏捷</span><input type="number" id="s-AGI" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-AGI">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('AGI',1)">＋</button><button class="adj-btn" onclick="adj('AGI',-1)">－</button></div></div>
-          <div class="stat-card"><label>INT</label><span class="stat-name">理力</span><input type="number" id="s-INT" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-INT">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('INT',1)">＋</button><button class="adj-btn" onclick="adj('INT',-1)">－</button></div></div>
-          <div class="stat-card"><label>FTH</label><span class="stat-name">信仰</span><input type="number" id="s-FTH" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-FTH">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('FTH',1)">＋</button><button class="adj-btn" onclick="adj('FTH',-1)">－</button></div></div>
-          <div class="stat-card"><label>POW</label><span class="stat-name">精神</span><input type="number" id="s-POW" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-POW">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('POW',1)">＋</button><button class="adj-btn" onclick="adj('POW',-1)">－</button></div></div>
-          <div class="stat-card"><label>LCK</label><span class="stat-name">運命</span><input type="number" id="s-LCK" value="5" min="1" max="20" oninput="updateAll()"><div class="stat-x5" id="x5-LCK">×5 = 25%</div><div class="stat-adj"><button class="adj-btn" onclick="adj('LCK',1)">＋</button><button class="adj-btn" onclick="adj('LCK',-1)">－</button></div></div>
-        </div>
-
-        <!-- 派生ステータス -->
-        <div class="derived-grid">
-          <div class="derived-box"><span class="d-label">HP</span><span class="d-val d-hp" id="d-HP">—</span></div>
-          <div class="derived-box"><span class="d-label">MP</span><span class="d-val d-mp" id="d-MP">—</span></div>
-          <div class="derived-box"><span class="d-label">クリティカル率</span><span class="d-val d-cr" id="d-CR">—</span></div>
-          <div class="derived-box"><span class="d-label">物理装甲</span><span class="d-val d-pa" id="d-PA" style="font-size:14px">—</span></div>
-          <div class="derived-box"><span class="d-label">魔術耐性</span><span class="d-val d-mr" id="d-MR" style="font-size:14px">—</span></div>
-        </div>
-
-        <!-- DBテーブル -->
-        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:.75rem 1rem;margin-top:4px">
-          <div style="font-family:'Cinzel',serif;font-size:9px;letter-spacing:.15em;color:var(--gold-dim);margin-bottom:8px">DAMAGE BONUS</div>
-          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;font-size:11px">
-            <div><span style="color:var(--text3);font-family:'Noto Sans JP',sans-serif">筋力武器(STR)</span><br><span class="db-display" id="db-STR">—</span></div>
-            <div><span style="color:var(--text3);font-family:'Noto Sans JP',sans-serif">技量武器(DEX)</span><br><span class="db-display" id="db-DEX">—</span></div>
-            <div><span style="color:var(--text3);font-family:'Noto Sans JP',sans-serif">魔術(INT)</span><br><span class="db-display" id="db-INT">—</span></div>
-            <div><span style="color:var(--text3);font-family:'Noto Sans JP',sans-serif">奇跡(FTH)</span><br><span class="db-display" id="db-FTH">—</span></div>
-          </div>
-        </div>
-
-        <!-- HP/MP tracker -->
-        <div class="tracker-row">
-          <div class="tracker-box"><label>HP</label><input type="number" id="cur-HP" placeholder="現在"><span style="color:var(--text3);font-size:11px">/ <span id="max-HP-disp">—</span></span></div>
-          <div class="tracker-box"><label>MP</label><input type="number" id="cur-MP" placeholder="現在"><span style="color:var(--text3);font-size:11px">/ <span id="max-MP-disp">—</span></span></div>
-          <div class="tracker-box"><label>AP</label><input type="number" id="cur-AP" value="3" min="0" max="6"><span style="color:var(--text3);font-size:11px">/ <span id="max-AP-disp">3</span></span></div>
-        </div>
+      <div class="pt-nums">
+        <span class="pt-used" id="pt-used">0</span>
+        <span class="pt-max" id="pt-max"> / 7</span>
       </div>
+      <span class="pt-half-note" id="pt-half-note">※1能力値への上限: +4</span>
     </div>
 
-    <div class="cs-section">
-      <p class="cs-section-title">Hit Table — 命中値</p>
-      <div class="cs-card" style="overflow-x:auto">
-        <table class="hit-table">
-          <thead>
-            <tr>
-              <th>短剣</th><th>直剣</th><th>大剣</th><th>斧・ハンマー</th>
-              <th>槍・ハルバード</th><th>盾</th><th>弓</th><th>魔術 *</th><th>奇跡 *</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr id="hit-row">
-              <td colspan="9" style="color:var(--text3);font-size:12px;text-align:center;padding:1rem">素性を選択すると命中値が表示されます</td>
-            </tr>
-          </tbody>
-        </table>
-        <p class="cs-note">* 魔術・奇跡は触媒の命中補正を加算する前の基本値。命中値が100%を超えた場合、超過分はHD/EX達成確率の上昇に転換されます。</p>
-      </div>
-    </div>
+    <div class="stat-alloc-grid" id="stat-alloc-grid"></div>
 
+    <p class="section-label" style="margin-top:1.5rem;">派生ステータス（自動計算）</p>
+    <div class="derived-grid" id="derived-display"></div>
+
+    <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+      <button class="btn-secondary" onclick="gotoStep(1)">← 戻る</button>
+      <button class="btn-primary" onclick="gotoStep(3)">次へ：装備選択 →</button>
+    </div>
   </div>
 
-  <!-- ── タブ：装備 ── -->
-  <div id="tab-equip" class="cs-tab-content">
+  <!-- ── STEP 3: 装備選択 ── -->
+  <div id="panel-3" class="step-panel">
+    <p class="section-label">装備選択</p>
 
-    <div class="cs-section">
-      <p class="cs-section-title">Equipment Slots — 装備スロット</p>
-      <div class="cs-card">
-        <div class="cs-grid-2" style="margin-bottom:12px">
-          <div class="cs-field">
-            <label>右手 / Main Hand</label>
-            <input type="text" id="eq-r" placeholder="武器 / 触媒（杖）">
-          </div>
-          <div class="cs-field">
-            <label>左手 / Off Hand</label>
-            <input type="text" id="eq-l" placeholder="武器 / 触媒（聖印）/ 盾">
-          </div>
+    <div class="equip-section">
+      <div class="equip-head">
+        <div>
+          <div class="equip-budget">所持金： <b id="equip-gold-rem">500</b>G 残 ／ <b id="equip-gold-total">500</b>G</div>
+          <div class="equip-warning" id="equip-warning">⚠ 所持金が不足しています</div>
         </div>
-        <div class="cs-grid-2">
-          <div class="cs-field"><label>頭部防具</label><input type="text" id="eq-head" placeholder="—"></div>
-          <div class="cs-field"><label>胴体防具</label><input type="text" id="eq-body" placeholder="—"></div>
+        <div style="font-size:10px;color:var(--text3);">初期装備は半額売却可。500G以内で組み合わせ自由。</div>
+      </div>
+
+      <!-- 武器 -->
+      <div class="equip-slot">
+        <div class="equip-slot-label">武器（主）</div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-weapon1" onchange="onEquipChange()"></select>
+          <span class="equip-sell-note" id="sell-weapon1"></span>
         </div>
-        <p class="cs-note">片手武器は両スロットに装備可。両手武器（大剣・斧・ハンマー）は右手のみ占有。触媒は左右どちらでも可。</p>
+        <div class="equip-info-box" id="info-weapon1"></div>
+      </div>
+
+      <!-- 武器（副） -->
+      <div class="equip-slot">
+        <div class="equip-slot-label">武器（副）/ 盾 <span style="font-size:9px;color:var(--text3);">任意・片手武器・盾のみ</span></div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-weapon2" onchange="onEquipChange()"></select>
+          <span class="equip-sell-note" id="sell-weapon2"></span>
+        </div>
+        <div class="equip-info-box" id="info-weapon2"></div>
+      </div>
+
+      <!-- 触媒（呪術師・魔法使い・聖職者のみ） -->
+      <div class="equip-slot" id="catalyst-slot" style="display:none;">
+        <div class="equip-slot-label">触媒（杖 / 聖印）</div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-catalyst" onchange="onCatalystChange()"></select>
+          <span class="equip-sell-note" id="sell-catalyst"></span>
+        </div>
+        <div class="equip-info-box" id="info-catalyst"></div>
+      </div>
+
+      <!-- 魔術・奇跡スロット -->
+      <div class="spell-pool" id="spell-pool">
+        <div class="spell-pool-label">魔術・奇跡（触媒の対応する級まで選択可）</div>
+        <div class="spell-select-group" id="spell-selects"></div>
+      </div>
+
+      <!-- 防具（頭） -->
+      <div class="equip-slot">
+        <div class="equip-slot-label">防具（頭）</div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-head" onchange="onEquipChange()"></select>
+          <span class="equip-sell-note" id="sell-head"></span>
+        </div>
+        <div class="equip-info-box" id="info-head"></div>
+      </div>
+
+      <!-- 防具（胴） -->
+      <div class="equip-slot">
+        <div class="equip-slot-label">防具（胴）</div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-body" onchange="onEquipChange()"></select>
+          <span class="equip-sell-note" id="sell-body"></span>
+        </div>
+        <div class="equip-info-box" id="info-body"></div>
       </div>
     </div>
 
-    <div class="cs-section">
-      <p class="cs-section-title">Weapon Data — 武器データ</p>
-      <div class="cs-card">
-        <div class="weapon-head">
-          <span>武器名</span><span>射程</span><span>AP</span><span>ダイス＋固定</span><span>特記</span>
-        </div>
-        <div id="weapon-rows">
-          <div class="weapon-row"><input type="text" placeholder="武器名"><input type="text" placeholder="1〜∞"><input type="text" placeholder="1AP"><input type="text" placeholder="1d6+1"><input type="text" placeholder="特殊効果・HD/EX"></div>
-          <div class="weapon-row"><input type="text" placeholder="武器名"><input type="text" placeholder="1〜∞"><input type="text" placeholder="1AP"><input type="text" placeholder="1d6+1"><input type="text" placeholder="特殊効果・HD/EX"></div>
-          <div class="weapon-row"><input type="text" placeholder="武器名"><input type="text" placeholder="1〜∞"><input type="text" placeholder="1AP"><input type="text" placeholder="1d6+1"><input type="text" placeholder="特殊効果・HD/EX"></div>
-          <div class="weapon-row"><input type="text" placeholder="武器名"><input type="text" placeholder="1〜∞"><input type="text" placeholder="1AP"><input type="text" placeholder="1d6+1"><input type="text" placeholder="特殊効果・HD/EX"></div>
-        </div>
-      </div>
+    <!-- 命中値テーブル -->
+    <p class="section-label">命中値（選択武器ハイライト）</p>
+    <div class="hit-display">
+      <table class="hit-table" id="hit-table">
+        <thead>
+          <tr>
+            <th>素性</th>
+            <th>短剣</th><th>直剣</th><th>大剣</th><th>斧</th><th>槍</th><th>盾</th><th>弓</th><th>魔術</th><th>奇跡</th>
+            <th>得意</th>
+          </tr>
+        </thead>
+        <tbody id="hit-tbody"></tbody>
+      </table>
     </div>
 
-    <div class="cs-section">
-      <p class="cs-section-title">Magic & Miracles — 魔術・奇跡</p>
-      <div class="cs-card">
-        <textarea class="cs-textarea" id="magic-notes" style="min-height:120px" placeholder="習得している魔術・奇跡を記入&#10;例）炎の矢 M01 ／ 初級1AP ／ MP1 ／ 射程5 ／ 1d6 ／ 燃焼付与（POWロール）&#10;　　HD：ダメージ+1　EX：ダメージ+1d4、燃焼付与ロール不要"></textarea>
-      </div>
-    </div>
+    <!-- ダメージ表示 -->
+    <p class="section-label">装備ダメージ（HD/EX含む）</p>
+    <div id="dmg-display" style="display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1.5rem;"></div>
 
-    <div class="cs-section">
-      <p class="cs-section-title">Artifacts & Items — アーティファクト・アイテム</p>
-      <div class="cs-card">
-        <textarea class="cs-textarea" id="item-notes" placeholder="所持アーティファクト・消耗品など"></textarea>
-      </div>
+    <div style="display:flex; justify-content:space-between; margin-top:0.5rem;">
+      <button class="btn-secondary" onclick="gotoStep(2)">← 戻る</button>
+      <button class="btn-primary" onclick="gotoStep(4)">次へ：刻印選択 →</button>
     </div>
-
   </div>
 
-  <!-- ── タブ：刻印 ── -->
-  <div id="tab-seals" class="cs-tab-content">
-
-    <div class="cs-section">
-      <p class="cs-section-title">Inscriptions — 刻印（最大4種）</p>
-      <div class="cs-card">
-        <div class="seal-grid" id="seal-grid">
-          <div class="seal-slot"><span class="seal-num">01</span><input type="text" placeholder="刻印名" oninput="sealFill(this)"></div>
-          <div class="seal-slot"><span class="seal-num">02</span><input type="text" placeholder="刻印名" oninput="sealFill(this)"></div>
-          <div class="seal-slot"><span class="seal-num">03</span><input type="text" placeholder="刻印名" oninput="sealFill(this)"></div>
-          <div class="seal-slot"><span class="seal-num">04</span><input type="text" placeholder="刻印名" oninput="sealFill(this)"></div>
-        </div>
-        <p class="cs-note">汎用＋自素性専用あわせて4種。同一刻印の重複取得不可。「封印」状態異常中は全刻印効果が無効化されます。</p>
-      </div>
+  <!-- ── STEP 4: 刻印選択 ── -->
+  <div id="panel-4" class="step-panel">
+    <p class="section-label">刻印選択</p>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1rem;font-size:11px;color:var(--text2);line-height:1.8;">
+      汎用＋自素性専用あわせて <strong style="color:var(--gold)">4種</strong> を選択。重複取得不可。<br>
+      <span style="color:var(--text3);font-size:10px;">「封印」状態中は全刻印効果が無効化。G13「星読み」とHu03「星に愛された者」は片方のみ取得可。</span>
     </div>
 
-    <div class="cs-section">
-      <p class="cs-section-title">Seal Notes — 刻印詳細メモ</p>
-      <div class="cs-card">
-        <textarea class="cs-textarea" id="seal-notes" style="min-height:160px" placeholder="各刻印の効果・発動条件・排他ルールなどを記入&#10;例）G01 疾風の歩法 ／ 常時 ／ AGI12以上でAP+1（計4AP）。G03と併用不可&#10;　　G17 死の淵から ／ HP最大値1/4以下 ／ 命中判定にBD+1"></textarea>
-      </div>
+    <div id="seal-slots-container"></div>
+
+    <div id="seal-summary" style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:0.875rem 1rem;margin-top:1rem;display:none;">
+      <div style="font-size:9px;color:var(--gold-dim);letter-spacing:0.2em;font-family:'Cinzel',serif;text-transform:uppercase;margin-bottom:0.5rem;">選択中の刻印</div>
+      <div id="seal-summary-list"></div>
     </div>
 
+    <div style="display:flex; justify-content:space-between; margin-top:1rem;">
+      <button class="btn-secondary" onclick="gotoStep(3)">← 戻る</button>
+      <button class="btn-primary" onclick="gotoStep(5)">次へ：確認・出力 →</button>
+    </div>
   </div>
 
-  <!-- ── タブ：戦闘管理 ── -->
-  <div id="tab-combat" class="cs-tab-content">
-
-    <div class="cs-section">
-      <p class="cs-section-title">Status — 状態異常</p>
-      <div class="cs-card">
-        <div class="status-chips">
-          <div class="status-chip" data-k="poison" onclick="toggleChip(this)">毒</div>
-          <div class="status-chip" data-k="burn" onclick="toggleChip(this)">燃焼</div>
-          <div class="status-chip" data-k="cold" onclick="toggleChip(this)">冷気</div>
-          <div class="status-chip" data-k="freeze" onclick="toggleChip(this)">凍結</div>
-          <div class="status-chip" data-k="fear" onclick="toggleChip(this)">恐怖</div>
-          <div class="status-chip" data-k="mad" onclick="toggleChip(this)">発狂</div>
-          <div class="status-chip" data-k="blind" onclick="toggleChip(this)">盲目</div>
-          <div class="status-chip" data-k="silence" onclick="toggleChip(this)">沈黙</div>
-          <div class="status-chip" data-k="seal" onclick="toggleChip(this)">封印</div>
-          <div class="status-chip" data-k="death" onclick="toggleChip(this)">死の宣告</div>
-          <div class="status-chip" data-k="stone" onclick="toggleChip(this)">石化</div>
-          <div class="status-chip" data-k="frenzy" onclick="toggleChip(this)">狂喜</div>
-        </div>
-        <p class="cs-note" id="status-note" style="display:none"></p>
-      </div>
+  <!-- ── STEP 5: 確認・出力 ── -->
+  <div id="panel-5" class="step-panel" id="panel-preview">
+    <p class="section-label">キャラクターシート確認</p>
+    <div class="print-btn-row">
+      <button class="btn-primary" onclick="window.print()">🖨 PDFで出力</button>
+      <button class="btn-secondary" onclick="gotoStep(0)">← 最初から修正</button>
     </div>
-
-    <div class="cs-section">
-      <p class="cs-section-title">AP & Actions — 行動早見表</p>
-      <div class="cs-card">
-        <div class="ap-row" style="margin-bottom:.75rem">
-          <span class="ap-badge ap-3">超級 3AP</span>
-          <span class="ap-badge ap-1" style="border-color:var(--purple);color:var(--purple2)">上級 2AP</span>
-          <span class="ap-badge ap-1">初級 / 近接 1AP</span>
-          <span class="ap-badge ap-0">アイテム 0AP</span>
-        </div>
-        <div style="font-size:11px;color:var(--text2);line-height:2;font-family:'Noto Sans JP',sans-serif">
-          <span style="color:var(--gold-dim)">移動</span> 1AP = 1マス（上下左右）　
-          <span style="color:var(--gold-dim)">武器変更</span> 1AP　
-          <span style="color:var(--gold-dim)">回避構え</span> 1AP+BD ▷ 次の回避にBD+1<br>
-          <span style="color:var(--gold-dim)">応戦</span> 1AP（近接専用）　
-          <span style="color:var(--gold-dim)">相殺</span> 1AP（魔術専用）<br>
-          <span style="color:var(--teal2)">短剣</span> 1AP×最大3回　
-          <span style="color:var(--teal2)">直剣・槍・弓</span> 1AP×最大2回　
-          <span style="color:var(--teal2)">大剣・斧・ハンマー</span> 2AP×1回
-        </div>
-      </div>
+    <div id="sheet-preview" class="visible">
+      <!-- シートはJSで生成 -->
     </div>
-
-    <div class="cs-section">
-      <p class="cs-section-title">Combat Log — 戦闘メモ</p>
-      <div class="cs-card">
-        <textarea class="cs-textarea" id="combat-notes" style="min-height:100px" placeholder="敵のHP・状態・ラウンド記録など"></textarea>
-      </div>
-    </div>
-
-    <div class="cs-section">
-      <p class="cs-section-title">Notes — その他メモ</p>
-      <div class="cs-card">
-        <textarea class="cs-textarea" id="other-notes" style="min-height:80px" placeholder="RP記録・シナリオメモ・GM情報など"></textarea>
-      </div>
-    </div>
-
   </div>
 
-  <nav class="page-nav">
-    <div><p class="page-nav__label">← Previous</p><a href="charcreate.html" class="page-nav__link">キャラクター作成</a></div>
-    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="origins.html" class="page-nav__link">素性・能力値</a></div>
-  </nav>
-</div>
+</div><!-- /page-wrap -->
 
-<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
-
-<script src="nav.js"></script>
 <script>
-/* ── データ ── */
-const ORIGINS = {
-  '騎士':         { stats:[8,8,6,5,3,4,4,6], pts:7, catch:'誇りを盾に、剣を振るう者', weapon:'ショートソード', armor:'板金鎧', hit:[55,70,65,55,60,65,45,35,40], best:[1,2,5] },
-  '傭兵':         { stats:[6,6,8,8,3,3,4,6], pts:7, catch:'金のために戦い、腕で生き延びる', weapon:'ダガー', armor:'革鎧', hit:[60,65,60,50,55,50,50,35,35], best:[0,1] },
-  '戦士':         { stats:[7,10,4,4,3,3,5,6], pts:7, catch:'力こそすべて、一撃に賭ける漢', weapon:'グレートソード', armor:'鎖帷子', hit:[50,60,75,70,60,55,40,35,35], best:[2,3] },
-  '盗賊':         { stats:[5,4,9,9,4,3,5,7], pts:7, catch:'影に潜み、急所を狙う', weapon:'ダガー', armor:'革鎧', hit:[75,55,40,40,45,40,65,40,35], best:[0,6] },
-  '呪術師':       { stats:[5,5,6,5,9,5,7,4], pts:7, catch:'禁じられた力を我が物とする異端者', weapon:'木の杖', armor:'呪術師の外套', hit:[55,45,35,40,40,40,40,75,45], best:[7] },
-  '魔法使い':     { stats:[4,3,4,5,10,3,10,5], pts:7, catch:'知識は力。世界の理を操る者', weapon:'木の杖', armor:'魔術師のローブ', hit:[40,40,35,35,35,35,45,75,40], best:[7] },
-  '聖職者':       { stats:[5,4,4,5,4,10,9,5], pts:7, catch:'神の御業を地に示す使徒', weapon:'白衣教団の聖印', armor:'白衣の法衣', hit:[45,50,40,50,55,60,45,40,75], best:[5,8] },
-  '深きものの末裔': { stats:[12,7,5,4,6,3,7,4], pts:7, catch:'海の呪いを受け継ぐ、異形の血族', weapon:'ショートソード', armor:'深海の鱗鎧', hit:[55,60,55,60,60,55,40,45,35], best:[1,3,4] },
-  '狩人':         { stats:[5,5,8,8,4,3,5,8], pts:7, catch:'獲物を逃がさぬ、森の追跡者', weapon:'ショートスピア', armor:'革鎧', hit:[65,50,40,45,50,40,75,40,35], best:[0,6] },
-  '廃人':         { stats:[5,5,5,5,5,4,5,8], pts:10, catch:'すべてを失った者だけが、すべてを超えられる', weapon:'（500G以内で自由購入）', armor:'（500G以内で自由購入）', hit:[45,40,40,40,40,40,40,45,45], best:[] }
+// ================================================================
+// DATA
+// ================================================================
+const STAT_KEYS = ['STR','CON','DEX','AGI','INT','FTH','POW','LCK'];
+const STAT_NAMES = ['筋力','体力','器用','敏捷','知力','信仰','精神','幸運'];
+
+const ORIGINS = [
+  {name:'騎士',en:'Knight',catch:'誇りを盾に、剣を振るう者',stats:[8,8,6,5,3,4,4,6],hp:32,mp:11,pts:7,cr:'2%',weapon:'ショートソード',armor:'板金鎧',gold:500,hasCatalyst:false},
+  {name:'傭兵',en:'Mercenary',catch:'金のために戦い、腕で生き延びる',stats:[6,6,8,8,3,3,4,6],hp:24,mp:10,pts:7,cr:'2%',weapon:'ダガー',armor:'革鎧',gold:500,hasCatalyst:false},
+  {name:'戦士',en:'Warrior',catch:'力こそすべて、一撃に賭ける漢',stats:[10,7,4,4,3,3,5,6],hp:34,mp:11,pts:7,cr:'2%',weapon:'グレートソード',armor:'鎖帷子',gold:500,hasCatalyst:false},
+  {name:'盗賊',en:'Thief',catch:'影に潜み、急所を狙う',stats:[4,5,9,9,4,3,5,7],hp:18,mp:12,pts:7,cr:'2%',weapon:'ダガー',armor:'革鎧',gold:500,hasCatalyst:false},
+  {name:'呪術師',en:'Hexer',catch:'禁じられた力を我が物とする異端者',stats:[5,5,6,5,9,5,7,4],hp:20,mp:21,pts:7,cr:'1%',weapon:'木の杖',armor:'呪術師の外套',gold:500,hasCatalyst:true,catalystType:'杖',catalystHint:'深淵の杖（英雄）推奨'},
+  {name:'魔法使い',en:'Mage',catch:'知識は力。世界の理を操る者',stats:[3,4,4,5,10,3,10,5],hp:14,mp:23,pts:7,cr:'1%',weapon:'木の杖',armor:'魔術師のローブ',gold:500,hasCatalyst:true,catalystType:'杖',catalystHint:'古代帝国の杖（英雄）/ 霧の杖（伝説）推奨'},
+  {name:'聖職者',en:'Cleric',catch:'神の御業を地に示す使徒',stats:[4,5,4,5,4,10,9,5],hp:18,mp:23,pts:7,cr:'1%',weapon:'白衣教団の聖印',armor:'白衣の法衣',gold:500,hasCatalyst:true,catalystType:'聖印',catalystHint:'白衣教団の聖印（兵士）/ 縫合の聖印（英雄）推奨'},
+  {name:'深きものの末裔',en:'Deep One',catch:'海の呪いを受け継ぐ、異形の血族',stats:[7,12,5,4,6,3,7,4],hp:38,mp:16,pts:7,cr:'1%',weapon:'ショートソード',armor:'深海の鱗鎧',gold:500,hasCatalyst:false,catalystHint:'深淵の杖（英雄）※魔術ビルド時のみ'},
+  {name:'狩人',en:'Hunter',catch:'獲物を逃がさぬ、森の追跡者',stats:[5,5,8,8,4,3,5,8],hp:20,mp:12,pts:7,cr:'2%',weapon:'ショートスピア',armor:'革鎧',gold:500,hasCatalyst:false},
+  {name:'廃人',en:'Derelict',catch:'すべてを失った者だけが、すべてを超えられる',stats:[5,5,5,5,5,4,5,8],hp:20,mp:14,pts:10,cr:'2%',weapon:'（500G以内で自由購入）',armor:'（500G以内で自由購入）',gold:500,hasCatalyst:false,catalystHint:'全触媒対応'},
+];
+const HIT_DATA = [
+  {name:'騎士',         vals:[55,70,65,55,60,65,45,35,40], best:'直剣・盾・大剣'},
+  {name:'傭兵',         vals:[60,65,60,50,55,50,50,35,35], best:'短剣・直剣'},
+  {name:'戦士',         vals:[50,60,75,70,60,55,40,35,35], best:'大剣・斧'},
+  {name:'盗賊',         vals:[75,55,40,40,45,40,65,40,35], best:'短剣・弓'},
+  {name:'呪術師',       vals:[55,45,35,40,40,40,40,75,45], best:'魔術'},
+  {name:'魔法使い',     vals:[40,40,35,35,35,35,45,75,40], best:'魔術'},
+  {name:'聖職者',       vals:[45,50,40,50,55,60,45,40,75], best:'奇跡・盾'},
+  {name:'深きものの末裔',vals:[55,60,55,60,60,55,40,45,35],best:'直剣・斧・槍'},
+  {name:'狩人',         vals:[65,50,40,45,50,40,75,40,35], best:'弓・短剣'},
+  {name:'廃人',         vals:[45,40,40,40,40,40,40,45,45], best:'（全武器均等）'},
+];
+const WEAPON_TYPES_HIT = ['短剣','直剣','大剣','斧','槍','盾','弓','魔術','奇跡'];
+const WEAPON_CATEGORY_MAP = {
+  '短剣':0,'直剣':1,'大剣':2,'斧・ハンマー':3,'槍・ハルバード':4,'盾':5,'弓':6
 };
 
-const KEYS = ['CON','STR','DEX','AGI','INT','FTH','POW','LCK'];
-const HIT_LABELS = ['短剣','直剣','大剣','斧・ハンマー','槍・ハルバード','盾','弓','魔術','奇跡'];
+const WEAPONS = [
+  {t:'短剣',n:'カッター',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'急所掠り：命中対象の次の回避判定にPD+1',ex:'—',price:50},
+  {t:'短剣',n:'ダガー',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'—',hd:'—',ex:'生死の一線：命中対象がHP5以下なら死の宣告付与（POWロール）',price:80},
+  {t:'短剣',n:'毒刃',r:'兵士',a:'毒',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'毒付与',hd:'毒の蓄積：命中時、毒スタック+1追加',ex:'—',price:120},
+  {t:'短剣',n:'忍び刀',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'イニシアチブ勝利時 命中+10%',hd:'影の一撃：イニシアチブ勝利ターンのみ、命中対象に盲目付与（POWロール）',ex:'—',price:110},
+  {t:'短剣',n:'骨砕き',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'自分付与の状態異常を対象が持つとき ダメージ+1d3',hd:'傷口えぐり：状態異常2種以上持つ対象に追加ダメージ+1d4',ex:'—',price:90},
+  {t:'短剣',n:'水銀刃',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'同ターン2回目以降の攻撃 命中+5%',hd:'水銀の連鎖：3回全命中時、次ターン1回目攻撃命中+10%',ex:'—',price:150},
+  {t:'短剣',n:'爪牙',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'片手',sp:'命中するたびに次のダメージ+1（最大+4）',hd:'爪の記憶：蓄積+3以上のとき装甲を1点無視',ex:'—',price:100},
+  {t:'短剣',n:'星鉄の短刀',r:'英雄',a:'雷',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'帯電の傷：物理装甲半減中、対象が攻撃するたびに1ダメージ',ex:'隕石の落下：装甲半減中の対象に1d8＋連鎖1d4',price:380},
+  {t:'短剣',n:'儚月',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'片手',sp:'通常成功をEXとして扱う',hd:'—',ex:'—',price:500},
+  {t:'短剣',n:'深淵の舌',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'命中するたびに使用者もPOWロール（失敗で疲労付与）',hd:'囁きの侵食：命中対象のPOW-2（1R）',ex:'深淵の共鳴：POW-2発動中、状態異常耐性を完全無効化',price:450},
+  {t:'短剣',n:'終焉の一刺し',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'3回',d:'1d6',f:'+3',s:'DEX',p:'—',h:'片手',sp:'アンデッドに+2d4。命中したアンデッドは蘇生不可',hd:'終焉の宣告：命中対象に死の宣告付与（ロール不要）',ex:'縫合の終焉：死の宣告付与中の対象への命中時、宣告を全消費して即死処理',price:0},
+  {t:'直剣',n:'ショートソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'確かな一撃：対象HP半分以下なら追加ダメージ+1d4',ex:'—',price:80},
+  {t:'直剣',n:'ロングソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'万能の一手：このターン他に攻撃なら命中+5%',ex:'—',price:100},
+  {t:'直剣',n:'バスタードソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'両手持ち時 ダメージ+1d4',hd:'—',ex:'両手の解放：両手持ち命中時、対象を1マス後退＋前方1マスの別の敵に1d4',price:130},
+  {t:'直剣',n:'炎の直剣',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'燃焼付与。冷気カウントリセット',hd:'炎の波及：命中対象が燃焼中なら隣接の別の敵にも燃焼付与',ex:'—',price:160},
+  {t:'直剣',n:'銀の直剣',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'アンデッドに+2d4',hd:'銀の浄化：命中したアンデッドの有利な状態異常1種を解除',ex:'—',price:140},
+  {t:'直剣',n:'月光剣',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'夜間・暗所での命中+5%・ダメージ+1',hd:'月光の断片：夜間・暗所での命中時、対象の次の攻撃にPD+1',ex:'—',price:180},
+  {t:'直剣',n:'ラピア',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'回避行動後の命中+10%',hd:'突きの連鎖：同ターン2回目の命中時、固定値+2追加',ex:'—',price:120},
+  {t:'直剣',n:'贖罪の剣',r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'HP半分以下のとき ダメージ+1d6。アンデッドに+2d4',hd:'痛みの反射：HP半分以下のとき命中対象を1マス後退',ex:'贖罪の極致：HP半分以下かつEX時、死の宣告付与。使用者HP-2',price:420},
+  {t:'直剣',n:'霜の剣',r:'英雄',a:'冷気',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'冷気付与。燃焼を即解除',hd:'深海の震え：命中対象AGI-2（1R）。冷気スタック2以上なら追加ダメージ+1d4',ex:'永久の氷：凍結状態の対象への命中時、凍結解除を1ターン遅らせる',price:460},
+  {t:'直剣',n:'骸の王',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'INT',p:'—',h:'片手',sp:'INT参照固定（STR/DEX不可）',hd:'骨の歌：命中対象の周囲1マス以内の別の敵1体にも沈黙付与',ex:'死者の王権：対象のMP-2d6、MP0の場合HP直接ダメージ',price:550},
+  {t:'直剣',n:'大審判者',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'STR/DEX',p:'—',h:'片手',sp:'アンデッドに+2d4。命中した相手の状態異常を全解除し、種数×2d6ダメージ追加',hd:'均衡の裁定：ダメージを与えた相手のバフを自分も受ける',ex:'完全な裁定：好きな状態異常を選んで付与',price:0},
+  {t:'大剣',n:'グレートソード',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'大地の震動：命中対象と前方1マスの敵全員に疲労付与',ex:'—',price:120},
+  {t:'大剣',n:'クレイモア',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'+1',s:'STR',p:'—',h:'両手',sp:'—',hd:'古の一撃：命中対象の物理装甲を1R半減',ex:'—',price:140},
+  {t:'大剣',n:'断罪剣',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'+2',s:'STR',p:'—',h:'両手',sp:'使用後 次のターン開始時AP-1',hd:'処刑の間合い：命中対象を1マス後退。後退不可なら追加ダメージ+1d6',ex:'—',price:160},
+  {t:'大剣',n:'炎帝の大剣',r:'兵士',a:'炎',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'燃焼付与。冷気カウントリセット',hd:'炎帝の号令：命中対象が燃焼中なら前方1マスの敵全員にも命中判定（1d4）',ex:'—',price:180},
+  {t:'大剣',n:'腐食剣',r:'兵士',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与',hd:'鎧腐食：毒付与中の対象の物理装甲を1点永続減少',ex:'—',price:150},
+  {t:'大剣',n:'裂地',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'前方直線射程1の敵全員にダメージ',hd:'地割れ：薙ぎ払い命中した全対象の次のターン移動APコスト+1',ex:'—',price:170},
+  {t:'大剣',n:'石英の大剣',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'地揺れ：命中した対象が盾装備中の場合、盾の物理軽減を1R無効化',ex:'—',price:130},
+  {t:'大剣',n:'嘆きの大剣',r:'英雄',a:'闇',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'対象のMPが0のとき、ダメージが装甲完全無視',hd:'—',ex:'—',price:480},
+  {t:'大剣',n:'鯨骨の大剣',r:'英雄',a:'冷気',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+1',s:'STR',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除。凍結状態の敵へダメージ+2d6',hd:'海底の圧力：凍結状態の対象への命中時、追加ダメージ+2d4＋STR-2（1R）',ex:'深海の断裂：石化付与（ロール不要）。凍結解除時にダメージ+1d6追加',price:520},
+  {t:'大剣',n:'星喰い',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d8',f:'—',s:'STR',p:'—',h:'両手',sp:'使用後 次のターンAP-1・命中-10%。クリティカル時ダメージ×3',hd:'引力：命中した対象を1マス引き寄せ',ex:'星の崩壊：対象を2マス後退＋後退先に1d8ダメージ',price:580},
+  {t:'大剣',n:'目覚め',r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'3d6',f:'—',s:'STR',p:'全',h:'両手',sp:'命中後 使用者HP-5（固定）',hd:'大地の目覚め：前方3マスの敵全員に命中判定。与えたダメージと同量HP回復',ex:'世界の崩壊：戦闘に参加している全キャラクターにHP最大値の半分のダメージ',price:0},
+  {t:'斧・ハンマー',n:'ハンドアックス',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'鎧割り：命中対象の物理装甲を1点永続的に減少',ex:'—',price:70},
+  {t:'斧・ハンマー',n:'戦斧',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'競技場の咆哮：命中後、次のターンもイニシアチブ最優先',ex:'—',price:110},
+  {t:'斧・ハンマー',n:'投擲斧',r:'兵士',a:'無属性',rng:'1〜3',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'近接・投擲兼用',hd:'正確な投擲：投擲使用時（射程2〜3）、命中+10%・対象を1マス後退',ex:'—',price:90},
+  {t:'斧・ハンマー',n:'石割り',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'—',ex:'岩盤砕き：対象のHP最大値が低いほど追加ダメージ増加',price:130},
+  {t:'斧・ハンマー',n:'雷槌',r:'兵士',a:'雷',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'落雷：命中後、射程2内の別の敵1体に1d6連鎖',ex:'—',price:170},
+  {t:'斧・ハンマー',n:'儀式の斧',r:'兵士',a:'神聖',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'—',ex:'最後の審判：死の宣告付与（ロール不要）。使用者HP-2',price:180},
+  {t:'斧・ハンマー',n:'双斧',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'1回の攻撃で2ヒット（各命中判定独立）',hd:'交差斬り：両方命中時、対象を2マス後退',ex:'乱舞：両方命中時、さらに追加で1ヒット（合計3ヒット可能）',price:440},
+  {t:'斧・ハンマー',n:'骨の砕き手',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'+2',s:'STR',p:'—',h:'両手',sp:'命中するたびに対象のSTR-1（最大-4）',hd:'腕砕き：STR-1の累積効果発動中の対象へダメージ+1d6',ex:'—',price:500},
+  {t:'斧・ハンマー',n:'疫病斧',r:'英雄',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与。毒を持つ対象の隣接者にも毒付与（POWロール）',hd:'—',ex:'—',price:480},
+  {t:'斧・ハンマー',n:'歳輪',r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d12',f:'—',s:'STR',p:'全',h:'両手',sp:'疲労付与。命中対象のイニシアチブを永続的に最低にする',hd:'時の凍結：命中対象の次のターンを完全に消失させる',ex:'時輪の停止：命中対象のAP-1が2ターン継続。凍結状態なら即石化付与',price:0},
+  {t:'槍・ハルバード',n:'ショートスピア',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'牽制：命中対象が次のターン使用者に近づく場合、移動APコスト+1',ex:'—',price:70},
+  {t:'槍・ハルバード',n:'ロングスピア',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'間合い支配：命中後このターン中、対象が近づく移動をAGIロールで妨害できる',ex:'—',price:90},
+  {t:'槍・ハルバード',n:'ハルバード',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'大薙ぎ：命中した対象と隣接する別の敵1体にも同ダメージの半分',ex:'—',price:150},
+  {t:'槍・ハルバード',n:'毒槍',r:'兵士',a:'毒',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'毒付与',hd:'毒の穿孔：毒状態の対象への命中時、装甲貫通+1追加',ex:'—',price:140},
+  {t:'槍・ハルバード',n:'聖槍',r:'兵士',a:'神聖',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'浄化の穿ち：命中したアンデッドの状態異常1種を解除し追加ダメージ+2d4',ex:'—',price:160},
+  {t:'槍・ハルバード',n:'凍てつく穂先',r:'兵士',a:'冷気',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除',hd:'氷晶の穿孔：命中対象の冷気スタックを強制的に+2追加',ex:'—',price:170},
+  {t:'槍・ハルバード',n:'地穿ち',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+1',s:'STR/DEX',p:'全',h:'両手',sp:'装甲・盾装甲を含む全装甲を無視',hd:'大地の楔：命中した対象を1マス後退。後退不可なら追加1d4',ex:'—',price:180},
+  {t:'槍・ハルバード',n:'波紋の槍',r:'英雄',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'直線上の射程2内の敵全員に命中判定',hd:'波紋共鳴：2体以上命中時、最初の命中対象にも追加ダメージ1d4',ex:'深淵の波動：命中した全対象に恐怖付与（ロール不要）＋POW-2（1ターン）',price:420},
+  {t:'槍・ハルバード',n:'魂喰らいの穂',r:'英雄',a:'闇',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d4。MP0の対象はHPへ直接ダメージ',hd:'—',ex:'—',price:560},
+  {t:'槍・ハルバード',n:'嵐の矛',r:'英雄',a:'雷',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'STR/DEX',p:'—',h:'両手',sp:'雷属性：物理装甲半減（1R）。命中後 射程2内の別の敵1体に1d4連鎖',hd:'雷鎖：連鎖先も物理装甲半減。連鎖ダメージが1d6に上昇',ex:'嵐の解放：命中した全対象の物理装甲半減を2Rに延長＋連鎖ダメージ1d8',price:520},
+  {t:'槍・ハルバード',n:'星の槍',r:'伝説',a:'神聖',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+3',s:'STR/DEX',p:'全',h:'両手',sp:'アンデッドに+2d4。命中判定前に対象は回避・応戦を宣言できない（相殺のみ可）',hd:'星の縫合：命中対象をこの戦闘中、使用者の隣接マスから離れられなくする',ex:'星の恩寵：盲目・沈黙・封印・石化付与（ロール不要）',price:0},
+  {t:'盾',n:'木の盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+1',hd:'必死の防御：HP10以下のとき防御成功で完全無効（1回のみ）',ex:'—',price:40},
+  {t:'盾',n:'丸盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2',hd:'盾払い：防御成功時、対象の次の命中判定にPD+1',ex:'—',price:80},
+  {t:'盾',n:'タワーシールド',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+4。使用者の回避判定にPD+1（常時）',hd:'城壁：防御成功時、隣接する味方全員への攻撃も同時に防御できる',ex:'—',price:140},
+  {t:'盾',n:'刺盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。応戦成功時 反撃ダメージ+1d4',hd:'返し刺し：防御成功後の応戦時、命中+10%',ex:'—',price:120},
+  {t:'盾',n:'炎の紋章盾',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'1',h:'片手',sp:'燃焼付与。防御時 物理軽減+2・魔術軽減+2',hd:'炎の盾壁：防御成功時、攻撃者に燃焼付与',ex:'—',price:160},
+  {t:'盾',n:'聖印盾',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。アンデッドに+2d4',hd:'—',ex:'信仰の盾：防御成功時、アンデッドに死の宣告付与（POWロール）',price:150},
+  {t:'盾',n:'反射盾',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+3・魔術軽減+3。魔術攻撃の相殺成功時 ダメージを攻撃者に反射（半分）',hd:'完全反射：相殺成功時、反射ダメージに命中対象が持つ全魔術耐性軽減を無視',ex:'鏡の呪縛：相殺成功後、攻撃者の次の魔術コストMP+2＋命中にPD+1',price:480},
+  {t:'盾',n:'深淵の盾',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2・魔術軽減+3',hd:'内なる叫び：防御成功時、攻撃者に恐怖付与（POWロール）',ex:'深淵の侵食：防御成功時、攻撃者に発狂付与（ロール不要）＋使用者POW-1（1R）',price:520},
+  {t:'盾',n:'受難者の盾',r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'+2',s:'STR/CON',p:'—',h:'片手',sp:'HP半分以下のとき 防御時 物理軽減+3。アンデッドに+2d4',hd:'殉教者の怒り：HP半分以下のとき防御成功後の応戦ダメージ+2d4',ex:'最後の加護：HP半分以下で防御成功時、隣接する味方全員HP+1d6＋次ターン命中BD+1',price:400},
+  {t:'盾',n:'不滅の守護者',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d6',f:'+3',s:'STR/CON',p:'—',h:'片手',sp:'防御行動成功で完全無効（1ラウンドに2回まで）。毎ラウンド開始時HP-2',hd:'守護の波動：完全無効発動時、無効化したダメージを射程3内の全敵に等分して反射',ex:'大崩壊の否定：完全無効を味方全員に1ターン展開。使用者HP-10（固定）',price:0},
+  {t:'弓',n:'ショートボウ',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'—',h:'両手',sp:'—',hd:'至近の刻み：射程3以内の対象への命中時、ダメージ+1d4',ex:'—',price:60},
+  {t:'弓',n:'ロングボウ',r:'兵士',a:'無属性',rng:'8',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'DEX',p:'—',h:'両手',sp:'—',hd:'狙い定め：射程6以上の対象への命中時、次の同一対象への攻撃命中+10%',ex:'—',price:100},
+  {t:'弓',n:'複合弓',r:'兵士',a:'無属性',rng:'6',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'STR/DEX高い方を参照',hd:'力射：STR参照時、対象を1マス後退。DEX参照時、次の命中判定にBD+1',ex:'—',price:130},
+  {t:'弓',n:'毒矢',r:'兵士',a:'毒',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'—',s:'DEX',p:'1',h:'両手',sp:'毒付与',hd:'—',ex:'毒の爆発：毒スタック5（上限）の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視）',price:110},
+  {t:'弓',n:'炎矢',r:'兵士',a:'炎',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'+1',s:'DEX',p:'1',h:'両手',sp:'燃焼付与。冷気カウントリセット',hd:'—',ex:'延焼：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与（POWロール）',price:120},
+  {t:'弓',n:'狙撃弓',r:'兵士',a:'無属性',rng:'10',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'両手',sp:'射程5以上の相手への命中+10%',hd:'急所穿ち：射程8以上からの命中時、物理装甲を半分無視',ex:'—',price:160},
+  {t:'弓',n:'連射弓',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'両手',sp:'最大攻撃回数3回',hd:'乱れ矢：3回全命中時、追加で1回無料攻撃',ex:'—',price:150},
+  {t:'弓',n:'魂狩り弓',r:'英雄',a:'闇',rng:'6',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d4。MP0の場合HP直接ダメージ',hd:'—',ex:'魂の断絶：封印付与（ロール不要）',price:540},
+  {t:'弓',n:'冬の弓',r:'英雄',a:'冷気',rng:'7',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除',hd:'氷の軌跡：冷気スタック2の対象への命中時、移動APコスト+2（1R）＋AGI判定にPD+1',ex:'冬の終わり：凍結状態の対象への命中時、凍結解除と同時に追加ダメージ1d8',price:460},
+  {t:'弓',n:'星読みの弓',r:'英雄',a:'無属性',rng:'7',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'DEX',p:'—',h:'両手',sp:'常時クリティカル率+5%。クリティカル発生時、次の攻撃もクリティカル率+10%追加',hd:'—',ex:'—',price:500},
+  {t:'弓',n:'天弓',r:'伝説',a:'神聖',rng:'∞',ap:'1AP',mh:'2回',d:'1d8',f:'+3',s:'DEX',p:'—',h:'両手',sp:'アンデッドに+2d4。クリティカルしたらAP消費なしで追加攻撃可',hd:'天の裁き：視界内の対象全員への同時命中判定',ex:'大崩壊の再現：使用者は即座に死亡する。使用者の全能力値の合計の固定ダメージ',price:0},
+];
+const ARMORS = [
+  {sl:'頭',n:'布の頭巾',r:'兵士',ph:0,mg:0,w:'軽',ef:'—',price:30},
+  {sl:'頭',n:'革兜',r:'兵士',ph:1,mg:0,w:'軽',ef:'—',price:60},
+  {sl:'頭',n:'鉄兜',r:'兵士',ph:2,mg:0,w:'中',ef:'—',price:100},
+  {sl:'頭',n:'騎士兜',r:'兵士',ph:3,mg:0,w:'重',ef:'使用者の回避判定にPD+1（常時・視界制限）',price:140},
+  {sl:'頭',n:'白衣の頭巾',r:'兵士',ph:0,mg:2,w:'軽',ef:'POWロールにBD+1',price:50},
+  {sl:'頭',n:'魔術師の帽子',r:'兵士',ph:0,mg:1,w:'軽',ef:'INT判定にBD+1',price:80},
+  {sl:'頭',n:'深淵の仮面',r:'兵士',ph:1,mg:2,w:'中',ef:'恐怖・発狂のPOWロールにBD+1',price:120},
+  {sl:'頭',n:'狩人の帽子',r:'兵士',ph:0,mg:0,w:'軽',ef:'イニシアチブ判定にBD+1',price:70},
+  {sl:'頭',n:'角兜',r:'兵士',ph:2,mg:0,w:'重',ef:'STR判定にBD+1。使用者の回避判定にPD+1（常時・重さの代償）',price:110},
+  {sl:'頭',n:'呪術師の仮面',r:'兵士',ph:0,mg:1,w:'軽',ef:'POWロールにBD+1。発狂付与のPOWロールにBD+1（重複・計BD+2）',price:130},
+  {sl:'頭',n:'帝国の兜',r:'英雄',ph:3,mg:1,w:'重',ef:'使用者の回避判定にPD+1（常時）。HP計算時CON+1として扱う',price:400},
+  {sl:'頭',n:'廃人の頭巾',r:'英雄',ph:0,mg:0,w:'軽',ef:'全状態異常のPOWロールにBD+1',price:320},
+  {sl:'頭',n:'深海の仮面',r:'英雄',ph:1,mg:2,w:'中',ef:'冷気付与のPOWロールにBD+2。水中・深海での命中判定にBD+1',price:420},
+  {sl:'頭',n:'傭兵の頭巾',r:'英雄',ph:0,mg:0,w:'軽',ef:'DEX判定にBD+1。同ターン1回目の攻撃命中+5%',price:360},
+  {sl:'頭',n:'縫合の冠',r:'伝説',ph:2,mg:3,w:'中',ef:'FTH判定にBD+1。MP計算時POW+2として扱う',price:0},
+  {sl:'胴',n:'布の服',r:'兵士',ph:0,mg:1,w:'軽',ef:'—',price:20},
+  {sl:'胴',n:'革鎧',r:'兵士',ph:2,mg:0,w:'軽',ef:'—',price:70},
+  {sl:'胴',n:'鎖帷子',r:'兵士',ph:3,mg:0,w:'中',ef:'—',price:120},
+  {sl:'胴',n:'板金鎧',r:'兵士',ph:4,mg:0,w:'重',ef:'使用者の回避判定にPD+1（常時）',price:170},
+  {sl:'胴',n:'白衣の法衣',r:'兵士',ph:0,mg:3,w:'軽',ef:'FTH判定にBD+1',price:60},
+  {sl:'胴',n:'魔術師のローブ',r:'兵士',ph:0,mg:2,w:'軽',ef:'INT判定にBD+1。MP最大値+2',price:90},
+  {sl:'胴',n:'呪術師の外套',r:'兵士',ph:1,mg:2,w:'軽',ef:'POWロールにBD+1',price:110},
+  {sl:'胴',n:'深海の鱗鎧',r:'兵士',ph:3,mg:2,w:'中',ef:'HP計算時CON+1として扱う',price:130},
+  {sl:'胴',n:'鱗片鎧',r:'兵士',ph:3,mg:0,w:'中',ef:'槍・ハルバードを使用中、命中判定にBD+1',price:100},
+  {sl:'胴',n:'毒染めの外套',r:'兵士',ph:0,mg:1,w:'軽',ef:'毒付与のPOWロールにBD+2。毒状態のダメージを1軽減',price:120},
+  {sl:'胴',n:'影走りの外套',r:'兵士',ph:1,mg:0,w:'軽',ef:'回避行動を宣言した場合、AGIロールにBD+1',price:80},
+  {sl:'胴',n:'帝国の重鎧',r:'英雄',ph:5,mg:1,w:'重',ef:'使用者の回避判定にPD+2（常時）。HP計算時CON+2として扱う',price:500},
+  {sl:'胴',n:'継ぎ接ぎの鎧',r:'英雄',ph:2,mg:2,w:'中',ef:'物理・魔術両方を軽減（各2）。装備中、DEX判定にPD+1（嵩張る）',price:340},
+  {sl:'胴',n:'深淵の鱗甲',r:'英雄',ph:2,mg:3,w:'中',ef:'闇属性ダメージを1軽減。恐怖・発狂のPOWロールにBD+1',price:460},
+  {sl:'胴',n:'縫合の鎧',r:'伝説',ph:4,mg:4,w:'重',ef:'使用者の回避判定にPD+1（常時）。アンデッド・邪悪の命中にPD+1（オーラ）。ラウンド終了時HP+1（自動回復）',price:0},
+];
+const CATALYSTS = [
+  {type:'杖',name:'木の杖',rank:'兵士',hit:'—',fixed:0,range:'—',bonus:'－',price:30},
+  {type:'杖',name:'学院の杖',rank:'兵士',hit:'+5%',fixed:0,range:'—',bonus:'－',price:80},
+  {type:'杖',name:'炎術の杖',rank:'兵士',hit:'+5%',fixed:0,range:'—',bonus:'炎属性魔術のダメージ+1（固定）。燃焼付与のPOWロールにPD+1。',price:120},
+  {type:'杖',name:'雷術の杖',rank:'兵士',hit:'+10%',fixed:0,range:'—',bonus:'雷属性魔術のダメージ+1（固定）。',price:120},
+  {type:'杖',name:'霜術の杖',rank:'兵士',hit:'+5%',fixed:0,range:'+1',bonus:'冷気属性魔術のダメージ+2（固定）。',price:120},
+  {type:'杖',name:'禁呪の杖',rank:'英雄',hit:'+10%',fixed:'+1',range:'—',bonus:'闇属性魔術の命中+10%、闇魔術の状態異常付与のPOWロールにPD+1。上級闇魔術のMP消費-1（最低1）。',price:440},
+  {type:'杖',name:'深淵の杖',rank:'英雄',hit:'+10%',fixed:'+2',range:'+1',bonus:'闇属性魔術の装甲貫通+1,毎ラウンド終了時、使用した場合術者POWロール（失敗で疲労付与）。',price:560},
+  {type:'杖',name:'叡智の杖',rank:'英雄',hit:'+10%',fixed:'+1',range:'—',bonus:'同一ターンに2回以上魔術を使用した場合、次の魔術命中+5%追加。',price:480},
+  {type:'杖',name:'帝国の至宝',rank:'伝説',hit:'+7%',fixed:'+7',range:'+7',bonus:'装甲貫通+7。超級魔術のMP消費-7（最低7）。MP最大値+7。',price:0},
+  {type:'聖印',name:'粗末な聖印',rank:'兵士',hit:'—',fixed:0,range:'—',bonus:'－',price:20},
+  {type:'聖印',name:'白衣教団の聖印',rank:'兵士',hit:'+5%',fixed:0,range:'—',bonus:'－',price:70},
+  {type:'聖印',name:'浄化の聖印',rank:'兵士',hit:'+5%',fixed:0,range:'—',bonus:'神聖奇跡のアンデッド・邪悪への追加ダメージ+1d4。浄化・解除系奇跡の命中+5%追加。',price:100},
+  {type:'聖印',name:'守護の聖印',rank:'兵士',hit:'+5%',fixed:0,range:'—',bonus:'防護・加護系奇跡の効果が1ラウンド延長。防護奇跡使用時、術者への次の攻撃命中にPD+1。',price:90},
+  {type:'聖印',name:'信仰の焔',rank:'兵士',hit:'+5%',fixed:'+1',range:'—',bonus:'炎属性奇跡の固定値+1。浄化の炎（R04）使用時、状態異常解除を2種に拡大。',price:130},
+  {type:'聖印',name:'殉教者の聖印',rank:'英雄',hit:'－',fixed:'－b',range:'—',bonus:'HP半分以下の場合、全奇跡の命中+10%追加・固定値+2追加。回復奇跡の回復量-1d4。',price:400},
+  {type:'聖印',name:'審判の聖印',rank:'英雄',hit:'+5%',fixed:'+1',range:'—',bonus:'攻撃系奇跡の命中+10%、神罰・信仰の連鎖・贖罪の一撃使用時、状態異常付与のPOWロールにPD+1。上級攻撃奇跡のMP消費-1（最低1）。',price:460},
+  {type:'聖印',name:'縫合の沈黙',rank:'伝説',hit:'+15%',fixed:'+2',range:'+1',bonus:'奇跡のクリティカル+15%',price:0},
+];
+const MAGIC_LIST = [
+  {id:'M01',name:'炎の矢',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:3,attr:'炎',range:5,dice:'1d6',hd:'ダメージ+1',ex:'ダメージ+1d4。燃焼付与ロール不要'},
+  {id:'M02',name:'霜の息',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:3,attr:'冷気',range:3,dice:'1d4',hd:'ダメージ+1',ex:'ダメージ+1d6'},
+  {id:'M03',name:'帯雷',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:3,attr:'雷',range:4,dice:'1d6',hd:'ダメージ+1d4',ex:'ダメージ+1d4。射程2内の別の敵1体にも1d4連鎖（命中判定不要）'},
+  {id:'M04',name:'毒霧',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:2,attr:'毒',range:4,dice:'－',hd:'ダメージ+1d3',ex:'ダメージ+1d4。毒スタック+1追加'},
+  {id:'M05',name:'闇の一瞥',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:3,attr:'闇',range:5,dice:'1d4',hd:'ダメージ+1',ex:'ダメージ+1d6。恐怖付与ロール不要'},
+  {id:'M06',name:'風の刃',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:3,attr:'無属性',range:6,dice:'1d6',hd:'ダメージ+1',ex:'ダメージ+1d4。対象を1マス強制後退'},
+  {id:'M07',name:'石礫の雨',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:3,attr:'無属性',range:4,dice:'1d4',hd:'ダメージ+1',ex:'ダメージ+1d4。命中対象全員に盲目付与（POWロール）'},
+  {id:'M08',name:'炎壁',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:4,attr:'炎',range:3,dice:'1d4',hd:'ダメージ+1。壁の持続2ラウンドに延長',ex:'ダメージ+1d4。壁の持続3ラウンドに延長'},
+  {id:'M09',name:'属性呪縛',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:4,attr:'付与',range:2,dice:'—',hd:'効果が2ラウンドに延長',ex:'効果が4ラウンドに延長'},
+  {id:'M10',name:'速度の術式',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:4,attr:'無属性',range:2,dice:'—',hd:'効果が2ラウンドに延長',ex:'効果が3ラウンドに延長。射程2内の味方全員に付与'},
+  {id:'M11',name:'魔力吸収',rank:'兵士',type:'魔術',ap:'初級 1AP',mp:4,attr:'闇',range:5,dice:'1d4',hd:'ダメージ+1。吸収MP量+1',ex:'ダメージ+1d4。吸収MP量+1d3'},
+  {id:'M12',name:'豪火球',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:7,attr:'炎',range:7,dice:'2d6',hd:'ダメージ+1d4。燃焼付与ロール不要',ex:'ダメージ+2d4。燃焼付与ロール不要。命中対象の次ターンAP-1'},
+  {id:'M13',name:'氷槍',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:6,attr:'冷気',range:8,dice:'2d4',hd:'ダメージ+1d4',ex:'ダメージ+2d4。冷気1付与'},
+  {id:'M14',name:'雷鳴撃',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:6,attr:'雷',range:7,dice:'2d6',hd:'ダメージ+1d6',ex:'連鎖ダメージが2d6に上昇'},
+  {id:'M15',name:'死毒の沼',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:5,attr:'毒',range:5,dice:'－',hd:'沼の持続3ラウンドに延長',ex:'沼内での移動APコスト+1追加'},
+  {id:'M16',name:'深淵の叫び',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:6,attr:'闇',range:6,dice:'1d6',hd:'ダメージ+1d4',ex:'ダメージ+1d6。1回のPOWロールで恐怖＋発狂を同時判定'},
+  {id:'M17',name:'魂の鎖',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:6,attr:'闇',range:5,dice:'1d4',hd:'ダメージ+1d4。封印付与ロール不要',ex:'ダメージ+1d6。封印付与ロール不要＋沈黙付与'},
+  {id:'M18',name:'地砕',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:6,attr:'無属性',range:4,dice:'2d4',hd:'ダメージ+1d6',ex:'ダメージ+2d4。後退距離2マスに延長'},
+  {id:'M19',name:'鍛錬術式',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:5,attr:'付与',range:2,dice:'—',hd:'効果が3ラウンドに延長',ex:'効果が3ラウンドに延長。射程2内の味方2体に付与可能'},
+  {id:'M20',name:'反射の幕',rank:'英雄',type:'魔術',ap:'上級 2AP',mp:5,attr:'無属性',range:1,dice:'—',hd:'効果が2ラウンドに延長',ex:'効果が2ラウンドに延長。射程2内の味方全員に付与'},
+  {id:'M21',name:'炎帝顕現',rank:'伝説',type:'魔術',ap:'超級 3AP',mp:8,attr:'炎',range:8,dice:'3d8',hd:'ダメージ+2d6',ex:'ダメージ+3d6。燃焼中の対象の次ターンAP-1'},
+  {id:'M22',name:'時間凍結',rank:'伝説',type:'魔術',ap:'超級 3AP',mp:8,attr:'冷気',range:7,dice:'2d8',hd:'ダメージ+2d6',ex:'ダメージ+2d8。凍結解除時に追加ダメージ1d6'},
+  {id:'M23',name:'深淵解放',rank:'伝説',type:'魔術',ap:'超級 3AP',mp:7,attr:'闇',range:6,dice:'2d8',hd:'ダメージ+2d6',ex:'ダメージ+2d8。発狂付与した対象の次の行動を任意に決定（1ターン制御）'},
+  {id:'M24',name:'消滅',rank:'伝説',type:'魔術',ap:'超級 3AP',mp:10,attr:'無属性',range:10,dice:'4d6',hd:'ダメージ+2d6。即死判定条件がHP最大値40以下に拡大',ex:'ダメージ+3d6。即死判定失敗時、対象に石化付与'},
+  {id:'R01',name:'聖なる光',rank:'兵士',type:'奇跡',ap:'初級 1AP',mp:3,attr:'神聖',range:6,dice:'1d6',hd:'ダメージ+1',ex:'ダメージ+1d6。アンデッド・邪悪への追加ダメージ+1d4'},
+  {id:'R02',name:'縫合の手',rank:'兵士',type:'奇跡',ap:'初級 1AP',mp:3,attr:'神聖',range:1,dice:'1d6',hd:'回復量+1d4',ex:'回復量+1d6。射程2内の味方全員にHP+1d3（回復の波及）'},
+  {id:'R03',name:'神聖の盾',rank:'兵士',type:'奇跡',ap:'初級 1AP',mp:2,attr:'神聖',range:2,dice:'—',hd:'加護が2ラウンドに延長',ex:'加護が2ラウンドに延長。物理ダメージも1d4軽減'},
+  {id:'R04',name:'浄化の炎',rank:'兵士',type:'奇跡',ap:'初級 1AP',mp:3,attr:'炎',range:5,dice:'1d6',hd:'ダメージ+1d4。命中対象の状態異常を1種解除',ex:'ダメージ+1d6。アンデッド・邪悪に死の宣告付与（POWロール）'},
+  {id:'R05',name:'神罰',rank:'英雄',type:'奇跡',ap:'上級 2AP',mp:5,attr:'神聖',range:7,dice:'2d8',hd:'ダメージ+1d4',ex:'ダメージ+2d4。命中対象の次ターンAP-1'},
+  {id:'R06',name:'大治癒',rank:'英雄',type:'奇跡',ap:'上級 2AP',mp:5,attr:'神聖',range:2,dice:'2d6',hd:'回復量+1d6。状態異常除去数が2種に増加',ex:'回復量+2d6。射程3内の味方全員にHP+1d6回復'},
+  {id:'R07',name:'信仰の連鎖',rank:'英雄',type:'奇跡',ap:'上級 2AP',mp:5,attr:'神聖',range:5,dice:'1d6',hd:'ダメージ+1d4。連鎖が最大2体まで',ex:'ダメージ+1d6。連鎖するたびに命中対象に恐怖付与（POWロール）'},
+  {id:'R08',name:'贖罪の一撃',rank:'英雄',type:'奇跡',ap:'上級 2AP',mp:5,attr:'神聖',range:4,dice:'1d8',hd:'ダメージ+1d4（HP半分以下でなくても適用）',ex:'ダメージ+1d8。死の宣告付与ロール不要'},
+  {id:'R09',name:'祝福の詠唱',rank:'英雄',type:'奇跡',ap:'上級 2AP',mp:6,attr:'神聖',range:3,dice:'—',hd:'効果が3ラウンドに延長',ex:'効果が3ラウンドに延長。命中判定+20%、POWロール+10%に強化'},
+  {id:'R10',name:'縫合の祝福',rank:'伝説',type:'奇跡',ap:'超級 3AP',mp:7,attr:'神聖',range:3,dice:'—',hd:'回復量+1d8。状態異常除去数が2種に増加',ex:'回復量+2d8。ラウンド終了時に全員HP自然回復+1d4（1ラウンド）'},
+  {id:'R11',name:'蘇生',rank:'伝説',type:'奇跡',ap:'超級 3AP',mp:8,attr:'神聖',range:2,dice:'—',hd:'回復量+1d8（FTHロール成功時）',ex:'FTHロール失敗時のLCKロール不要（必ずHP1で復活）'},
+  {id:'R12',name:'終焉の審判',rank:'伝説',type:'奇跡',ap:'超級 3AP',mp:10,attr:'神聖',range:8,dice:'3d8',hd:'ダメージ+2d6。即死LCKロールにPD+1',ex:'ダメージ+2d8。アンデッド・邪悪は即死ロール不要'},
+];
+const GENERIC_SEALS = [
+  {id:'G01',name:'疾風の歩法',cat:'AP効率',trigger:'常時',effect:'AGI12以上のとき、1ラウンドのAP+1（計4AP）になる。AGIが12を下回った場合、AP3に戻る。',cond:'G03との併用不可。'},
+  {id:'G02',name:'先手の回路',cat:'AP効率',trigger:'攻撃時',effect:'そのラウンド中、まだ手番が来ていない目標に攻撃をする場合、命中判定にBD+1。各ラウンド1回のみ発動。',cond:'効果の通り。'},
+  {id:'G03',name:'踏み込みの術式',cat:'AP効率',trigger:'ラウンド終了時',effect:'AGI11以下のとき、ラウンド終了時にAPが1以上余っていれば次ラウンドのAP+1。',cond:'G01との併用不可。'},
+  {id:'G04',name:'残滓の循環',cat:'AP効率',trigger:'HD/EX成功後',effect:'HD/EX成功をしたラウンド終了時にMP1回復（最大1）。',cond:''},
+  {id:'G05',name:'刻まれた技',cat:'命中強化',trigger:'命中判定時（常時）',effect:'取得時に武器種を1種選択する。その武器種の命中値+5%（常時）。同じ武器種を対象に重複取得不可（別の武器種は別途取得可）。',cond:'9武器種すべてが選択対象。'},
+  {id:'G06',name:'屍を踏む者',cat:'命中強化',trigger:'敵撃破直後',effect:'戦闘中に敵を撃破した直後、次の攻撃の命中値+10%（1回限り・次のラウンド終了まで）。',cond:'1ラウンドに複数撃破しても1回分のみカウント。'},
+  {id:'G07',name:'渾身の一撃',cat:'ダメージ強化',trigger:'ラウンド開始時（宣言制）',effect:'そのラウンドの攻撃回数を最大1回に制限する代わりに、その1回の攻撃に固定ダメージ+2を加算し、さらに命中判定にBD+1を得る。',cond:'最大回数2回以上の武器限定。攻撃を行わなかった場合も宣言消費。武器変更で効果消失。AP消費は通常通り。'},
+  {id:'G08',name:'研ぎ澄まされた一手',cat:'ダメージ強化',trigger:'命中判定・通常成功時',effect:'HD・EXでない通常成功の攻撃に、固定ダメージ+2を加算する。HD・EX・クリティカル時は発動しない。装甲軽減後に加算。',cond:'武器種・属性問わず全攻撃に適用。'},
+  {id:'G09',name:'廃都の継承者',cat:'ダメージ強化',trigger:'クリティカル命中時',effect:'クリティカル命中時、通常のダメージ（装甲無視）に加えてさらにダメージボーナスダイスを1回追加する（合計：装甲無視＋ダメージボーナスダイス×3）。',cond:'クリティカル以外には適用しない。1ラウンド1回。'},
+  {id:'G10',name:'深淵の洞察',cat:'HD/EX強化',trigger:'命中判定前（宣言制）',effect:'1ラウンドに1回、命中判定の前に宣言することで、その判定においてEX・クリティカルが発生しない代わりに、命中値+15%を得る。',cond:'宣言後に攻撃をキャンセルしても消費扱い。封印状態では無効。G19との重複宣言不可（同一判定）。'},
+  {id:'G11',name:'試練の鋼',cat:'HD/EX強化',trigger:'常時',effect:'同一戦闘中、同じ相手に対して2回以上命中している場合、その相手への命中値+5%。',cond:'別の相手に移ると蓄積リセット。命中数は命中のみカウント（ダメージ0でも可）。'},
+  {id:'G12',name:'共鳴刻',cat:'HD/EX強化',trigger:'HD/EX戦技発動後',effect:'HD戦技またはEX戦技が発動したラウンド、そのラウンド中の次の攻撃1回の命中値+10%。',cond:'同一ラウンド内にHD/EXが複数発動しても命中ボーナスは1回分のみ。'},
+  {id:'G13',name:'星読み',cat:'HD/EX強化',trigger:'常時',effect:'LCKによるクリティカル率ボーナスを+1%追加する（通常のLCKボーナスに上乗せ）。',cond:'LCK10以上のキャラクターのみ取得可。狩人Hu03「星に愛された者」との選択関係（片方のみ取得可）。'},
+  {id:'G14',name:'不死の肉体',cat:'HP・生存',trigger:'常時',effect:'物理装甲値の計算時、CONの参照値を+2として扱う（共通テーブル上の数値が上がる場合のみ有効）。',cond:'テーブル段階が上がらない場合は効果なし。'},
+  {id:'G15',name:'肉体の錬磨',cat:'HP・生存',trigger:'常時',effect:'HP最大値+1。さらに瀕死状態でのLCKロールに+10%のボーナスを得る。',cond:'G14「不死の肉体」との重複取得可。瀕死ボーナスはテーブル段階を問わず適用。'},
+  {id:'G16',name:'まだ終わらない',cat:'HP・生存',trigger:'HP0時（瀕死判定前）',effect:'1戦闘に1回のみ、HP0になった時点でLCKロールを行い、成功すればHP1で踏み留まる（瀕死状態にならない）。',cond:'石化状態での瀕死は無効。1戦闘1回限り。封印状態では無効。'},
+  {id:'G17',name:'死の淵から',cat:'HP・生存',trigger:'HP最大値の1/4以下の時（常時）',effect:'HP最大値の1/4以下の間、全ての命中判定にBD+1を得る。',cond:'回復でHPが1/4を超えた瞬間、効果は消失する。封印状態では無効。'},
+  {id:'G18',name:'術式の残滓',cat:'MP・触媒',trigger:'常時',effect:'MP最大値+4。さらに魔術・奇跡使用後、ラウンド終了時にMP+1自動回復する。',cond:'INT・FTH・POWのいずれか8以上のキャラクターのみ取得可。'},
+  {id:'G19',name:'過充填',cat:'MP・触媒',trigger:'魔術・奇跡使用前（宣言制）',effect:'魔術・奇跡使用時、通常のMP消費に加えてMP+2を追加消費することで、その魔術・奇跡のHD発動条件を命中値×1/2から命中値×3/5に緩和する。超級魔術・奇跡にも適用可能。',cond:'追加MP2が払えない場合は使用不可。1回の詠唱につき1回のみ。G10との重複宣言不可（同一判定）。'},
+  {id:'G20',name:'魔術遮蔽',cat:'MP・触媒',trigger:'魔術攻撃を受けた時',effect:'魔術耐性の計算時、POWの参照値を+2として扱う（共通テーブル上の数値が上がる場合のみ有効）。',cond:'奇跡攻撃・物理攻撃には無効。テーブル段階が上がらない場合は効果なし。'},
+];
+const ORIGIN_SEALS = [
+  {id:'K01',origin:'騎士',name:'誓いの盾',trigger:'ラウンド開始時',effect:'ラウンド開始時に名乗りを挙げる。隣接する味方1名への次の攻撃を代わりに受けられる（1回のみ）。代わりに受けた攻撃に通常の防御行動可。',cond:'盾装備が必須。移動後は効果消失。1ラウンドに1回のみ。'},
+  {id:'K02',origin:'騎士',name:'名誉の一閃',trigger:'命中判定時',effect:'直剣・大剣・槍のいずれかで通常成功した時（HDでもEXでもない）、ダメージ+1d4を加算する。HD・EX・クリティカル時は発動しない。G08「研ぎ澄まされた一手」と重複発動可（両方適用）。',cond:'対象武器種は直剣・大剣・槍のみ。'},
+  {id:'K03',origin:'騎士',name:'不抜の意志',trigger:'恐怖・発狂・封印が付与された瞬間',effect:'恐怖・発狂・封印のいずれかが付与された瞬間、POWロールを行う。成功すれば1ラウンドだけ状態異常を無視して行動できる（解除ではない。次ラウンドから効果が戻る）。',cond:'状態異常は残存する。1戦闘に2回まで発動可。封印中でも付与された瞬間のみ有効。'},
+  {id:'K04',origin:'騎士',name:'守護の誓約',trigger:'常時',effect:'戦闘開始時に「守護対象」を1名宣言する。その対象がダメージを受けた時、自分の命中判定にBD+1を1ラウンド得る（1ラウンド1回まで）。',cond:'守護対象が戦闘不能または距離3以上離れると効果消失。自分自身は指定不可。'},
+  {id:'M01',origin:'傭兵',name:'傭兵の流儀',trigger:'常時',effect:'人間のエネミーに止めを刺した時、LUK判定に成功すれば所持していた装備を1つ選んで獲得できる',cond:'自分の攻撃、付与した状態異常が対象。'},
+  {id:'M02',origin:'傭兵',name:'全か無か',trigger:'常時（HP量による切り替え）',effect:'HP最大の時、回避の対抗ロールにBD+1を得る。HP1の時は全命中判定にBD+1を得る。',cond:'1/4〜1/2の間は両方不発動。'},
+  {id:'M03',origin:'傭兵',name:'傭兵の前払い',trigger:'キャラクター作成時（1回のみ）',effect:'初期ゴールドを200G追加で得る（合計700G）。傭兵として前払いで受け取った依頼料。',cond:'キャラクター作成時にのみ適用。周回時には適用されない。'},
+  {id:'M04',origin:'傭兵',name:'報酬の分だけ',trigger:'ラウンド開始時（累積制）',effect:'戦闘中に撃破した敵の数×1%を全命中値に加算する（最大+5%・戦闘終了でリセット）。',cond:'最大5体分（+5%）。戦闘終了でリセット。'},
+  {id:'W01',origin:'戦士',name:'渾身の鉄槌',trigger:'大剣・斧・ハンマーで攻撃した時',effect:'大剣・斧・ハンマーによる攻撃時、固定ダメージ+2を加算する。',cond:'対象武器種のみ。EX・HD問わず常時発動。'},
+  {id:'W02',origin:'戦士',name:'鉄の肌',trigger:'物理ダメージを受けた直後',effect:'1回の物理ダメージが6以上だった場合に限り、そのダメージを1軽減する。',cond:'魔術・奇跡・クリティカル（装甲無視）には無効。'},
+  {id:'W03',origin:'戦士',name:'暴風の体躯',trigger:'大剣・斧・ハンマーで攻撃したラウンド中',effect:'大剣・斧・ハンマーでの命中判定に失敗すると、そのラウンド中の回避の対抗ロールにPD+1を受ける。次ラウンド開始時にAP+1を得る。',cond:'攻撃しなければペナルティも付与も発生しない。AP+1は次ラウンド開始時に付与・そのラウンド終了時に消える。'},
+  {id:'W04',origin:'戦士',name:'生ける戦場',trigger:'疲労付与中',effect:'疲労が付与されている場合、手番に1APを消費して疲労を解除できる。解除したラウンドの最初の攻撃に命中+10%。',cond:'疲労していない場合は不発動。1AP消費が必要。'},
+  {id:'T01',origin:'盗賊',name:'毒の血脈',trigger:'短剣・弓の攻撃命中時',effect:'短剣・弓で攻撃が命中した時（通常成功以上）、対象にPOWロールを課す。失敗で毒付与。1ラウンド1回のみ。',cond:''},
+  {id:'T02',origin:'盗賊',name:'影の足音',trigger:'ラウンド開始時・まだ手番が来ていない目標への攻撃時',effect:'そのラウンド中まだ手番が来ていない目標に攻撃をする場合（G02と同条件）、短剣・弓による命中値+10%。さらにGM判断で奇襲状態にある場合、HD/EX発動条件が1段階易しくなる。',cond:''},
+  {id:'T03',origin:'盗賊',name:'蜘蛛の巣',trigger:'命中時・対象が状態異常持ちの場合',effect:'命中した対象が疲労・封印・盲目・毒のいずれかを持つ場合、ダメージ+1。さらに同ラウンド2回目以降の攻撃に命中+5%（同じ敵への攻撃のみ）。',cond:'状態異常が解除されると追加ダメージ消失。'},
+  {id:'T04',origin:'盗賊',name:'逃げ足の哲学',trigger:'ラウンド開始時（宣言制）',effect:'ラウンド開始時に宣言することで、そのラウンドの自分の手番を最後にする。代わりに手番中の最初の攻撃1回の命中値+10%と、そのラウンド中の移動AP消費0を得る（1ラウンド1回）。',cond:'宣言後はキャンセル不可。防御行動には影響しない。'},
+  {id:'H01',origin:'呪術師',name:'深淵の裂傷',trigger:'魔術命中時',effect:'魔術が命中した時、その対象の次の判定（命中・回避・POWロール問わず）にPD+1が付与される（1ラウンド1回）。',cond:''},
+  {id:'H02',origin:'呪術師',name:'呪いの増幅',trigger:'魔術が命中した時',effect:'魔術攻撃が命中した時、固定ダメージ+2を加算し、さらに次の命中判定にBD+1を得る。',cond:'HD・EX・クリティカル問わず常時発動。対象は魔術のみ。'},
+  {id:'H03',origin:'呪術師',name:'魂食い',trigger:'魔術がEX成功した時',effect:'魔術攻撃がEX成功した時、与えたダメージの1/4（切捨て・最小1）をMPとして回収する。',cond:'EX成功時のみ。最大値超過分は無効。'},
+  {id:'H04',origin:'呪術師',name:'歪んだ触媒',trigger:'魔術使用前（宣言制）',effect:'魔術使用時、MP消費+3とAP消費+1を宣言することで、命中値+10%またはダメージボーナス1段階上昇のいずれかを選択できる。',cond:'1回の魔術につき1種の効果のみ選択可。MPおよびAPが不足する場合は使用不可。'},
+  {id:'Ma01',origin:'魔法使い',name:'知識の回廊',trigger:'常時（MP量による切り替え）',effect:'MPが最大値の1/2以上ある時、魔術の命中値+5%。MPが最大値の1/4以下の時、魔術のダメージ+1d3追加。',cond:'1/4〜1/2の間は両方不発動。'},
+  {id:'Ma02',origin:'魔法使い',name:'元素の親和',trigger:'選択属性の魔術命中時',effect:'取得時に属性を1種選択（炎・冷気・雷・闇・神聖・毒）。その属性の魔術が命中した時、ダメージ+1d4。選ばなかった属性の魔術攻撃を受けた時、被ダメージ+1d4。',cond:'選択属性以外・無属性魔術への攻撃ダメージ増加には無効。被ダメージ増加は選択属性以外すべてに適用。'},
+  {id:'Ma03',origin:'魔法使い',name:'遠視の刻印',trigger:'常時',effect:'魔術・奇跡・弓の射程+1。さらに探索時の様々な行動・視界確認などの行動判定に有効（GMの判断で適用）。',cond:'触媒の射程補正とは別枠で加算。射程∞には無効。'},
+  {id:'Ma04',origin:'魔法使い',name:'帝国の術式',trigger:'魔術がEX成功した時',effect:'魔術攻撃がEX成功した時、通常のEX戦技に加えてMP+2を回収する。さらにそのラウンド中の次の魔術詠唱のAPコストを1軽減する（最小0AP・1ラウンド1回）。',cond:'EX成功時のみ。G19との差別化：G19はHD条件緩和（攻めの投資）、Ma04はEX後の回収（成功報酬）。'},
+  {id:'C01',origin:'聖職者',name:'縫合の回路',trigger:'奇跡使用後',effect:'奇跡使用後、ラウンド終了時に味方1名（HP最低の者）のHP+1d4を自動回復する。奇跡が外れた場合も発動する。',cond:'自分自身への適用は最もHPが低い場合のみ。'},
+  {id:'C02',origin:'聖職者',name:'聖別の一撃',trigger:'奇跡・神聖属性武器がHD成功した時',effect:'アンデッド・邪悪への攻撃がHD成功した時、通常のHD戦技に加えてダメージ+1d4を追加する。',cond:'アンデッド・邪悪の定義はGM判断。'},
+  {id:'C03',origin:'聖職者',name:'浄化の手',trigger:'アイテムで状態異常を解除する時',effect:'アイテムで状態異常を解除する際、同一アイテムで1種追加で解除できる。',cond:'刻印・属性相互作用での解除には適用されない。アイテムによる解除のみ。'},
+  {id:'C04',origin:'聖職者',name:'迫害者の烙印',trigger:'魔術・奇跡攻撃が命中した時',effect:'呪術師・深きものの末裔に対する魔術・奇跡攻撃が命中した時、ダメージ+1d4を追加する。',cond:'対象素性：呪術師・深きものの末裔のみ。他の素性には発動しない。'},
+  {id:'D01',origin:'深きものの末裔',name:'深海の血脈',trigger:'常時',effect:'状態異常を受けていない場合、ラウンド開始時にHP+1回復する（自動）。さらに凍結状態の敵への近接攻撃の命中値+5%を得る。',cond:'状態異常が1種でも付与されている間はHP回復が止まる。凍結した敵への命中+5%は常時。'},
+  {id:'D02',origin:'深きものの末裔',name:'深淵の適応',trigger:'常時',effect:'命中判定・回避の対抗ロール・POWロールのうち、そのラウンド中に最初に判定に失敗した時、次の同種の判定にBD+1を得る（1ラウンド1回・種別ごとに独立）。',cond:'失敗した瞬間に発動。成功には発動しない。'},
+  {id:'D03',origin:'深きものの末裔',name:'一心の刻印',trigger:'常時（武器種選択制）',effect:'取得時に武器種を1種選択する（近接武器種のみ）。その武器種の命中判定に常時+10%を得る。代わりに選択した武器種以外の武器は使用できなくなる。',cond:'選択できる武器種：短剣・直剣・大剣・斧・ハンマー・槍・ハルバード・盾のいずれか1種。弓・魔術・奇跡は選択不可。一度選択したら変更不可。'},
+  {id:'D04',origin:'深きものの末裔',name:'虚無の眼',trigger:'EX成功した時',effect:'直剣・斧・ハンマー・槍・盾のいずれかでEX成功した時、通常のEX戦技に加えて対象に発狂付与のPOWロールを課す。',cond:'対象武器種のみ。'},
+  {id:'Hu01',origin:'狩人',name:'獲物の気配',trigger:'戦闘開始時・ラウンド開始時',effect:'HP半分以下の敵への弓・短剣の命中値+5%。',cond:'GM判断により情報精度が変わることがある。'},
+  {id:'Hu02',origin:'狩人',name:'毒の矢筒',trigger:'弓の攻撃命中時',effect:'弓で攻撃が命中した時（通常成功以上）、対象にPOWロールを課す。失敗で毒付与。1ラウンド1回のみ。',cond:'弓のみ有効。'},
+  {id:'Hu03',origin:'狩人',name:'星に愛された者',trigger:'常時',effect:'LCKによるクリティカル率ボーナスを+1%追加する。さらに瀕死状態でのLCKロールにBD+1を得る。',cond:'汎用G13「星読み」との選択関係（片方のみ取得可）。LCK10以上不要（取得制限なし）。'},
+  {id:'Hu04',origin:'狩人',name:'追跡の本能',trigger:'攻撃命中直後',effect:'命中した敵を「標的」として設定する（1体のみ）。以降、標的への命中判定+5%。別の敵を命中させると前の標的のボーナスは消える。',cond:'命中しなければ設定されない。逃走・戦闘不能で解除。'},
+  {id:'De01',origin:'廃人',name:'何も残らなかった',trigger:'常時',effect:'追加ポイントを振り分けた能力値の種類数×1%を全命中値に加算する（最大+8%・8種の能力値すべてに1点以上振り分けた場合）。',cond:'「種類数」とは1点以上振り分けた能力値の数を指す（量は問わない）。'},
+  {id:'De02',origin:'廃人',name:'空の器',trigger:'ラウンド開始時',effect:'HP＋MPの合計が最大値の1/2以下の場合、そのラウンド中の全命中判定とPOWロールにBD+1を得る。',cond:'HP・MPそれぞれではなく合計値で判定。'},
+  {id:'De03',origin:'廃人',name:'傷だらけの肉体',trigger:'常時',effect:'物理ダメージを受けた時（1以上）、その後の同一戦闘中において、同じ武器種からの物理ダメージを1軽減する（最小1・武器種ごとに1種記録・上書き制）。',cond:'状態異常ダメージは対象外。純粋な物理ダメージのみ。'},
+  {id:'De04',origin:'廃人',name:'ゼロからの一手',trigger:'戦闘開始・第1ラウンドのみ',effect:'第1ラウンドのみ：自分の最も低い能力値×5%を全命中判定に加算する。',cond:'廃人の低い初期値を逆手に取る設計。'},
+];
 
-let curOrigin = null;
-let baseStats = {CON:5,STR:5,DEX:5,AGI:5,INT:5,FTH:5,POW:5,LCK:5};
-let addPts = {CON:0,STR:0,DEX:0,AGI:0,INT:0,FTH:0,POW:0,LCK:0};
-let maxPts = 7;
+// ================================================================
+// STATE
+// ================================================================
+let state = {
+  playerName: '',
+  charName: '',
+  memo: '',
+  originIdx: -1,
+  addStats: [0,0,0,0,0,0,0,0],
+  equip: { weapon1:'none', weapon2:'none', catalyst:'none', spells:['none','none','none'], head:'none', body:'none', spare1:'none', spare2:'none' },
+  seals: ['','','',''],
+};
 
-/* ── テーブル参照 ── */
-function armorVal(v) {
-  if(v<=4)return 1; if(v<=8)return 2; if(v<=12)return 3;
-  if(v<=16)return 4; if(v<=20)return 5; if(v<=24)return 6; return 7;
+function getOrigin() { return state.originIdx >= 0 ? ORIGINS[state.originIdx] : null; }
+function getBaseStats() { const o=getOrigin(); return o ? [...o.stats] : [5,5,5,5,5,5,5,5]; }
+function getTotalStats() {
+  const base = getBaseStats();
+  return base.map((v,i) => v + (state.addStats[i]||0));
 }
-function dbVal(v) {
-  if(v<=4)return'なし'; if(v<=8)return'1d3'; if(v<=12)return'1d4';
-  if(v<=16)return'1d6'; if(v<=20)return'1d8'; if(v<=24)return'2d8'; return'3d8';
+function getMaxPts() { const o=getOrigin(); return o ? o.pts : 7; }
+function getUsedPts() { return state.addStats.reduce((a,b)=>a+(b||0),0); }
+
+function calcDerived(stats) {
+  const [STR,CON,DEX,AGI,INT,FTH,POW,LCK] = stats;
+  const base = getBaseStats();
+  // HP = (CON+STR)×2
+  const hp = getOrigin() ? getOrigin().hp + ((CON-base[1])+(STR-base[0]))*2 : (CON+STR)*2;
+  // MP = POW+INT+FTH
+  const mp = getOrigin() ? getOrigin().mp + (POW-base[6])+(INT-base[4])+(FTH-base[5]) : POW+INT+FTH;
+  // AP = 3 (base)
+  const ap = 3;
+  // DEF (物理装甲) from armor
+  let ph = 0, mg = 0;
+  const ha = ARMORS.find(a=>a.sl==='頭'&&a.n===state.equip.head);
+  const ba = ARMORS.find(a=>a.sl==='胴'&&a.n===state.equip.body);
+  if(ha){ph+=ha.ph; mg+=ha.mg;}
+  if(ba){ph+=ba.ph; mg+=ba.mg;}
+  // CR
+  const cr = getOrigin() ? getOrigin().cr : '1%';
+  return { hp, mp, ap, ph, mg, cr, STR,CON,DEX,AGI,INT,FTH,POW,LCK };
 }
 
-/* ── 全体更新 ── */
-function updateAll() {
-  const s = {};
-  KEYS.forEach(k => {
-    const v = Math.max(1, Math.min(20, parseInt(document.getElementById('s-'+k).value)||1));
-    document.getElementById('s-'+k).value = v;
-    document.getElementById('x5-'+k).textContent = '×5 = ' + (v*5) + '%';
-    s[k] = v;
+function getEquipCost() {
+  let cost = 0;
+  const addCost = (n, list) => { const item = list.find(i=>i.n===n); if(item) cost += item.price; };
+  const w1 = WEAPONS.find(w=>w.n===state.equip.weapon1); if(w1) cost+=w1.price;
+  const w2 = WEAPONS.find(w=>w.n===state.equip.weapon2); if(w2) cost+=w2.price;
+  const cat = CATALYSTS.find(c=>c.name===state.equip.catalyst); if(cat) cost+=cat.price;
+  addCost(state.equip.head, ARMORS);
+  addCost(state.equip.body, ARMORS);
+  // 予備スロット（武器・防具・触媒のいずれか）
+  [state.equip.spare1, state.equip.spare2].forEach(n=>{
+    if(!n||n==='none') return;
+    const w = WEAPONS.find(x=>x.n===n); if(w){cost+=w.price; return;}
+    const a = ARMORS.find(x=>x.n===n); if(a){cost+=a.price; return;}
+    const c = CATALYSTS.find(x=>x.name===n); if(c){cost+=c.price; return;}
   });
+  return cost;
+}
 
-  const hp = (s.CON + s.STR) * 2;
-  const mp = s.POW + s.INT + s.FTH;
-  const cr = 1 + Math.floor(s.LCK / 5);
-  const pa = armorVal(s.CON + 3); // CON単体参照（装備なし）
-  const mr = armorVal(s.POW + s.CON);
+// ================================================================
+// STEP NAVIGATION
+// ================================================================
+function gotoStep(n) {
+  document.querySelectorAll('.step-panel').forEach((p,i)=>p.classList.toggle('active',i===n));
+  document.querySelectorAll('.step-btn').forEach((b,i)=>b.classList.toggle('active',i===n));
+  if(n===1) buildOriginGrid();
+  if(n===2) buildStatAlloc();
+  if(n===3) buildEquipPanel();
+  if(n===4) buildSealPanel();
+  if(n===5) buildSheet();
+  window.scrollTo(0,0);
+}
 
-  document.getElementById('d-HP').textContent = hp;
-  document.getElementById('d-MP').textContent = mp;
-  document.getElementById('d-CR').textContent = cr + '%';
-  document.getElementById('d-PA').textContent = '軽減 ' + pa;
-  document.getElementById('d-MR').textContent = '軽減 ' + mr;
-  document.getElementById('max-HP-disp').textContent = hp;
-  document.getElementById('max-MP-disp').textContent = mp;
+// ================================================================
+// STEP 1: ORIGIN
+// ================================================================
+function buildOriginGrid() {
+  const grid = document.getElementById('origin-grid');
+  grid.innerHTML = ORIGINS.map((o,i)=>`
+    <button class="origin-opt${state.originIdx===i?' selected':''}" onclick="selectOrigin(${i})">
+      <span class="origin-opt__en">${o.en}</span>
+      <span class="origin-opt__name">${o.name}</span>
+      <p class="origin-opt__catch">${o.catch}</p>
+      <div class="origin-check">${state.originIdx===i?'✓':''}</div>
+    </button>
+  `).join('');
+  renderOriginInfo();
+}
 
-  // DB
-  ['STR','DEX','INT','FTH'].forEach(k => {
-    const db = dbVal(s[k]);
-    const el = document.getElementById('db-'+k);
-    el.textContent = db;
-    el.className = db==='なし' ? 'db-display none' : 'db-display';
+function selectOrigin(i) {
+  state.originIdx = i;
+  state.addStats = [0,0,0,0,0,0,0,0];
+  state.equip = buildInitialEquip(ORIGINS[i]);
+  state.seals = ['','','',''];
+  buildOriginGrid();
+}
+
+// 素性の初期装備（武器①・胴防具）をセットする
+function buildInitialEquip(o) {
+  const equip = {weapon1:'none',weapon2:'none',catalyst:'none',spells:['none','none','none'],head:'none',body:'none',spare1:'none',spare2:'none'};
+  if(!o) return equip;
+  // 武器 or 触媒
+  const w = WEAPONS.find(x=>x.n===o.weapon);
+  const cat = CATALYSTS.find(x=>x.name===o.weapon);
+  if(w) {
+    equip.weapon1 = w.n;
+  } else if(cat) {
+    equip.catalyst = cat.name;
+    equip.weapon1 = 'none';
+  }
+  // 胴防具
+  const body = ARMORS.find(x=>x.sl==='胴'&&x.n===o.armor);
+  if(body) equip.body = body.n;
+  return equip;
+}
+
+function renderOriginInfo() {
+  const info = document.getElementById('origin-info');
+  const o = getOrigin();
+  if(!o){info.classList.remove('visible'); return;}
+  info.classList.add('visible');
+  const statChips = STAT_KEYS.map((k,i)=>`<div class="stat-chip"><span class="stat-chip__key">${k}</span><span class="stat-chip__val">${o.stats[i]}</span></div>`).join('');
+  info.innerHTML = `
+    <div class="origin-info__header">
+      <div><div class="origin-info__title">${o.name} <small style="font-family:'Cinzel',serif;font-size:12px;color:var(--gold-dim);letter-spacing:0.2em;">${o.en}</small></div></div>
+      <div style="font-size:11px;color:var(--text3);">追加PT: <b style="color:var(--gold)">${o.pts}</b></div>
+    </div>
+    <div class="origin-info__stats">${statChips}</div>
+    <div class="origin-info__derived">
+      <div class="derived-pill"><span class="derived-pill__key">HP</span><span class="derived-pill__val" style="color:var(--red2)">${o.hp}</span></div>
+      <div class="derived-pill"><span class="derived-pill__key">MP</span><span class="derived-pill__val" style="color:var(--blue2)">${o.mp}</span></div>
+      <div class="derived-pill"><span class="derived-pill__key">CR</span><span class="derived-pill__val" style="color:var(--gold)">${o.cr}</span></div>
+    </div>
+    <div class="origin-info__equip" style="margin-top:0.75rem;">
+      <span>初期武器:</span> ${o.weapon} ／ <span>初期防具:</span> ${o.armor} ／ <span>初期G:</span> <b style="color:var(--gold)">${o.gold}G</b>
+      ${o.hasCatalyst?`<br><span>触媒:</span> ${o.catalystType}対応`:''}
+      ${o.catalystHint?`<br><span>推奨触媒:</span> ${o.catalystHint}`:''}
+    </div>
+  `;
+}
+
+// ================================================================
+// STEP 2: STAT ALLOCATION
+// ================================================================
+function buildStatAlloc() {
+  const grid = document.getElementById('stat-alloc-grid');
+  const base = getBaseStats();
+  grid.innerHTML = STAT_KEYS.map((k,i)=>`
+    <div class="stat-alloc-cell">
+      <div class="stat-alloc-cell__key">${k}</div>
+      <div class="stat-alloc-cell__name">${STAT_NAMES[i]}</div>
+      <div class="stat-alloc-row">
+        <span class="stat-base">${base[i]}</span>
+        <span class="stat-plus">+</span>
+        <input class="stat-add-input" type="number" min="0" max="4" value="${state.addStats[i]||0}"
+          onchange="onStatChange(${i},this.value)" oninput="onStatChange(${i},this.value)">
+        <span style="color:var(--text3);font-size:11px;">=</span>
+        <span class="stat-total" id="stat-total-${i}">${base[i]+(state.addStats[i]||0)}</span>
+      </div>
+    </div>
+  `).join('');
+  updatePtTracker();
+  buildDerivedDisplay();
+}
+
+function onStatChange(i, val) {
+  const n = Math.max(0, Math.min(4, parseInt(val)||0));
+  const pts = getMaxPts();
+  const usedWithout = getUsedPts() - (state.addStats[i]||0);
+  // enforce half cap: no single stat can exceed Math.ceil(pts/2)
+  const halfCap = Math.ceil(pts/2);
+  const allowed = Math.min(n, halfCap, pts - usedWithout);
+  state.addStats[i] = Math.max(0, allowed);
+  // update input
+  document.querySelectorAll('.stat-add-input')[i].value = state.addStats[i];
+  const base = getBaseStats();
+  document.getElementById(`stat-total-${i}`).textContent = base[i]+state.addStats[i];
+  updatePtTracker();
+  buildDerivedDisplay();
+}
+
+function updatePtTracker() {
+  const used = getUsedPts();
+  const max = getMaxPts();
+  const rem = max - used;
+  document.getElementById('pt-used').textContent = used;
+  document.getElementById('pt-max').textContent = ` / ${max}`;
+  document.getElementById('pt-bar-fill').style.width = (used/max*100)+'%';
+  const halfCap = Math.ceil(max/2);
+  document.getElementById('pt-half-note').textContent = `※1能力値への上限: +${halfCap}（追加PTの半分切り上げ）`;
+  document.getElementById('pt-bar-fill').style.background = rem<0 ? 'var(--red2)' : 'var(--gold-dim)';
+}
+
+function buildDerivedDisplay() {
+  const stats = getTotalStats();
+  const d = calcDerived(stats);
+  document.getElementById('derived-display').innerHTML = `
+    <div class="derived-cell"><span class="derived-cell__label">HP</span><span class="derived-cell__formula">CON×3+STR補正</span><span class="derived-cell__val derived-cell__val--hp">${d.hp}</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">MP</span><span class="derived-cell__formula">POW×2+FTH補正</span><span class="derived-cell__val derived-cell__val--mp">${d.mp}</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">AP</span><span class="derived-cell__formula">基本値</span><span class="derived-cell__val derived-cell__val--ap">3</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">CR率</span><span class="derived-cell__formula">素性固定</span><span class="derived-cell__val derived-cell__val--cr">${d.cr}</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">物理軽減</span><span class="derived-cell__formula">防具合計</span><span class="derived-cell__val derived-cell__val--def">${d.ph}</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">魔術軽減</span><span class="derived-cell__formula">防具合計</span><span class="derived-cell__val derived-cell__val--def">${d.mg}</span></div>
+  `;
+}
+
+// ================================================================
+// STEP 3: EQUIPMENT
+// ================================================================
+function buildEquipPanel() {
+  const o = getOrigin();
+  const gold = o ? o.gold : 500;
+  document.getElementById('equip-gold-total').textContent = gold;
+
+  // weapon selects
+  buildWeaponSelect('equip-weapon1', false);
+  buildWeaponSelect('equip-weapon2', true);
+
+  // catalyst slot
+  const catSlot = document.getElementById('catalyst-slot');
+  if(o && o.hasCatalyst) {
+    catSlot.style.display = '';
+    buildCatalystSelect(o.catalystType);
+  } else {
+    catSlot.style.display = 'none';
+    document.getElementById('spell-pool').style.display = 'none';
+  }
+
+  // armor
+  buildArmorSelect('equip-head','頭');
+  buildArmorSelect('equip-body','胴');
+
+  // hit table
+  buildHitTable();
+  updateEquipGold();
+  updateWeaponInfo('equip-weapon1','info-weapon1','sell-weapon1');
+  updateWeaponInfo('equip-weapon2','info-weapon2','sell-weapon2');
+  updateArmorInfo('equip-head','info-head','sell-head');
+  updateArmorInfo('equip-body','info-body','sell-body');
+  updateDmgDisplay();
+}
+
+function buildWeaponSelect(selId, includeNone) {
+  const sel = document.getElementById(selId);
+  const current = state.equip[selId.replace('equip-','')];
+  let opts = '<option value="none">— なし —</option>';
+  // group by type
+  const types = [...new Set(WEAPONS.map(w=>w.t))];
+  types.forEach(t=>{
+    opts += `<optgroup label="${t}">`;
+    WEAPONS.filter(w=>w.t===t&&w.price>0).forEach(w=>{
+      const sel_ = w.n===current?' selected':'';
+      const rankTag = w.r!=='兵士'?`[${w.r}]`:'';
+      opts += `<option value="${w.n}"${sel_}>${w.n}${rankTag}（${w.price}G）${w.h==='両手'?'[両手]':''}</option>`;
+    });
+    opts += '</optgroup>';
   });
-
-  updatePts();
+  sel.innerHTML = opts;
 }
 
-function updatePts() {
-  const used = KEYS.reduce((a,k) => a + (addPts[k]||0), 0);
-  const rem = maxPts - used;
-  const el = document.getElementById('pts-rem');
-  el.textContent = rem;
-  el.className = 'pts-val' + (rem < 0 ? ' over' : '');
-  document.getElementById('pts-max').textContent = maxPts;
-}
-
-/* ── 増減ボタン ── */
-function adj(key, delta) {
-  if (!curOrigin) { alert('まず素性を選択してください'); return; }
-  const cur = parseInt(document.getElementById('s-'+key).value)||1;
-  const next = Math.max(1, Math.min(20, cur + delta));
-  const diff = next - cur;
-  const used = KEYS.reduce((a,k)=>a+(addPts[k]||0),0);
-  if (diff > 0 && used >= maxPts) return;
-  if ((addPts[key]||0) + diff < 0) return;
-  addPts[key] = (addPts[key]||0) + diff;
-  document.getElementById('s-'+key).value = next;
-  updateAll();
-}
-
-/* ── 素性選択 ── */
-function selectOrigin(btn) {
-  document.querySelectorAll('.origin-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const name = btn.dataset.o;
-  curOrigin = name;
-  const o = ORIGINS[name];
-  maxPts = o.pts;
-  addPts = {CON:0,STR:0,DEX:0,AGI:0,INT:0,FTH:0,POW:0,LCK:0};
-
-  KEYS.forEach((k,i) => {
-    baseStats[k] = o.stats[i];
-    document.getElementById('s-'+k).value = o.stats[i];
+function buildCatalystSelect(type) {
+  const sel = document.getElementById('equip-catalyst');
+  const current = state.equip.catalyst;
+  let opts = '<option value="none">— なし —</option>';
+  CATALYSTS.filter(c=>c.type===type&&c.price>0).forEach(c=>{
+    const rankTag = c.rank!=='兵士'?`[${c.rank}]`:'';
+    opts += `<option value="${c.name}"${c.name===current?' selected':''}>${c.name}${rankTag}（${c.price}G） 命中${c.hit}</option>`;
   });
+  sel.innerHTML = opts;
+  onCatalystChange();
+}
 
-  const desc = document.getElementById('origin-desc');
-  desc.className = 'origin-desc-box visible';
-  desc.innerHTML =
-    '<div class="catch">「' + o.catch + '」</div>' +
-    '<strong>' + name + '</strong>｜追加ポイント <strong>' + o.pts + '点</strong>（1能力値への上限 +4）' +
-    '<div class="equip">初期武器：' + o.weapon + '　／　初期防具：' + o.armor + '　／　初期ゴールド：500G</div>';
+function buildArmorSelect(selId, slot) {
+  const sel = document.getElementById(selId);
+  const current = state.equip[selId.replace('equip-','')];
+  let opts = '<option value="none">— なし —</option>';
+  ARMORS.filter(a=>a.sl===slot&&a.price>0).forEach(a=>{
+    const rankTag = a.r!=='兵士'?`[${a.r}]`:'';
+    opts += `<option value="${a.n}"${a.n===current?' selected':''}>${a.n}${rankTag} 物${a.ph}/魔${a.mg}（${a.price}G）</option>`;
+  });
+  sel.innerHTML = opts;
+}
 
-  // 命中値テーブル
-  const row = document.getElementById('hit-row');
-  row.innerHTML = o.hit.map((v,i) => {
-    const cls = o.best.includes(i) ? 'hi' : v<=40 ? 'lo' : '';
-    return '<td class="' + cls + '">' + v + '%</td>';
+function buildSpareSelect(selId) {
+  const sel = document.getElementById(selId);
+  const current = state.equip[selId.replace('equip-','')];
+  let opts = '<option value="none">— なし —</option>';
+  opts += '<optgroup label="武器">';
+  WEAPONS.filter(w=>w.price>0).forEach(w=>{
+    const rankTag = w.r!=='兵士'?`[${w.r}]`:'';
+    opts += `<option value="${w.n}"${w.n===current?' selected':''}>${w.n}${rankTag}（${w.price}G）</option>`;
+  });
+  opts += '</optgroup><optgroup label="防具">';
+  ARMORS.filter(a=>a.price>0).forEach(a=>{
+    const rankTag = a.r!=='兵士'?`[${a.r}]`:'';
+    opts += `<option value="${a.n}"${a.n===current?' selected':''}>${a.n}${rankTag}（${a.sl}・${a.price}G）</option>`;
+  });
+  opts += '</optgroup><optgroup label="触媒">';
+  CATALYSTS.filter(c=>c.price>0).forEach(c=>{
+    const rankTag = c.rank!=='兵士'?`[${c.rank}]`:'';
+    opts += `<option value="${c.name}"${c.name===current?' selected':''}>${c.name}${rankTag}（${c.type}・${c.price}G）</option>`;
+  });
+  opts += '</optgroup>';
+  sel.innerHTML = opts;
+}
+
+function onEquipChange() {
+  state.equip.weapon1 = document.getElementById('equip-weapon1').value;
+  state.equip.weapon2 = document.getElementById('equip-weapon2').value;
+  state.equip.head = document.getElementById('equip-head').value;
+  state.equip.body = document.getElementById('equip-body').value;
+  updateEquipGold();
+  updateWeaponInfo('equip-weapon1','info-weapon1','sell-weapon1');
+  updateWeaponInfo('equip-weapon2','info-weapon2','sell-weapon2');
+  updateArmorInfo('equip-head','info-head','sell-head');
+  updateArmorInfo('equip-body','info-body','sell-body');
+  updateDmgDisplay();
+  buildDerivedDisplay();
+}
+
+function onCatalystChange() {
+  state.equip.catalyst = document.getElementById('equip-catalyst').value;
+  updateCatalystInfo();
+  updateSpellPool();
+  updateEquipGold();
+}
+
+function updateWeaponInfo(selId, infoId, sellId) {
+  const n = document.getElementById(selId).value;
+  const box = document.getElementById(infoId);
+  const sell = document.getElementById(sellId);
+  const w = WEAPONS.find(x=>x.n===n);
+  if(!w){box.innerHTML='<span style="color:var(--text3)">武器を選択してください</span>'; sell.textContent=''; return;}
+  const dmg = [w.d,w.f&&w.f!=='—'?w.f:''].filter(Boolean).join('');
+  box.innerHTML = `<span class="sp-tag">射程${w.rng} ${w.ap} ${w.mh} ${w.h}</span>　ダメージ: <b style="color:var(--gold)">${dmg||'—'}</b>　参照: ${w.s}${w.p&&w.p!=='—'?`　貫通:${w.p}`:''}
+${w.sp&&w.sp!=='—'?`<br><span class="sp-tag">固有: ${w.sp}</span>`:''}
+${w.hd&&w.hd!=='—'?`<br><span class="hd-tag">HD</span> ${w.hd}`:''}
+${w.ex&&w.ex!=='—'?`<br><span class="ex-tag">EX</span> ${w.ex}`:''}`;
+  sell.textContent = `半額売却: ${Math.floor(w.price/2)}G`;
+}
+
+function updateArmorInfo(selId, infoId, sellId) {
+  const n = document.getElementById(selId).value;
+  const box = document.getElementById(infoId);
+  const sell = document.getElementById(sellId);
+  const a = ARMORS.find(x=>x.n===n);
+  if(!a){box.innerHTML='<span style="color:var(--text3)">防具を選択してください</span>'; sell.textContent=''; return;}
+  box.innerHTML = `物理軽減: <b style="color:var(--gold)">${a.ph}</b>　魔術軽減: <b style="color:var(--blue2)">${a.mg}</b>　重量: ${a.w}${a.ef&&a.ef!=='—'?`<br><span class="sp-tag">${a.ef}</span>`:''}`;
+  sell.textContent = `半額売却: ${Math.floor(a.price/2)}G`;
+}
+
+function updateCatalystInfo() {
+  const n = state.equip.catalyst;
+  const box = document.getElementById('info-catalyst');
+  const sell = document.getElementById('sell-catalyst');
+  const c = CATALYSTS.find(x=>x.name===n);
+  if(!c){box.innerHTML='<span style="color:var(--text3)">触媒を選択してください</span>'; sell.textContent=''; return;}
+  const hasBonus = c.bonus && c.bonus!=='—' && c.bonus!=='－';
+  box.innerHTML = `命中補正: <b style="color:var(--gold)">${c.hit}</b>　射程補正: ${c.range}　固定値補正: ${c.fixed||0}${hasBonus?`<br><span class="sp-tag">${c.bonus}</span>`:''}`;
+  sell.textContent = `半額売却: ${Math.floor(c.price/2)}G`;
+}
+
+function updateSpellPool() {
+  const pool = document.getElementById('spell-pool');
+  const o = getOrigin();
+  if(!o||!o.hasCatalyst||state.equip.catalyst==='none'){pool.style.display='none'; return;}
+  pool.style.display='block';
+  // determine available rank from catalyst
+  const cat = CATALYSTS.find(c=>c.name===state.equip.catalyst);
+  const rank = cat ? cat.rank : '兵士';
+  const rankOrder = {兵士:0,英雄:1,伝説:2};
+  const spellType = o.catalystType === '杖' ? '魔術' : '奇跡';
+  const available = MAGIC_LIST.filter(m=>m.type===spellType && rankOrder[m.rank]<=rankOrder[rank]);
+  const container = document.getElementById('spell-selects');
+  container.innerHTML = [0,1,2].map(i=>`
+    <div class="spell-slot-row">
+      <span class="spell-slot-idx">${i+1}</span>
+      <select class="field-select" style="flex:1;" onchange="onSpellChange(${i},this.value)">
+        <option value="none">— なし —</option>
+        ${available.map(s=>`<option value="${s.name}"${state.equip.spells[i]===s.name?' selected':''}>${s.name}（${s.rank}・MP${s.mp}・${s.attr}・射程${s.range}）</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+}
+
+function onSpellChange(i, val) {
+  state.equip.spells[i] = val;
+  updateEquipGold();
+}
+
+function updateEquipGold() {
+  const o = getOrigin();
+  const total = o ? o.gold : 500;
+  const cost = getEquipCost();
+  const rem = total - cost;
+  document.getElementById('equip-gold-rem').textContent = rem;
+  const warn = document.getElementById('equip-warning');
+  warn.style.display = rem < 0 ? '' : 'none';
+}
+
+function buildHitTable() {
+  const tbody = document.getElementById('hit-tbody');
+  const origin = getOrigin();
+  const originName = origin ? origin.name : '';
+  // selected weapon category
+  const w1 = WEAPONS.find(w=>w.n===state.equip.weapon1);
+  const w2 = WEAPONS.find(w=>w.n===state.equip.weapon2);
+  const selCats = new Set();
+  [w1,w2].forEach(w=>{if(w) { const idx=WEAPON_CATEGORY_MAP[w.t]; if(idx!==undefined) selCats.add(idx); }});
+
+  tbody.innerHTML = HIT_DATA.map(row=>{
+    const isPlayer = row.name === originName;
+    const cells = row.vals.map((v,i)=>{
+      const hi = v>=65;
+      const lo = v<=40;
+      const sel = selCats.has(i);
+      return `<td class="${hi?'hit-cell--hi':''}${lo?'hit-cell--lo':''}${sel?' hit-selected':''}">${v}%</td>`;
+    }).join('');
+    return `<tr${isPlayer?' style="background:rgba(200,164,90,0.06)"':''}>
+      <td style="${isPlayer?'color:var(--gold2);font-weight:700':''}">${row.name}</td>
+      ${cells}
+      <td style="font-size:10px;color:var(--teal2);text-align:left">${row.best}</td>
+    </tr>`;
+  }).join('');
+}
+
+function updateDmgDisplay() {
+  const container = document.getElementById('dmg-display');
+  const rows = [];
+  [state.equip.weapon1, state.equip.weapon2].forEach(n=>{
+    const w = WEAPONS.find(x=>x.n===n);
+    if(!w||w.t==='杖'||w.t==='聖印') return;
+    const dmg = [w.d&&w.d!=='—'?w.d:'',w.f&&w.f!=='—'?w.f:''].filter(Boolean).join('+')||'—';
+    rows.push(`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:0.65rem 1rem;font-size:12px;">
+      <b style="color:var(--text)">${w.n}</b>　${w.ap}　${w.mh}　射程${w.rng}　<b style="color:var(--gold)">${dmg}</b>
+      ${w.hd&&w.hd!=='—'?`<br><span style="color:var(--gold-dim);font-size:10px;">HD</span> <span style="font-size:10px;color:var(--text2)">${w.hd}</span>`:''}
+      ${w.ex&&w.ex!=='—'?`<br><span style="color:var(--gold);font-size:10px;">EX</span> <span style="font-size:10px;color:var(--text2)">${w.ex}</span>`:''}
+    </div>`);
+  });
+  // spells
+  state.equip.spells.forEach(sn=>{
+    const sp = MAGIC_LIST.find(m=>m.name===sn);
+    if(!sp) return;
+    rows.push(`<div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);padding:0.65rem 1rem;font-size:12px;">
+      <b style="color:var(--purple2)">${sp.name}</b>（${sp.rank}）　${sp.ap}　MP${sp.mp}　${sp.attr}　射程${sp.range}　<b style="color:var(--gold)">${sp.dice}</b>
+      <br><span style="color:var(--gold-dim);font-size:10px;">HD</span> <span style="font-size:10px;color:var(--text2)">${sp.hd}</span>
+      <br><span style="color:var(--gold);font-size:10px;">EX</span> <span style="font-size:10px;color:var(--text2)">${sp.ex}</span>
+    </div>`);
+  });
+  container.innerHTML = rows.length ? rows.join('') : '<div style="color:var(--text3);font-size:12px;padding:0.5rem 0;">武器・呪文を選択してください</div>';
+}
+
+// ================================================================
+// STEP 4: SEALS
+// ================================================================
+function buildSealPanel() {
+  const o = getOrigin();
+  const originName = o ? o.name : '';
+  const container = document.getElementById('seal-slots-container');
+  container.innerHTML = [0,1,2,3].map(i=>`
+    <div class="seal-slot">
+      <div class="seal-slot-label">刻印 ${i+1}</div>
+      <select class="field-select" onchange="onSealChange(${i},this.value)">
+        <option value="">— なし —</option>
+        <optgroup label="汎用刻印">
+          ${GENERIC_SEALS.map(s=>`<option value="${s.id}"${state.seals[i]===s.id?' selected':''}>${s.name}（${s.cat}）</option>`).join('')}
+        </optgroup>
+        ${originName?`<optgroup label="${originName}専用刻印">
+          ${ORIGIN_SEALS.filter(s=>s.origin===originName).map(s=>`<option value="${s.id}"${state.seals[i]===s.id?' selected':''}>${s.name}</option>`).join('')}
+        </optgroup>`:''}
+      </select>
+      <div class="seal-info-box${state.seals[i]?' visible':''}" id="seal-info-${i}">
+        ${renderSealInfo(state.seals[i])}
+      </div>
+    </div>
+  `).join('');
+  updateSealSummary();
+}
+
+function renderSealInfo(id) {
+  if(!id) return '';
+  const s = [...GENERIC_SEALS,...ORIGIN_SEALS].find(x=>x.id===id);
+  if(!s) return '';
+  return `<span class="seal-info-trigger">⚡ ${s.trigger}</span><br>${s.effect}`;
+}
+
+function onSealChange(i, val) {
+  // G13 / Hu03 exclusion
+  if(val==='G13' && state.seals.includes('Hu03')) { alert('G13「星読み」とHu03「星に愛された者」は同時取得できません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  if(val==='Hu03' && state.seals.includes('G13')) { alert('Hu03「星に愛された者」とG13「星読み」は同時取得できません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  // dup check
+  if(val && state.seals.filter((s,j)=>j!==i&&s===val).length>0) { alert('同じ刻印を重複して取得することはできません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  state.seals[i] = val;
+  const box = document.getElementById(`seal-info-${i}`);
+  box.innerHTML = renderSealInfo(val);
+  box.classList.toggle('visible', !!val);
+  updateSealSummary();
+}
+
+function updateSealSummary() {
+  const chosen = state.seals.filter(Boolean);
+  const summary = document.getElementById('seal-summary');
+  const list = document.getElementById('seal-summary-list');
+  summary.style.display = chosen.length ? '' : 'none';
+  list.innerHTML = chosen.map(id=>{
+    const s = [...GENERIC_SEALS,...ORIGIN_SEALS].find(x=>x.id===id);
+    if(!s) return '';
+    return `<div style="font-size:11px;color:var(--text2);margin-bottom:4px;"><b style="color:var(--text)">${s.name}</b>　<span style="font-size:10px;color:var(--text3)">⚡ ${s.trigger}</span><br><span style="font-size:10px;">${s.effect.slice(0,80)}${s.effect.length>80?'…':''}</span></div>`;
+  }).join('');
+}
+
+// ================================================================
+// STEP 5: SHEET
+// ================================================================
+function buildSheet() {
+  const o = getOrigin();
+  const stats = getTotalStats();
+  const d = calcDerived(stats);
+  const originName = o ? o.name : '未選択';
+  const originRow = HIT_DATA.find(r=>r.name===originName);
+
+  const w1 = WEAPONS.find(w=>w.n===state.equip.weapon1);
+  const w2 = WEAPONS.find(w=>w.n===state.equip.weapon2);
+  const ha = ARMORS.find(a=>a.n===state.equip.head);
+  const ba = ARMORS.find(a=>a.n===state.equip.body);
+  const cat = CATALYSTS.find(c=>c.name===state.equip.catalyst);
+
+  const statBoxes = STAT_KEYS.map((k,i)=>`<div class="sheet-stat-box"><span class="sheet-stat-key">${k}</span><span class="sheet-stat-val">${stats[i]}</span></div>`).join('');
+
+  const hitLabels = ['短剣','直剣','大剣','斧','槍','盾','弓','魔術','奇跡'];
+  const hitRow = originRow ? originRow.vals : Array(9).fill('—');
+  const w1cat = w1 ? WEAPON_CATEGORY_MAP[w1.t] : -1;
+  const w2cat = w2 ? WEAPON_CATEGORY_MAP[w2.t] : -1;
+  const hitCells = hitLabels.map((l,i)=>{
+    const sel = (i===w1cat||i===w2cat);
+    const v = hitRow[i]||'—';
+    const hi = typeof v==='number'&&v>=65;
+    return `<td class="${hi?'hi':''}${sel?' sel':''}">${typeof v==='number'?v+'%':v}</td>`;
   }).join('');
 
-  updateAll();
+  const dmgRows = [];
+  [w1,w2].forEach(w=>{if(!w||w.t==='杖'||w.t==='聖印')return;const dmg=[w.d&&w.d!=='—'?w.d:'',w.f&&w.f!=='—'?w.f:''].filter(Boolean).join('+')||'—';dmgRows.push(`<div class="sheet-equip-row"><span class="sheet-equip-label">${w.n}</span><span class="sheet-equip-val">${w.ap} ${w.mh} 射程${w.rng} <b>${dmg}</b>${w.hd&&w.hd!=='—'?` ／ HD: ${w.hd.slice(0,30)}…`:''}${w.ex&&w.ex!=='—'?` ／ EX: ${w.ex.slice(0,30)}…`:''}</span></div>`);});
+  state.equip.spells.forEach(sn=>{const sp=MAGIC_LIST.find(m=>m.name===sn);if(!sp)return;dmgRows.push(`<div class="sheet-equip-row"><span class="sheet-equip-label">${sp.name}</span><span class="sheet-equip-val">${sp.rank} ${sp.ap} MP${sp.mp} ${sp.attr} ${sp.dice} ／ HD: ${sp.hd.slice(0,25)}… ／ EX: ${sp.ex.slice(0,25)}…</span></div>`);});
+
+  const sealItems = state.seals.filter(Boolean).map(id=>{
+    const s=[...GENERIC_SEALS,...ORIGIN_SEALS].find(x=>x.id===id);
+    if(!s)return'';
+    return `<div class="sheet-seal-item"><span class="sheet-seal-name">${s.name}</span>　<span style="font-size:10px;color:var(--text3)">⚡${s.trigger}</span><div class="sheet-seal-detail">${s.effect.slice(0,100)}${s.effect.length>100?'…':''}</div></div>`;
+  }).join('');
+
+  document.getElementById('sheet-preview').innerHTML = `
+<div class="sheet">
+  <div class="sheet-title">— 忘却の淵にて — CHARACTER SHEET</div>
+
+  <div class="sheet-row">
+    <div class="sheet-field"><div class="sheet-field-label">プレイヤー名</div><div class="sheet-field-val">${document.getElementById('player-name').value||'—'}</div></div>
+    <div class="sheet-field"><div class="sheet-field-label">キャラクター名</div><div class="sheet-field-val">${document.getElementById('char-name').value||'—'}</div></div>
+    <div class="sheet-field" style="flex:0.5"><div class="sheet-field-label">素性</div><div class="sheet-field-val" style="color:var(--gold)">${originName}</div></div>
+  </div>
+  <div class="sheet-field" style="margin-bottom:0.75rem;">
+    <div class="sheet-field-label">メモ（性別・性格・生い立ちなど）</div>
+    <div class="sheet-memo" style="min-height:48px;border:1px solid var(--border);border-radius:2px;padding:6px 10px;">${(document.getElementById('char-memo').value||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
+  </div>
+  <hr class="sheet-divider">
+
+  <div class="sheet-section-head">能力値</div>
+  <div class="sheet-stat-row">${statBoxes}</div>
+
+  <div class="sheet-section-head" style="margin-top:0.75rem;">派生ステータス</div>
+  <div class="sheet-derived-row">
+    <div class="sheet-derived-box"><span class="sheet-stat-key">HP</span><span class="sheet-stat-val" style="color:var(--red2)">${d.hp}</span></div>
+    <div class="sheet-derived-box"><span class="sheet-stat-key">MP</span><span class="sheet-stat-val" style="color:var(--blue2)">${d.mp}</span></div>
+    <div class="sheet-derived-box"><span class="sheet-stat-key">AP</span><span class="sheet-stat-val" style="color:var(--teal2)">3</span></div>
+    <div class="sheet-derived-box"><span class="sheet-stat-key">CR率</span><span class="sheet-stat-val" style="color:var(--gold)">${d.cr}</span></div>
+    <div class="sheet-derived-box"><span class="sheet-stat-key">物理軽減</span><span class="sheet-stat-val">${d.ph}</span></div>
+    <div class="sheet-derived-box"><span class="sheet-stat-key">魔術軽減</span><span class="sheet-stat-val">${d.mg}</span></div>
+  </div>
+  <hr class="sheet-divider">
+
+  <div class="sheet-section-head">命中値</div>
+  <div class="sheet-hit-mini">
+    <table class="sheet-hit-table">
+      <thead><tr><th></th>${hitLabels.map(l=>`<th>${l}</th>`).join('')}<th>得意</th></tr></thead>
+      <tbody><tr><td>${originName}</td>${hitCells}<td style="font-size:9px;color:var(--teal2);text-align:left">${originRow?originRow.best:'—'}</td></tr></tbody>
+    </table>
+  </div>
+  <hr class="sheet-divider">
+
+  <div class="sheet-row" style="align-items:flex-start;gap:1.5rem;">
+    <div style="flex:1">
+      <div class="sheet-section-head">装備</div>
+      ${w1?`<div class="sheet-equip-row"><span class="sheet-equip-label">武器①</span><span class="sheet-equip-val">${w1.n}<span class="sheet-equip-detail">${w1.ap} ${w1.mh} 射程${w1.rng} ${[w1.d,w1.f&&w1.f!=='—'?w1.f:''].filter(Boolean).join('+')||'—'}</span></span></div>`:''}
+      ${w2?`<div class="sheet-equip-row"><span class="sheet-equip-label">武器②</span><span class="sheet-equip-val">${w2.n}<span class="sheet-equip-detail">${w2.ap} ${w2.mh} 射程${w2.rng}</span></span></div>`:''}
+      ${cat?`<div class="sheet-equip-row"><span class="sheet-equip-label">触媒</span><span class="sheet-equip-val">${cat.name}<span class="sheet-equip-detail">命中${cat.hit}</span></span></div>`:''}
+      ${ha?`<div class="sheet-equip-row"><span class="sheet-equip-label">頭防具</span><span class="sheet-equip-val">${ha.n}<span class="sheet-equip-detail">物${ha.ph}/魔${ha.mg} ${ha.w}${ha.ef&&ha.ef!=='—'?` ／ ${ha.ef.slice(0,30)}`:''}</span></span></div>`:''}
+      ${ba?`<div class="sheet-equip-row"><span class="sheet-equip-label">胴防具</span><span class="sheet-equip-val">${ba.n}<span class="sheet-equip-detail">物${ba.ph}/魔${ba.mg} ${ba.w}${ba.ef&&ba.ef!=='—'?` ／ ${ba.ef.slice(0,30)}`:''}</span></span></div>`:''}
+    </div>
+    <div style="flex:1">
+      <div class="sheet-section-head">ダメージ・呪文</div>
+      ${dmgRows.join('')||'<span style="color:var(--text3);font-size:11px;">—</span>'}
+    </div>
+  </div>
+  <hr class="sheet-divider">
+
+  <div class="sheet-section-head">刻印（${state.seals.filter(Boolean).length}/4）</div>
+  <div class="sheet-seal-list">${sealItems||'<span style="color:var(--text3);font-size:11px;">—</span>'}</div>
+</div>
+`;
 }
 
-/* ── タブ切替 ── */
-function switchTab(name) {
-  const tabs = ['basic','stats','equip','seals','combat'];
-  tabs.forEach((t,i) => {
-    const btn = document.querySelectorAll('.cs-tab-btn')[i];
-    const panel = document.getElementById('tab-'+t);
-    btn.classList.toggle('active', t===name);
-    panel.classList.toggle('active', t===name);
-  });
-}
-
-/* ── 刻印スロット ── */
-function sealFill(inp) {
-  inp.closest('.seal-slot').classList.toggle('filled', inp.value.trim()!=='');
-}
-
-/* ── 状態異常トグル ── */
-const STATUS_DESC = {
-  poison:  '毒：ラウンド終了時に1ダメージ（装甲無視）',
-  burn:    '燃焼：ラウンド終了時に2d3ダメージ（装甲無視）。冷気で解除',
-  cold:    '冷気：3スタックで凍結に変化。燃焼を即座に解除',
-  freeze:  '凍結：行動不能（永続）。炎属性で解除',
-  fear:    '恐怖：命中・回避にPD+1。毎ラウンド開始時POWロール成功で解除',
-  mad:     '発狂：毎ラウンド開始時POWロール。失敗でAP-1、成功で解除',
-  blind:   '盲目：命中判定にPD+2。AP2消費で解除',
-  silence: '沈黙：魔術・奇跡使用不可。AP2消費で解除',
-  seal:    '封印：全刻印効果が無効化。戦闘終了まで継続',
-  death:   '死の宣告：付与から3ラウンド後に即死',
-  stone:   '石化：行動不能。瀕死時は即死亡確定。解除不可',
-  frenzy:  '狂喜：ダメージボーナス1段階上昇。防御行動（RA）が一切不可'
-};
-function toggleChip(el) {
-  const k = el.dataset.k;
-  const isOn = el.classList.contains('on-'+k);
-  el.classList.toggle('on-'+k, !isOn);
-  const active = [...document.querySelectorAll('.status-chip')].filter(c=>c.className.includes(' on-'));
-  const note = document.getElementById('status-note');
-  if (active.length) {
-    note.style.display='block';
-    note.innerHTML = active.map(c=>'<span style="color:var(--gold-dim)">'+c.textContent+'</span> '+STATUS_DESC[c.dataset.k]).join('<br>');
-  } else {
-    note.style.display='none';
-  }
-}
-
-/* ── 初期化 ── */
-updateAll();
+// ================================================================
+// INIT
+// ================================================================
+buildOriginGrid();
 </script>
-
 </body>
 </html>
