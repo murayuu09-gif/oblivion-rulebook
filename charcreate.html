@@ -4,7 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>キャラクター作成 — 忘却の淵にて</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<style>
+/* フォントフォールバック定義（Googleフォント読込失敗時でも動作） */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap');
+</style>
 <style>
 /* ── CSS Variables (same as site style) ── */
 :root {
@@ -36,7 +40,7 @@ html { font-size: 14px; }
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
+  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif;
   line-height: 1.6;
   min-height: 100vh;
 }
@@ -374,23 +378,6 @@ body {
 
 .sheet-memo { font-size: 12px; color: var(--text2); white-space: pre-wrap; line-height: 1.8; word-break: break-all; }
 
-/* ── PRINT STYLES ── */
-@media print {
-  body { background: #fff; color: #000; font-size: 10pt; }
-  .site-nav, .steps-nav, .step-btn, .page-header, .print-btn-row,
-  .step-panel:not(#panel-preview) { display: none !important; }
-  #sheet-preview { display: block !important; }
-  .sheet { background: #fff; border: 1px solid #ccc; break-inside: avoid; padding: 1cm; }
-  .sheet-stat-box, .sheet-derived-box { background: #f5f5f5; border: 1px solid #ccc; }
-  .sheet-hit-table td, .sheet-hit-table th { border-color: #ccc; }
-  .sheet-field-val { border-color: #ccc; color: #000; }
-  :root {
-    --text: #000; --text2: #333; --text3: #666;
-    --gold: #8b6a0a; --gold2: #5a4200; --gold-dim: #8b6a0a;
-    --bg3: #f5f5f5; --border: #ccc; --border2: #aaa;
-    --red2: #800; --blue2: #006; --teal2: #060;
-  }
-}
 </style>
 </head>
 <body>
@@ -493,15 +480,15 @@ body {
     <div class="equip-section">
       <div class="equip-head">
         <div>
-          <div class="equip-budget">所持金： <b id="equip-gold-rem">500</b>G 残 ／ <b id="equip-gold-total">500</b>G</div>
-          <div class="equip-warning" id="equip-warning">⚠ 所持金が不足しています</div>
+          <div class="equip-budget">追加購入予算： <b id="equip-gold-rem">500</b>G 残 ／ <b id="equip-gold-total">500</b>G</div>
+          <div class="equip-warning" id="equip-warning">⚠ 追加購入予算が不足しています</div>
         </div>
-        <div style="font-size:10px;color:var(--text3);">初期装備は半額売却可。500G以内で組み合わせ自由。</div>
+        <div style="font-size:10px;color:var(--text3);">①武器(主)・触媒・④胴防具の初期装備分は無料。それ以外の装備・変更分の合計が500G以内であること。半額売却は適用していません。</div>
       </div>
 
-      <!-- 武器 -->
+      <!-- 武器（主）スロット① -->
       <div class="equip-slot">
-        <div class="equip-slot-label">武器（主）</div>
+        <div class="equip-slot-label">① 右手（武器・主）</div>
         <div class="equip-row">
           <select class="field-select equip-select" id="equip-weapon1" onchange="onEquipChange()"></select>
           <span class="equip-sell-note" id="sell-weapon1"></span>
@@ -509,9 +496,9 @@ body {
         <div class="equip-info-box" id="info-weapon1"></div>
       </div>
 
-      <!-- 武器（副） -->
+      <!-- 武器（副） スロット② -->
       <div class="equip-slot">
-        <div class="equip-slot-label">武器（副）/ 盾 <span style="font-size:9px;color:var(--text3);">任意・片手武器・盾のみ</span></div>
+        <div class="equip-slot-label">② 左手（武器・副 / 盾） <span style="font-size:9px;color:var(--text3);">任意・片手武器・盾のみ</span></div>
         <div class="equip-row">
           <select class="field-select equip-select" id="equip-weapon2" onchange="onEquipChange()"></select>
           <span class="equip-sell-note" id="sell-weapon2"></span>
@@ -535,9 +522,9 @@ body {
         <div class="spell-select-group" id="spell-selects"></div>
       </div>
 
-      <!-- 防具（頭） -->
+      <!-- 防具（頭） スロット③ -->
       <div class="equip-slot">
-        <div class="equip-slot-label">防具（頭）</div>
+        <div class="equip-slot-label">③ 防具（頭）</div>
         <div class="equip-row">
           <select class="field-select equip-select" id="equip-head" onchange="onEquipChange()"></select>
           <span class="equip-sell-note" id="sell-head"></span>
@@ -545,14 +532,34 @@ body {
         <div class="equip-info-box" id="info-head"></div>
       </div>
 
-      <!-- 防具（胴） -->
+      <!-- 防具（胴） スロット④ -->
       <div class="equip-slot">
-        <div class="equip-slot-label">防具（胴）</div>
+        <div class="equip-slot-label">④ 防具（胴）</div>
         <div class="equip-row">
           <select class="field-select equip-select" id="equip-body" onchange="onEquipChange()"></select>
           <span class="equip-sell-note" id="sell-body"></span>
         </div>
         <div class="equip-info-box" id="info-body"></div>
+      </div>
+
+      <!-- 予備スロット⑤ -->
+      <div class="equip-slot">
+        <div class="equip-slot-label">⑤ 予備所持品 <span style="font-size:9px;color:var(--text3);">未装備の所持武器・防具・触媒</span></div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-spare1" onchange="onEquipChange()"></select>
+          <span class="equip-sell-note" id="sell-spare1"></span>
+        </div>
+        <div class="equip-info-box" id="info-spare1"></div>
+      </div>
+
+      <!-- 予備スロット⑥ -->
+      <div class="equip-slot">
+        <div class="equip-slot-label">⑥ 予備所持品 <span style="font-size:9px;color:var(--text3);">未装備の所持武器・防具・触媒</span></div>
+        <div class="equip-row">
+          <select class="field-select equip-select" id="equip-spare2" onchange="onEquipChange()"></select>
+          <span class="equip-sell-note" id="sell-spare2"></span>
+        </div>
+        <div class="equip-info-box" id="info-spare2"></div>
       </div>
     </div>
 
@@ -586,7 +593,7 @@ body {
     <p class="section-label">刻印選択</p>
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem 1rem;margin-bottom:1rem;font-size:11px;color:var(--text2);line-height:1.8;">
       汎用＋自素性専用あわせて <strong style="color:var(--gold)">4種</strong> を選択。重複取得不可。<br>
-      <span style="color:var(--text3);font-size:10px;">「封印」状態中は全刻印効果が無効化。G13「星読み」とHu03「星に愛された者」は片方のみ取得可。</span>
+      <span style="color:var(--text3);font-size:10px;">「封印」状態中は全刻印効果が無効化。G13「星読み」とHu03「星に愛された者」は片方のみ取得可。G01「疾風の歩法」とG03「踏み込みの術式」は併用不可。</span>
     </div>
 
     <div id="seal-slots-container"></div>
@@ -603,10 +610,11 @@ body {
   </div>
 
   <!-- ── STEP 5: 確認・出力 ── -->
-  <div id="panel-5" class="step-panel" id="panel-preview">
+  <div id="panel-5" class="step-panel">
     <p class="section-label">キャラクターシート確認</p>
     <div class="print-btn-row">
-      <button class="btn-primary" onclick="window.print()">🖨 PDFで出力</button>
+      <button class="btn-primary" id="pdf-btn" onclick="exportPDF()">📄 PDFで出力</button>
+      <span id="pdf-status" style="font-size:12px;color:var(--text3);display:none;">生成中…</span>
       <button class="btn-secondary" onclick="gotoStep(0)">← 最初から修正</button>
     </div>
     <div id="sheet-preview" class="visible">
@@ -655,78 +663,78 @@ const WEAPON_CATEGORY_MAP = {
 const WEAPONS = [
   {t:'短剣',n:'カッター',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'急所掠り：命中対象の次の回避判定にPD+1',ex:'—',price:50},
   {t:'短剣',n:'ダガー',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'—',hd:'—',ex:'生死の一線：命中対象がHP5以下なら死の宣告付与（POWロール）',price:80},
-  {t:'短剣',n:'毒刃',r:'兵士',a:'毒',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'毒付与',hd:'毒の蓄積：命中時、毒スタック+1追加',ex:'—',price:120},
-  {t:'短剣',n:'忍び刀',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'イニシアチブ勝利時 命中+10%',hd:'影の一撃：イニシアチブ勝利ターンのみ、命中対象に盲目付与（POWロール）',ex:'—',price:110},
-  {t:'短剣',n:'骨砕き',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'自分付与の状態異常を対象が持つとき ダメージ+1d3',hd:'傷口えぐり：状態異常2種以上持つ対象に追加ダメージ+1d4',ex:'—',price:90},
-  {t:'短剣',n:'水銀刃',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'同ターン2回目以降の攻撃 命中+5%',hd:'水銀の連鎖：3回全命中時、次ターン1回目攻撃命中+10%',ex:'—',price:150},
+  {t:'短剣',n:'毒刃',r:'兵士',a:'毒',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'毒1付与',hd:'毒の蓄積：毒1付与',ex:'—',price:120},
+  {t:'短剣',n:'忍び刀',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'AGIが自分よりも低い相手への命中+5%',hd:'影の一撃：に盲目付与（POWロール）',ex:'—',price:110},
+  {t:'短剣',n:'骨砕き',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'自分付与の状態異常を対象が持つとき ダメージ+1',hd:'傷口えぐり：状態異常2種以上持つ対象に追加ダメージ+1d4',ex:'—',price:90},
+  {t:'短剣',n:'水銀刃',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'同ターン2回目以降の攻撃 命中+5%',hd:'水銀の連鎖：3回目の命中なら沈黙付与',ex:'—',price:150},
   {t:'短剣',n:'爪牙',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'片手',sp:'命中するたびに次のダメージ+1（最大+4）',hd:'爪の記憶：蓄積+3以上のとき装甲を1点無視',ex:'—',price:100},
-  {t:'短剣',n:'星鉄の短刀',r:'英雄',a:'雷',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'帯電の傷：物理装甲半減中、対象が攻撃するたびに1ダメージ',ex:'隕石の落下：装甲半減中の対象に1d8＋連鎖1d4',price:380},
+  {t:'短剣',n:'星鉄の短刀',r:'英雄',a:'雷',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'+1',s:'DEX',p:'—',h:'片手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'帯電の傷：対象を攻撃するたびに1ダメージ受ける状態にする',ex:'隕石の落下：帯電の傷状態の対象に1d8＋隣接するマスの敵に1d4',price:380},
   {t:'短剣',n:'儚月',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'3回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'片手',sp:'通常成功をEXとして扱う',hd:'—',ex:'—',price:500},
-  {t:'短剣',n:'深淵の舌',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'命中するたびに使用者もPOWロール（失敗で疲労付与）',hd:'囁きの侵食：命中対象のPOW-2（1R）',ex:'深淵の共鳴：POW-2発動中、状態異常耐性を完全無効化',price:450},
+  {t:'短剣',n:'深淵の舌',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'1',h:'片手',sp:'命中するたびに使用者もPOWロール（失敗で疲労付与）',hd:'囁きの侵食：疲労付与',ex:'深淵の共鳴：盲目、沈黙付与',price:450},
   {t:'短剣',n:'終焉の一刺し',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'3回',d:'1d6',f:'+3',s:'DEX',p:'—',h:'片手',sp:'アンデッドに+2d4。命中したアンデッドは蘇生不可',hd:'終焉の宣告：命中対象に死の宣告付与（ロール不要）',ex:'縫合の終焉：死の宣告付与中の対象への命中時、宣告を全消費して即死処理',price:0},
   {t:'直剣',n:'ショートソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'確かな一撃：対象HP半分以下なら追加ダメージ+1d4',ex:'—',price:80},
-  {t:'直剣',n:'ロングソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'万能の一手：このターン他に攻撃なら命中+5%',ex:'—',price:100},
-  {t:'直剣',n:'バスタードソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'両手持ち時 ダメージ+1d4',hd:'—',ex:'両手の解放：両手持ち命中時、対象を1マス後退＋前方1マスの別の敵に1d4',price:130},
-  {t:'直剣',n:'炎の直剣',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'燃焼付与。冷気カウントリセット',hd:'炎の波及：命中対象が燃焼中なら隣接の別の敵にも燃焼付与',ex:'—',price:160},
+  {t:'直剣',n:'ロングソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'万能の一手：移動直後の攻撃なら追加ダメージ+1d4',ex:'—',price:100},
+  {t:'直剣',n:'バスタードソード',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d4',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'両手持ち時 ダメージ+1d4',hd:'—',ex:'不規則な剣：両手持ちと片手持ちを入れ替えて追加攻撃(HD/EXにならない追加攻撃)',price:130},
+  {t:'直剣',n:'炎の直剣',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'燃焼付与',hd:'炎の波及：命中対象が燃焼中なら隣接の別の敵にも燃焼付与',ex:'—',price:160},
   {t:'直剣',n:'銀の直剣',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'アンデッドに+2d4',hd:'銀の浄化：命中したアンデッドの有利な状態異常1種を解除',ex:'—',price:140},
-  {t:'直剣',n:'月光剣',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'夜間・暗所での命中+5%・ダメージ+1',hd:'月光の断片：夜間・暗所での命中時、対象の次の攻撃にPD+1',ex:'—',price:180},
-  {t:'直剣',n:'ラピア',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'回避行動後の命中+10%',hd:'突きの連鎖：同ターン2回目の命中時、固定値+2追加',ex:'—',price:120},
+  {t:'直剣',n:'黒き剣',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'夜間・暗所での命中+5%・ダメージ+1',hd:'月光の断片：夜間・暗所での命中時、対象の次の攻撃にPD+1',ex:'—',price:180},
+  {t:'直剣',n:'ラピア',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'2回',d:'1d4',f:'+2',s:'DEX',p:'—',h:'片手',sp:'回避行動をしたラウンドの命中+10%',hd:'突きの連鎖：同ターン2回目の命中時、固定値+2追加',ex:'—',price:120},
   {t:'直剣',n:'贖罪の剣',r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'片手',sp:'HP半分以下のとき ダメージ+1d6。アンデッドに+2d4',hd:'痛みの反射：HP半分以下のとき命中対象を1マス後退',ex:'贖罪の極致：HP半分以下かつEX時、死の宣告付与。使用者HP-2',price:420},
-  {t:'直剣',n:'霜の剣',r:'英雄',a:'冷気',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'冷気付与。燃焼を即解除',hd:'深海の震え：命中対象AGI-2（1R）。冷気スタック2以上なら追加ダメージ+1d4',ex:'永久の氷：凍結状態の対象への命中時、凍結解除を1ターン遅らせる',price:460},
+  {t:'直剣',n:'霜の剣',r:'英雄',a:'冷気',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'片手',sp:'－',hd:'深海の震え：冷気状態なら追加ダメージ+1d4',ex:'永久の氷：冷気1付与',price:460},
   {t:'直剣',n:'骸の王',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'INT',p:'—',h:'片手',sp:'INT参照固定（STR/DEX不可）',hd:'骨の歌：命中対象の周囲1マス以内の別の敵1体にも沈黙付与',ex:'死者の王権：対象のMP-2d6、MP0の場合HP直接ダメージ',price:550},
   {t:'直剣',n:'大審判者',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'STR/DEX',p:'—',h:'片手',sp:'アンデッドに+2d4。命中した相手の状態異常を全解除し、種数×2d6ダメージ追加',hd:'均衡の裁定：ダメージを与えた相手のバフを自分も受ける',ex:'完全な裁定：好きな状態異常を選んで付与',price:0},
   {t:'大剣',n:'グレートソード',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'大地の震動：命中対象と前方1マスの敵全員に疲労付与',ex:'—',price:120},
   {t:'大剣',n:'クレイモア',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'+1',s:'STR',p:'—',h:'両手',sp:'—',hd:'古の一撃：命中対象の物理装甲を1R半減',ex:'—',price:140},
   {t:'大剣',n:'断罪剣',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'+2',s:'STR',p:'—',h:'両手',sp:'使用後 次のターン開始時AP-1',hd:'処刑の間合い：命中対象を1マス後退。後退不可なら追加ダメージ+1d6',ex:'—',price:160},
-  {t:'大剣',n:'炎帝の大剣',r:'兵士',a:'炎',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'燃焼付与。冷気カウントリセット',hd:'炎帝の号令：命中対象が燃焼中なら前方1マスの敵全員にも命中判定（1d4）',ex:'—',price:180},
-  {t:'大剣',n:'腐食剣',r:'兵士',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与',hd:'鎧腐食：毒付与中の対象の物理装甲を1点永続減少',ex:'—',price:150},
+  {t:'大剣',n:'炎帝の大剣',r:'兵士',a:'炎',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'燃焼付与',hd:'炎帝の号令：命中対象が燃焼中なら前方1マスの敵全員にも攻撃扱いの1d4ダメージ(応戦不可)',ex:'—',price:180},
+  {t:'大剣',n:'腐食剣',r:'兵士',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与中の対象の物理装甲を3点無視',hd:'腐食：毒2付与',ex:'—',price:150},
   {t:'大剣',n:'裂地',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'前方直線射程1の敵全員にダメージ',hd:'地割れ：薙ぎ払い命中した全対象の次のターン移動APコスト+1',ex:'—',price:170},
   {t:'大剣',n:'石英の大剣',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'地揺れ：命中した対象が盾装備中の場合、盾の物理軽減を1R無効化',ex:'—',price:130},
   {t:'大剣',n:'嘆きの大剣',r:'英雄',a:'闇',rng:'1',ap:'2AP',mh:'1回',d:'2d6',f:'—',s:'STR',p:'—',h:'両手',sp:'対象のMPが0のとき、ダメージが装甲完全無視',hd:'—',ex:'—',price:480},
-  {t:'大剣',n:'鯨骨の大剣',r:'英雄',a:'冷気',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+1',s:'STR',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除。凍結状態の敵へダメージ+2d6',hd:'海底の圧力：凍結状態の対象への命中時、追加ダメージ+2d4＋STR-2（1R）',ex:'深海の断裂：石化付与（ロール不要）。凍結解除時にダメージ+1d6追加',price:520},
-  {t:'大剣',n:'星喰い',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d8',f:'—',s:'STR',p:'—',h:'両手',sp:'使用後 次のターンAP-1・命中-10%。クリティカル時ダメージ×3',hd:'引力：命中した対象を1マス引き寄せ',ex:'星の崩壊：対象を2マス後退＋後退先に1d8ダメージ',price:580},
+  {t:'大剣',n:'鯨骨の大剣',r:'英雄',a:'冷気',rng:'1',ap:'2AP',mh:'1回',d:'2d4',f:'+1',s:'STR',p:'1',h:'両手',sp:'凍結状態の敵へダメージ+2d6',hd:'海底の圧力：冷気1付与',ex:'深海の断裂：石化付与（POWロール）。冷気1付与',price:520},
+  {t:'大剣',n:'星喰い',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'2d8',f:'—',s:'STR',p:'—',h:'両手',sp:'使用後 次のターンAP-1・命中-10%。クリティカル時ダメージ×3',hd:'引力：命中した対象を1マス引き寄せ',ex:'星の崩壊：対象を2マス後退＋後退できないなら1d8ダメージ',price:580},
   {t:'大剣',n:'目覚め',r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'3d6',f:'—',s:'STR',p:'全',h:'両手',sp:'命中後 使用者HP-5（固定）',hd:'大地の目覚め：前方3マスの敵全員に命中判定。与えたダメージと同量HP回復',ex:'世界の崩壊：戦闘に参加している全キャラクターにHP最大値の半分のダメージ',price:0},
   {t:'斧・ハンマー',n:'ハンドアックス',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'鎧割り：命中対象の物理装甲を1点永続的に減少',ex:'—',price:70},
-  {t:'斧・ハンマー',n:'戦斧',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'競技場の咆哮：命中後、次のターンもイニシアチブ最優先',ex:'—',price:110},
+  {t:'斧・ハンマー',n:'戦斧',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'—',s:'STR',p:'—',h:'両手',sp:'—',hd:'競技場の咆哮：戦技使用後、互いにお互いのみ攻撃の目標に選べるようになる(どちらかのHPが0で解除)',ex:'—',price:110},
   {t:'斧・ハンマー',n:'投擲斧',r:'兵士',a:'無属性',rng:'1〜3',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'近接・投擲兼用',hd:'正確な投擲：投擲使用時（射程2〜3）、命中+10%・対象を1マス後退',ex:'—',price:90},
-  {t:'斧・ハンマー',n:'石割り',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'—',ex:'岩盤砕き：対象のHP最大値が低いほど追加ダメージ増加',price:130},
+  {t:'斧・ハンマー',n:'石割り',r:'兵士',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'+2',s:'STR',p:'—',h:'両手',sp:'—',hd:'—',ex:'岩盤砕き：ダメージ前に対象のHPが5以下ならHPを0にする',price:130},
   {t:'斧・ハンマー',n:'雷槌',r:'兵士',a:'雷',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'雷属性：対象の物理装甲半減（1R）',hd:'落雷：命中後、射程2内の別の敵1体に1d6連鎖',ex:'—',price:170},
-  {t:'斧・ハンマー',n:'儀式の斧',r:'兵士',a:'神聖',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'—',ex:'最後の審判：死の宣告付与（ロール不要）。使用者HP-2',price:180},
-  {t:'斧・ハンマー',n:'双斧',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'1回の攻撃で2ヒット（各命中判定独立）',hd:'交差斬り：両方命中時、対象を2マス後退',ex:'乱舞：両方命中時、さらに追加で1ヒット（合計3ヒット可能）',price:440},
+  {t:'斧・ハンマー',n:'儀式の斧',r:'兵士',a:'神聖',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'—',ex:'最後の審判：死の宣告付与（ロール不要）。使用者HP-7',price:180},
+  {t:'斧・ハンマー',n:'双斧',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d6',f:'—',s:'STR',p:'—',h:'両手',sp:'1回の攻撃で2ヒット（各命中判定独立）ダメージボーナステーブル1段階下で算出',hd:'交差斬り：両方命中時、対象を2マス後退',ex:'乱舞：両方命中時、さらに追加で1ヒット（合計3ヒット可能）',price:440},
   {t:'斧・ハンマー',n:'骨の砕き手',r:'英雄',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d10',f:'+2',s:'STR',p:'—',h:'両手',sp:'命中するたびに対象のSTR-1（最大-4）',hd:'腕砕き：STR-1の累積効果発動中の対象へダメージ+1d6',ex:'—',price:500},
-  {t:'斧・ハンマー',n:'疫病斧',r:'英雄',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'1',h:'両手',sp:'毒付与。毒を持つ対象の隣接者にも毒付与（POWロール）',hd:'—',ex:'—',price:480},
-  {t:'斧・ハンマー',n:'歳輪',r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d12',f:'—',s:'STR',p:'全',h:'両手',sp:'疲労付与。命中対象のイニシアチブを永続的に最低にする',hd:'時の凍結：命中対象の次のターンを完全に消失させる',ex:'時輪の停止：命中対象のAP-1が2ターン継続。凍結状態なら即石化付与',price:0},
-  {t:'槍・ハルバード',n:'ショートスピア',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'牽制：命中対象が次のターン使用者に近づく場合、移動APコスト+1',ex:'—',price:70},
-  {t:'槍・ハルバード',n:'ロングスピア',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'間合い支配：命中後このターン中、対象が近づく移動をAGIロールで妨害できる',ex:'—',price:90},
-  {t:'槍・ハルバード',n:'ハルバード',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'大薙ぎ：命中した対象と隣接する別の敵1体にも同ダメージの半分',ex:'—',price:150},
-  {t:'槍・ハルバード',n:'毒槍',r:'兵士',a:'毒',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'毒付与',hd:'毒の穿孔：毒状態の対象への命中時、装甲貫通+1追加',ex:'—',price:140},
+  {t:'斧・ハンマー',n:'疫病斧',r:'英雄',a:'毒',rng:'1',ap:'2AP',mh:'1回',d:'1d8',f:'—',s:'STR',p:'1',h:'両手',sp:'毒2付与。毒を持つ対象の隣接者にも毒付与（POWロール）',hd:'—',ex:'—',price:480},
+  {t:'斧・ハンマー',n:'歳輪',r:'伝説',a:'無属性',rng:'1',ap:'2AP',mh:'1回',d:'1d12',f:'—',s:'STR',p:'全',h:'両手',sp:'疲労付与。命中対象の行動順を永続的に最後にする',hd:'時の凍結：命中対象の次のターンを完全に消失させる',ex:'時輪の停止：ターン消失状態の相手に追加+2d8',price:0},
+  {t:'槍・ハルバード',n:'ショートスピア',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'片手',sp:'—',hd:'牽制：命中対象は次のターン終了時まで、移動APコスト+1',ex:'—',price:70},
+  {t:'槍・ハルバード',n:'ロングスピア',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'間合い支配：疲労付与。AGIが自分より高い相手を目標にしたらダメージ+1',ex:'—',price:90},
+  {t:'槍・ハルバード',n:'ハルバード',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'—',hd:'大薙ぎ：命中した対象と隣接する別の敵1体にも同ダメージ',ex:'—',price:150},
+  {t:'槍・ハルバード',n:'毒槍',r:'兵士',a:'毒',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'毒1付与',hd:'—',ex:'発芽：毒状態の対象への命中時、その毒スタックと同じだけ自分のHPを回復する',price:140},
   {t:'槍・ハルバード',n:'聖槍',r:'兵士',a:'神聖',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'アンデッドに+2d4',hd:'浄化の穿ち：命中したアンデッドの状態異常1種を解除し追加ダメージ+2d4',ex:'—',price:160},
-  {t:'槍・ハルバード',n:'凍てつく穂先',r:'兵士',a:'冷気',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除',hd:'氷晶の穿孔：命中対象の冷気スタックを強制的に+2追加',ex:'—',price:170},
-  {t:'槍・ハルバード',n:'地穿ち',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+1',s:'STR/DEX',p:'全',h:'両手',sp:'装甲・盾装甲を含む全装甲を無視',hd:'大地の楔：命中した対象を1マス後退。後退不可なら追加1d4',ex:'—',price:180},
+  {t:'槍・ハルバード',n:'凍てつく穂先',r:'兵士',a:'冷気',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'－',hd:'氷晶の穿孔：冷気1付与',ex:'—',price:170},
+  {t:'槍・ハルバード',n:'地穿ち',r:'兵士',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+1',s:'STR/DEX',p:'全',h:'両手',sp:'装甲・盾装甲を含む全装甲を無視',hd:'－',ex:'—',price:180},
   {t:'槍・ハルバード',n:'波紋の槍',r:'英雄',a:'無属性',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'直線上の射程2内の敵全員に命中判定',hd:'波紋共鳴：2体以上命中時、最初の命中対象にも追加ダメージ1d4',ex:'深淵の波動：命中した全対象に恐怖付与（ロール不要）＋POW-2（1ターン）',price:420},
-  {t:'槍・ハルバード',n:'魂喰らいの穂',r:'英雄',a:'闇',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d4。MP0の対象はHPへ直接ダメージ',hd:'—',ex:'—',price:560},
-  {t:'槍・ハルバード',n:'嵐の矛',r:'英雄',a:'雷',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'STR/DEX',p:'—',h:'両手',sp:'雷属性：物理装甲半減（1R）。命中後 射程2内の別の敵1体に1d4連鎖',hd:'雷鎖：連鎖先も物理装甲半減。連鎖ダメージが1d6に上昇',ex:'嵐の解放：命中した全対象の物理装甲半減を2Rに延長＋連鎖ダメージ1d8',price:520},
+  {t:'槍・ハルバード',n:'魂喰らいの穂',r:'英雄',a:'闇',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'1',h:'両手',sp:'命中時 MPを4まで消費して固定値を同じだけ増加',hd:'—',ex:'－',price:560},
+  {t:'槍・ハルバード',n:'嵐の矛',r:'英雄',a:'雷',rng:'2',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'STR/DEX',p:'—',h:'両手',sp:'雷属性：物理装甲半減（1R）。命中後 射程2内の別の敵1体に1d4連鎖',hd:'雷鎖：連鎖ダメージが1d6に上昇',ex:'嵐の解放：燃焼付与＋連鎖ダメージ1d8',price:520},
   {t:'槍・ハルバード',n:'星の槍',r:'伝説',a:'神聖',rng:'2',ap:'1AP',mh:'2回',d:'1d8',f:'+3',s:'STR/DEX',p:'全',h:'両手',sp:'アンデッドに+2d4。命中判定前に対象は回避・応戦を宣言できない（相殺のみ可）',hd:'星の縫合：命中対象をこの戦闘中、使用者の隣接マスから離れられなくする',ex:'星の恩寵：盲目・沈黙・封印・石化付与（ロール不要）',price:0},
-  {t:'盾',n:'木の盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+1',hd:'必死の防御：HP10以下のとき防御成功で完全無効（1回のみ）',ex:'—',price:40},
+  {t:'盾',n:'木の盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+1',hd:'必死の防御：HP10以下のとき防御で+2(1戦闘1回)',ex:'—',price:40},
   {t:'盾',n:'丸盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2',hd:'盾払い：防御成功時、対象の次の命中判定にPD+1',ex:'—',price:80},
-  {t:'盾',n:'タワーシールド',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+4。使用者の回避判定にPD+1（常時）',hd:'城壁：防御成功時、隣接する味方全員への攻撃も同時に防御できる',ex:'—',price:140},
-  {t:'盾',n:'刺盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。応戦成功時 反撃ダメージ+1d4',hd:'返し刺し：防御成功後の応戦時、命中+10%',ex:'—',price:120},
-  {t:'盾',n:'炎の紋章盾',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'1',h:'片手',sp:'燃焼付与。防御時 物理軽減+2・魔術軽減+2',hd:'炎の盾壁：防御成功時、攻撃者に燃焼付与',ex:'—',price:160},
-  {t:'盾',n:'聖印盾',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。アンデッドに+2d4',hd:'—',ex:'信仰の盾：防御成功時、アンデッドに死の宣告付与（POWロール）',price:150},
-  {t:'盾',n:'反射盾',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+3・魔術軽減+3。魔術攻撃の相殺成功時 ダメージを攻撃者に反射（半分）',hd:'完全反射：相殺成功時、反射ダメージに命中対象が持つ全魔術耐性軽減を無視',ex:'鏡の呪縛：相殺成功後、攻撃者の次の魔術コストMP+2＋命中にPD+1',price:480},
-  {t:'盾',n:'深淵の盾',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2・魔術軽減+3',hd:'内なる叫び：防御成功時、攻撃者に恐怖付与（POWロール）',ex:'深淵の侵食：防御成功時、攻撃者に発狂付与（ロール不要）＋使用者POW-1（1R）',price:520},
-  {t:'盾',n:'受難者の盾',r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'+2',s:'STR/CON',p:'—',h:'片手',sp:'HP半分以下のとき 防御時 物理軽減+3。アンデッドに+2d4',hd:'殉教者の怒り：HP半分以下のとき防御成功後の応戦ダメージ+2d4',ex:'最後の加護：HP半分以下で防御成功時、隣接する味方全員HP+1d6＋次ターン命中BD+1',price:400},
+  {t:'盾',n:'タワーシールド',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+3。使用者の回避判定にPD+1（常時）',hd:'城壁：防御成功時、隣接する味方全員への攻撃も同時に防御できる',ex:'—',price:140},
+  {t:'盾',n:'刺盾',r:'兵士',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+1。防御時1のダメージを与える。',hd:'返し刺し：防御成功後の攻撃に命中+5%',ex:'—',price:120},
+  {t:'盾',n:'炎の紋章盾',r:'兵士',a:'炎',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'1',h:'片手',sp:'防御時 物理軽減+2・魔術軽減+2',hd:'炎の盾壁：防御時、攻撃者と自身に燃焼付与',ex:'—',price:160},
+  {t:'盾',n:'聖印盾',r:'兵士',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'+1',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2。',hd:'—',ex:'信仰の盾：防御時、アンデッドに死の宣告付与（POWロール）',price:150},
+  {t:'盾',n:'反射盾',r:'英雄',a:'無属性',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+1・魔術軽減+2。',hd:'完全反射：防御後、状態異常を受けたなら攻撃してきた相手にも同じ状態異常を付与',ex:'反射：魔術防御時、その効果を無効にして、自身が使用したものとして攻撃してきた相手に攻撃する。',price:480},
+  {t:'盾',n:'深淵の盾',r:'英雄',a:'闇',rng:'1',ap:'1AP',mh:'1回',d:'—',f:'—',s:'STR/CON',p:'—',h:'片手',sp:'防御時 物理軽減+2・魔術軽減+3',hd:'内なる叫び：防御時、攻撃者に恐怖付与（POWロール）',ex:'深淵の侵食：防御時、攻撃者に発狂付与（ロール不要）＋使用者に発喜付与',price:520},
+  {t:'盾',n:'受難者の盾',r:'英雄',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d4',f:'+2',s:'STR/CON',p:'—',h:'片手',sp:'HP半分以下のとき 防御時 物理軽減+3。',hd:'殉教者の怒り：防御後、受けたダメージを固定値として次の自分の攻撃に上乗せする(上限4)',ex:'最後の加護：HP半分以下で防御成功時、隣接する味方全員HP+1d6＋次ターン命中BD+1(ラウンド1回のみ)',price:400},
   {t:'盾',n:'不滅の守護者',r:'伝説',a:'神聖',rng:'1',ap:'1AP',mh:'1回',d:'1d6',f:'+3',s:'STR/CON',p:'—',h:'片手',sp:'防御行動成功で完全無効（1ラウンドに2回まで）。毎ラウンド開始時HP-2',hd:'守護の波動：完全無効発動時、無効化したダメージを射程3内の全敵に等分して反射',ex:'大崩壊の否定：完全無効を味方全員に1ターン展開。使用者HP-10（固定）',price:0},
-  {t:'弓',n:'ショートボウ',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'—',h:'両手',sp:'—',hd:'至近の刻み：射程3以内の対象への命中時、ダメージ+1d4',ex:'—',price:60},
-  {t:'弓',n:'ロングボウ',r:'兵士',a:'無属性',rng:'8',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'DEX',p:'—',h:'両手',sp:'—',hd:'狙い定め：射程6以上の対象への命中時、次の同一対象への攻撃命中+10%',ex:'—',price:100},
-  {t:'弓',n:'複合弓',r:'兵士',a:'無属性',rng:'6',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'STR/DEX高い方を参照',hd:'力射：STR参照時、対象を1マス後退。DEX参照時、次の命中判定にBD+1',ex:'—',price:130},
-  {t:'弓',n:'毒矢',r:'兵士',a:'毒',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'—',s:'DEX',p:'1',h:'両手',sp:'毒付与',hd:'—',ex:'毒の爆発：毒スタック5（上限）の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視）',price:110},
-  {t:'弓',n:'炎矢',r:'兵士',a:'炎',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'+1',s:'DEX',p:'1',h:'両手',sp:'燃焼付与。冷気カウントリセット',hd:'—',ex:'延焼：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与（POWロール）',price:120},
-  {t:'弓',n:'狙撃弓',r:'兵士',a:'無属性',rng:'10',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'両手',sp:'射程5以上の相手への命中+10%',hd:'急所穿ち：射程8以上からの命中時、物理装甲を半分無視',ex:'—',price:160},
-  {t:'弓',n:'連射弓',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'両手',sp:'最大攻撃回数3回',hd:'乱れ矢：3回全命中時、追加で1回無料攻撃',ex:'—',price:150},
-  {t:'弓',n:'魂狩り弓',r:'英雄',a:'闇',rng:'6',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d4。MP0の場合HP直接ダメージ',hd:'—',ex:'魂の断絶：封印付与（ロール不要）',price:540},
-  {t:'弓',n:'冬の弓',r:'英雄',a:'冷気',rng:'7',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'冷気付与。燃焼を即解除',hd:'氷の軌跡：冷気スタック2の対象への命中時、移動APコスト+2（1R）＋AGI判定にPD+1',ex:'冬の終わり：凍結状態の対象への命中時、凍結解除と同時に追加ダメージ1d8',price:460},
-  {t:'弓',n:'星読みの弓',r:'英雄',a:'無属性',rng:'7',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'DEX',p:'—',h:'両手',sp:'常時クリティカル率+5%。クリティカル発生時、次の攻撃もクリティカル率+10%追加',hd:'—',ex:'—',price:500},
+  {t:'弓',n:'ショートボウ',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'—',h:'両手',sp:'—',hd:'至近の刻み：射程2以内の対象への命中時、ダメージ+2',ex:'—',price:60},
+  {t:'弓',n:'ロングボウ',r:'兵士',a:'無属性',rng:'8',ap:'1AP',mh:'2回',d:'1d6',f:'+1',s:'DEX',p:'—',h:'両手',sp:'—',hd:'狙い定め：射程6以上の対象への命中時、次の同一対象への攻撃命中+5%',ex:'—',price:100},
+  {t:'弓',n:'複合弓',r:'兵士',a:'無属性',rng:'6',ap:'1AP',mh:'2回',d:'1d8',f:'—',s:'STR/DEX',p:'—',h:'両手',sp:'STR/DEX高い方を参照',hd:'力射：STR参照時、対象を1マス後退。DEX参照時、装甲貫通1',ex:'—',price:130},
+  {t:'弓',n:'毒矢',r:'兵士',a:'毒',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'—',s:'DEX',p:'1',h:'両手',sp:'毒1付与',hd:'—',ex:'毒の爆発：毒スタック5の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視）',price:110},
+  {t:'弓',n:'炎矢',r:'兵士',a:'炎',rng:'5',ap:'1AP',mh:'2回',d:'1d4',f:'+1',s:'DEX',p:'1',h:'両手',sp:'燃焼付与',hd:'—',ex:'延焼：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与（POWロール）',price:120},
+  {t:'弓',n:'狙撃弓',r:'兵士',a:'無属性',rng:'10',ap:'1AP',mh:'2回',d:'1d6',f:'+2',s:'DEX',p:'—',h:'両手',sp:'射程5以上の相手への命中+5%',hd:'急所穿ち：射程8以上からの命中時、物理装甲を半分無視',ex:'—',price:160},
+  {t:'弓',n:'連射弓',r:'兵士',a:'無属性',rng:'5',ap:'1AP',mh:'3回',d:'1d4',f:'—',s:'DEX',p:'—',h:'両手',sp:'最大攻撃回数3回',hd:'乱れ矢：3回目の攻撃命中時、追加で1回無料攻撃',ex:'—',price:150},
+  {t:'弓',n:'魂狩り弓',r:'英雄',a:'闇',rng:'6',ap:'1AP',mh:'1回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'命中時 対象のMP-1d6。MP0の場合HP直接ダメージ',hd:'—',ex:'魂の断絶：封印付与（ロール不要）',price:540},
+  {t:'弓',n:'冬の弓',r:'英雄',a:'冷気',rng:'7',ap:'1AP',mh:'2回',d:'1d6',f:'—',s:'DEX',p:'1',h:'両手',sp:'冷気1付与',hd:'氷の軌跡：冷気スタック2の対象への命中時、移動APコスト+2（1R）＋AGI判定にPD+1',ex:'冬の終わり：凍結状態の対象への命中時、凍結解除と同時に追加ダメージ1d8',price:460},
+  {t:'弓',n:'星読みの弓',r:'英雄',a:'無属性',rng:'7',ap:'1AP',mh:'2回',d:'1d8',f:'+2',s:'DEX',p:'—',h:'両手',sp:'常時クリティカル率+5%',hd:'—',ex:'—',price:500},
   {t:'弓',n:'天弓',r:'伝説',a:'神聖',rng:'∞',ap:'1AP',mh:'2回',d:'1d8',f:'+3',s:'DEX',p:'—',h:'両手',sp:'アンデッドに+2d4。クリティカルしたらAP消費なしで追加攻撃可',hd:'天の裁き：視界内の対象全員への同時命中判定',ex:'大崩壊の再現：使用者は即座に死亡する。使用者の全能力値の合計の固定ダメージ',price:0},
 ];
 const ARMORS = [
@@ -742,7 +750,7 @@ const ARMORS = [
   {sl:'頭',n:'呪術師の仮面',r:'兵士',ph:0,mg:1,w:'軽',ef:'POWロールにBD+1。発狂付与のPOWロールにBD+1（重複・計BD+2）',price:130},
   {sl:'頭',n:'帝国の兜',r:'英雄',ph:3,mg:1,w:'重',ef:'使用者の回避判定にPD+1（常時）。HP計算時CON+1として扱う',price:400},
   {sl:'頭',n:'廃人の頭巾',r:'英雄',ph:0,mg:0,w:'軽',ef:'全状態異常のPOWロールにBD+1',price:320},
-  {sl:'頭',n:'深海の仮面',r:'英雄',ph:1,mg:2,w:'中',ef:'冷気付与のPOWロールにBD+2。水中・深海での命中判定にBD+1',price:420},
+  {sl:'頭',n:'深海の仮面',r:'英雄',ph:1,mg:2,w:'中',ef:'POWロールにBD+2。水中・深海での命中判定に+10%',price:420},
   {sl:'頭',n:'傭兵の頭巾',r:'英雄',ph:0,mg:0,w:'軽',ef:'DEX判定にBD+1。同ターン1回目の攻撃命中+5%',price:360},
   {sl:'頭',n:'縫合の冠',r:'伝説',ph:2,mg:3,w:'中',ef:'FTH判定にBD+1。MP計算時POW+2として扱う',price:0},
   {sl:'胴',n:'布の服',r:'兵士',ph:0,mg:1,w:'軽',ef:'—',price:20},
@@ -753,8 +761,8 @@ const ARMORS = [
   {sl:'胴',n:'魔術師のローブ',r:'兵士',ph:0,mg:2,w:'軽',ef:'INT判定にBD+1。MP最大値+2',price:90},
   {sl:'胴',n:'呪術師の外套',r:'兵士',ph:1,mg:2,w:'軽',ef:'POWロールにBD+1',price:110},
   {sl:'胴',n:'深海の鱗鎧',r:'兵士',ph:3,mg:2,w:'中',ef:'HP計算時CON+1として扱う',price:130},
-  {sl:'胴',n:'鱗片鎧',r:'兵士',ph:3,mg:0,w:'中',ef:'槍・ハルバードを使用中、命中判定にBD+1',price:100},
-  {sl:'胴',n:'毒染めの外套',r:'兵士',ph:0,mg:1,w:'軽',ef:'毒付与のPOWロールにBD+2。毒状態のダメージを1軽減',price:120},
+  {sl:'胴',n:'鱗片鎧',r:'兵士',ph:3,mg:0,w:'中',ef:'槍・ハルバードを使用中、装甲値+1',price:100},
+  {sl:'胴',n:'毒染めの外套',r:'兵士',ph:0,mg:1,w:'軽',ef:'ダメージを軽減し、0点のダメージを受けた時、相手に毒1付与',price:120},
   {sl:'胴',n:'影走りの外套',r:'兵士',ph:1,mg:0,w:'軽',ef:'回避行動を宣言した場合、AGIロールにBD+1',price:80},
   {sl:'胴',n:'帝国の重鎧',r:'英雄',ph:5,mg:1,w:'重',ef:'使用者の回避判定にPD+2（常時）。HP計算時CON+2として扱う',price:500},
   {sl:'胴',n:'継ぎ接ぎの鎧',r:'英雄',ph:2,mg:2,w:'中',ef:'物理・魔術両方を軽減（各2）。装備中、DEX判定にPD+1（嵩張る）',price:340},
@@ -925,21 +933,81 @@ function calcDerived(stats) {
   return { hp, mp, ap, ph, mg, cr, STR,CON,DEX,AGI,INT,FTH,POW,LCK };
 }
 
+// 初期装備のアイテム名と価格を返す
+function getInitialItemInfo(o) {
+  if(!o) return {weaponName:'', armorName:'', weaponPrice:0, armorPrice:0};
+  const weaponName = (o.weapon && o.weapon !== '（500G以内で自由購入）') ? o.weapon : '';
+  const armorName  = (o.armor  && o.armor  !== '（500G以内で自由購入）') ? o.armor  : '';
+  const wItem = weaponName ? (WEAPONS.find(x=>x.n===weaponName) || CATALYSTS.find(x=>x.name===weaponName)) : null;
+  const aItem = armorName  ? ARMORS.find(x=>x.n===armorName) : null;
+  return {
+    weaponName, armorName,
+    weaponPrice: wItem ? wItem.price : 0,
+    armorPrice:  aItem ? aItem.price  : 0,
+  };
+}
+
+// 初期装備をどのスロットにも持っていない場合→売却済みとして半額を収入扱い
+function calcSellIncome(o) {
+  if(!o) return 0;
+  const info = getInitialItemInfo(o);
+  let income = 0;
+  if(info.weaponName) {
+    const stillHeld =
+      state.equip.weapon1 === info.weaponName ||
+      state.equip.weapon2 === info.weaponName ||
+      state.equip.catalyst === info.weaponName ||
+      state.equip.spare1 === info.weaponName ||
+      state.equip.spare2 === info.weaponName;
+    if(!stillHeld) income += Math.floor(info.weaponPrice / 2);
+  }
+  if(info.armorName) {
+    const stillHeld =
+      state.equip.body === info.armorName ||
+      state.equip.head === info.armorName ||
+      state.equip.spare1 === info.armorName ||
+      state.equip.spare2 === info.armorName;
+    if(!stillHeld) income += Math.floor(info.armorPrice / 2);
+  }
+  return income;
+}
+
 function getEquipCost() {
+  const o = getOrigin();
+  const free = getFreeInitialItems(o);
+  const freeRemaining = new Map();
+  free.forEach(n => freeRemaining.set(n, (freeRemaining.get(n)||0) + 1));
+
   let cost = 0;
-  const addCost = (n, list) => { const item = list.find(i=>i.n===n); if(item) cost += item.price; };
-  const w1 = WEAPONS.find(w=>w.n===state.equip.weapon1); if(w1) cost+=w1.price;
-  const w2 = WEAPONS.find(w=>w.n===state.equip.weapon2); if(w2) cost+=w2.price;
-  const cat = CATALYSTS.find(c=>c.name===state.equip.catalyst); if(cat) cost+=cat.price;
-  addCost(state.equip.head, ARMORS);
-  addCost(state.equip.body, ARMORS);
-  // 予備スロット（武器・防具・触媒のいずれか）
+  const priceOf = (n, list, nameKey='n') => {
+    if(!n || n==='none') return 0;
+    const item = list.find(i=>i[nameKey]===n);
+    return item ? item.price : 0;
+  };
+  const consume = (n, price) => {
+    if(!n || n==='none') return;
+    const remain = freeRemaining.get(n)||0;
+    if(remain > 0) { freeRemaining.set(n, remain-1); return; }
+    cost += price;
+  };
+
+  consume(state.equip.weapon1, priceOf(state.equip.weapon1, WEAPONS));
+  consume(state.equip.catalyst, priceOf(state.equip.catalyst, CATALYSTS, 'name'));
+  consume(state.equip.body, priceOf(state.equip.body, ARMORS));
+
+  cost += priceOf(state.equip.weapon2, WEAPONS);
+  cost += priceOf(state.equip.head, ARMORS);
+
   [state.equip.spare1, state.equip.spare2].forEach(n=>{
     if(!n||n==='none') return;
     const w = WEAPONS.find(x=>x.n===n); if(w){cost+=w.price; return;}
     const a = ARMORS.find(x=>x.n===n); if(a){cost+=a.price; return;}
     const c = CATALYSTS.find(x=>x.name===n); if(c){cost+=c.price; return;}
   });
+
+  // 初期装備を売却した収入を差し引く
+  cost -= calcSellIncome(o);
+
   return cost;
 }
 
@@ -998,6 +1066,15 @@ function buildInitialEquip(o) {
   const body = ARMORS.find(x=>x.sl==='胴'&&x.n===o.armor);
   if(body) equip.body = body.n;
   return equip;
+}
+
+// 素性が無償で提供する初期装備の名前一覧（武器①欄・触媒欄・胴防具欄の初期値）
+function getFreeInitialItems(o) {
+  if(!o) return new Set();
+  const set = new Set();
+  if(o.weapon && o.weapon !== '（500G以内で自由購入）') set.add(o.weapon);
+  if(o.armor && o.armor !== '（500G以内で自由購入）') set.add(o.armor);
+  return set;
 }
 
 function renderOriginInfo() {
@@ -1081,8 +1158,8 @@ function buildDerivedDisplay() {
   const stats = getTotalStats();
   const d = calcDerived(stats);
   document.getElementById('derived-display').innerHTML = `
-    <div class="derived-cell"><span class="derived-cell__label">HP</span><span class="derived-cell__formula">CON×3+STR補正</span><span class="derived-cell__val derived-cell__val--hp">${d.hp}</span></div>
-    <div class="derived-cell"><span class="derived-cell__label">MP</span><span class="derived-cell__formula">POW×2+FTH補正</span><span class="derived-cell__val derived-cell__val--mp">${d.mp}</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">HP</span><span class="derived-cell__formula">(CON+STR)×2</span><span class="derived-cell__val derived-cell__val--hp">${d.hp}</span></div>
+    <div class="derived-cell"><span class="derived-cell__label">MP</span><span class="derived-cell__formula">POW+INT+FTH</span><span class="derived-cell__val derived-cell__val--mp">${d.mp}</span></div>
     <div class="derived-cell"><span class="derived-cell__label">AP</span><span class="derived-cell__formula">基本値</span><span class="derived-cell__val derived-cell__val--ap">3</span></div>
     <div class="derived-cell"><span class="derived-cell__label">CR率</span><span class="derived-cell__formula">素性固定</span><span class="derived-cell__val derived-cell__val--cr">${d.cr}</span></div>
     <div class="derived-cell"><span class="derived-cell__label">物理軽減</span><span class="derived-cell__formula">防具合計</span><span class="derived-cell__val derived-cell__val--def">${d.ph}</span></div>
@@ -1102,19 +1179,18 @@ function buildEquipPanel() {
   buildWeaponSelect('equip-weapon1', false);
   buildWeaponSelect('equip-weapon2', true);
 
-  // catalyst slot
+  // catalyst slot（全素性で表示。触媒装備時のみ呪文選択が開く）
   const catSlot = document.getElementById('catalyst-slot');
-  if(o && o.hasCatalyst) {
-    catSlot.style.display = '';
-    buildCatalystSelect(o.catalystType);
-  } else {
-    catSlot.style.display = 'none';
-    document.getElementById('spell-pool').style.display = 'none';
-  }
+  catSlot.style.display = '';
+  buildCatalystSelectAll();
 
   // armor
   buildArmorSelect('equip-head','頭');
   buildArmorSelect('equip-body','胴');
+
+  // 予備スロット
+  buildSpareSelect('equip-spare1');
+  buildSpareSelect('equip-spare2');
 
   // hit table
   buildHitTable();
@@ -1123,6 +1199,10 @@ function buildEquipPanel() {
   updateWeaponInfo('equip-weapon2','info-weapon2','sell-weapon2');
   updateArmorInfo('equip-head','info-head','sell-head');
   updateArmorInfo('equip-body','info-body','sell-body');
+  updateSpareInfo('equip-spare1','info-spare1','sell-spare1');
+  updateSpareInfo('equip-spare2','info-spare2','sell-spare2');
+  updateCatalystInfo();
+  updateSpellPool();
   updateDmgDisplay();
 }
 
@@ -1154,6 +1234,21 @@ function buildCatalystSelect(type) {
   });
   sel.innerHTML = opts;
   onCatalystChange();
+}
+
+function buildCatalystSelectAll() {
+  const sel = document.getElementById('equip-catalyst');
+  const current = state.equip.catalyst;
+  let opts = '<option value="none">— なし —</option>';
+  ['杖','聖印'].forEach(type=>{
+    opts += `<optgroup label="${type}">`;
+    CATALYSTS.filter(c=>c.type===type&&c.price>0).forEach(c=>{
+      const rankTag = c.rank!=='兵士'?`[${c.rank}]`:'';
+      opts += `<option value="${c.name}"${c.name===current?' selected':''}>${c.name}${rankTag}（${c.price}G） 命中${c.hit}</option>`;
+    });
+    opts += '</optgroup>';
+  });
+  sel.innerHTML = opts;
 }
 
 function buildArmorSelect(selId, slot) {
@@ -1195,11 +1290,15 @@ function onEquipChange() {
   state.equip.weapon2 = document.getElementById('equip-weapon2').value;
   state.equip.head = document.getElementById('equip-head').value;
   state.equip.body = document.getElementById('equip-body').value;
+  state.equip.spare1 = document.getElementById('equip-spare1').value;
+  state.equip.spare2 = document.getElementById('equip-spare2').value;
   updateEquipGold();
   updateWeaponInfo('equip-weapon1','info-weapon1','sell-weapon1');
   updateWeaponInfo('equip-weapon2','info-weapon2','sell-weapon2');
   updateArmorInfo('equip-head','info-head','sell-head');
   updateArmorInfo('equip-body','info-body','sell-body');
+  updateSpareInfo('equip-spare1','info-spare1','sell-spare1');
+  updateSpareInfo('equip-spare2','info-spare2','sell-spare2');
   updateDmgDisplay();
   buildDerivedDisplay();
 }
@@ -1209,6 +1308,16 @@ function onCatalystChange() {
   updateCatalystInfo();
   updateSpellPool();
   updateEquipGold();
+}
+
+// 現在の素性の初期装備（無償）として扱える項目かどうか
+function isFreeStartingItem(slotKey, n) {
+  const o = getOrigin();
+  if(!o || !n || n==='none') return false;
+  if(slotKey==='weapon1') return n===o.weapon;
+  if(slotKey==='catalyst') return n===o.weapon;
+  if(slotKey==='body') return n===o.armor;
+  return false;
 }
 
 function updateWeaponInfo(selId, infoId, sellId) {
@@ -1222,7 +1331,8 @@ function updateWeaponInfo(selId, infoId, sellId) {
 ${w.sp&&w.sp!=='—'?`<br><span class="sp-tag">固有: ${w.sp}</span>`:''}
 ${w.hd&&w.hd!=='—'?`<br><span class="hd-tag">HD</span> ${w.hd}`:''}
 ${w.ex&&w.ex!=='—'?`<br><span class="ex-tag">EX</span> ${w.ex}`:''}`;
-  sell.textContent = `半額売却: ${Math.floor(w.price/2)}G`;
+  const slotKey = selId.replace('equip-','');
+  sell.textContent = isFreeStartingItem(slotKey, n) ? '初期装備（無料）' : `購入: ${w.price}G`;
 }
 
 function updateArmorInfo(selId, infoId, sellId) {
@@ -1232,7 +1342,35 @@ function updateArmorInfo(selId, infoId, sellId) {
   const a = ARMORS.find(x=>x.n===n);
   if(!a){box.innerHTML='<span style="color:var(--text3)">防具を選択してください</span>'; sell.textContent=''; return;}
   box.innerHTML = `物理軽減: <b style="color:var(--gold)">${a.ph}</b>　魔術軽減: <b style="color:var(--blue2)">${a.mg}</b>　重量: ${a.w}${a.ef&&a.ef!=='—'?`<br><span class="sp-tag">${a.ef}</span>`:''}`;
-  sell.textContent = `半額売却: ${Math.floor(a.price/2)}G`;
+  const slotKey = selId.replace('equip-','');
+  sell.textContent = isFreeStartingItem(slotKey, n) ? '初期装備（無料）' : `購入: ${a.price}G`;
+}
+
+function updateSpareInfo(selId, infoId, sellId) {
+  const n = document.getElementById(selId).value;
+  const box = document.getElementById(infoId);
+  const sell = document.getElementById(sellId);
+  if(!n||n==='none'){box.innerHTML='<span style="color:var(--text3)">未選択</span>'; sell.textContent=''; return;}
+  const w = WEAPONS.find(x=>x.n===n);
+  if(w){
+    const dmg = [w.d,w.f&&w.f!=='—'?w.f:''].filter(Boolean).join('');
+    box.innerHTML = `<span class="sp-tag">武器・${w.t}</span>　射程${w.rng} ${w.ap} ${w.mh} ${w.h}　ダメージ: <b style="color:var(--gold)">${dmg||'—'}</b>`;
+    sell.textContent = `半額売却: ${Math.floor(w.price/2)}G`;
+    return;
+  }
+  const a = ARMORS.find(x=>x.n===n);
+  if(a){
+    box.innerHTML = `<span class="sp-tag">防具・${a.sl}</span>　物理軽減: <b style="color:var(--gold)">${a.ph}</b>　魔術軽減: <b style="color:var(--blue2)">${a.mg}</b>　重量: ${a.w}`;
+    sell.textContent = `半額売却: ${Math.floor(a.price/2)}G`;
+    return;
+  }
+  const c = CATALYSTS.find(x=>x.name===n);
+  if(c){
+    box.innerHTML = `<span class="sp-tag">触媒・${c.type}</span>　命中補正: <b style="color:var(--gold)">${c.hit}</b>`;
+    sell.textContent = `半額売却: ${Math.floor(c.price/2)}G`;
+    return;
+  }
+  box.innerHTML='<span style="color:var(--text3)">未選択</span>'; sell.textContent='';
 }
 
 function updateCatalystInfo() {
@@ -1243,19 +1381,18 @@ function updateCatalystInfo() {
   if(!c){box.innerHTML='<span style="color:var(--text3)">触媒を選択してください</span>'; sell.textContent=''; return;}
   const hasBonus = c.bonus && c.bonus!=='—' && c.bonus!=='－';
   box.innerHTML = `命中補正: <b style="color:var(--gold)">${c.hit}</b>　射程補正: ${c.range}　固定値補正: ${c.fixed||0}${hasBonus?`<br><span class="sp-tag">${c.bonus}</span>`:''}`;
-  sell.textContent = `半額売却: ${Math.floor(c.price/2)}G`;
+  sell.textContent = isFreeStartingItem('catalyst', n) ? '初期装備（無料）' : `購入: ${c.price}G`;
 }
 
 function updateSpellPool() {
   const pool = document.getElementById('spell-pool');
-  const o = getOrigin();
-  if(!o||!o.hasCatalyst||state.equip.catalyst==='none'){pool.style.display='none'; return;}
+  if(state.equip.catalyst==='none'){pool.style.display='none'; return;}
   pool.style.display='block';
-  // determine available rank from catalyst
+  // determine available rank/type from equipped catalyst
   const cat = CATALYSTS.find(c=>c.name===state.equip.catalyst);
   const rank = cat ? cat.rank : '兵士';
   const rankOrder = {兵士:0,英雄:1,伝説:2};
-  const spellType = o.catalystType === '杖' ? '魔術' : '奇跡';
+  const spellType = cat && cat.type === '聖印' ? '奇跡' : '魔術';
   const available = MAGIC_LIST.filter(m=>m.type===spellType && rankOrder[m.rank]<=rankOrder[rank]);
   const container = document.getElementById('spell-selects');
   container.innerHTML = [0,1,2].map(i=>`
@@ -1374,6 +1511,14 @@ function onSealChange(i, val) {
   // G13 / Hu03 exclusion
   if(val==='G13' && state.seals.includes('Hu03')) { alert('G13「星読み」とHu03「星に愛された者」は同時取得できません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
   if(val==='Hu03' && state.seals.includes('G13')) { alert('Hu03「星に愛された者」とG13「星読み」は同時取得できません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  // G01 / G03 exclusion
+  if(val==='G01' && state.seals.includes('G03')) { alert('G01「疾風の歩法」とG03「踏み込みの術式」は併用できません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  if(val==='G03' && state.seals.includes('G01')) { alert('G03「踏み込みの術式」とG01「疾風の歩法」は併用できません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  // G13: LCK10以上の制限
+  if(val==='G13') {
+    const stats = getTotalStats();
+    if(stats[STAT_KEYS.indexOf('LCK')] < 10) { alert('G13「星読み」はLCK10以上のキャラクターのみ取得可能です。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
+  }
   // dup check
   if(val && state.seals.filter((s,j)=>j!==i&&s===val).length>0) { alert('同じ刻印を重複して取得することはできません。'); document.querySelectorAll('#seal-slots-container .field-select')[i].value=state.seals[i]; return; }
   state.seals[i] = val;
@@ -1410,6 +1555,15 @@ function buildSheet() {
   const ha = ARMORS.find(a=>a.n===state.equip.head);
   const ba = ARMORS.find(a=>a.n===state.equip.body);
   const cat = CATALYSTS.find(c=>c.name===state.equip.catalyst);
+  const resolveItem = (n) => {
+    if(!n||n==='none') return null;
+    const w = WEAPONS.find(x=>x.n===n); if(w) return {kind:'武器',label:w.n,detail:`${w.t}・${w.ap} ${w.mh} 射程${w.rng}`};
+    const a = ARMORS.find(x=>x.n===n); if(a) return {kind:'防具',label:a.n,detail:`${a.sl}・物${a.ph}/魔${a.mg}`};
+    const c2 = CATALYSTS.find(x=>x.name===n); if(c2) return {kind:'触媒',label:c2.name,detail:`${c2.type}・命中${c2.hit}`};
+    return null;
+  };
+  const sp1 = resolveItem(state.equip.spare1);
+  const sp2 = resolveItem(state.equip.spare2);
 
   const statBoxes = STAT_KEYS.map((k,i)=>`<div class="sheet-stat-box"><span class="sheet-stat-key">${k}</span><span class="sheet-stat-val">${stats[i]}</span></div>`).join('');
 
@@ -1475,11 +1629,13 @@ function buildSheet() {
   <div class="sheet-row" style="align-items:flex-start;gap:1.5rem;">
     <div style="flex:1">
       <div class="sheet-section-head">装備</div>
-      ${w1?`<div class="sheet-equip-row"><span class="sheet-equip-label">武器①</span><span class="sheet-equip-val">${w1.n}<span class="sheet-equip-detail">${w1.ap} ${w1.mh} 射程${w1.rng} ${[w1.d,w1.f&&w1.f!=='—'?w1.f:''].filter(Boolean).join('+')||'—'}</span></span></div>`:''}
-      ${w2?`<div class="sheet-equip-row"><span class="sheet-equip-label">武器②</span><span class="sheet-equip-val">${w2.n}<span class="sheet-equip-detail">${w2.ap} ${w2.mh} 射程${w2.rng}</span></span></div>`:''}
+      ${w1?`<div class="sheet-equip-row"><span class="sheet-equip-label">①右手</span><span class="sheet-equip-val">${w1.n}<span class="sheet-equip-detail">${w1.ap} ${w1.mh} 射程${w1.rng} ${[w1.d,w1.f&&w1.f!=='—'?w1.f:''].filter(Boolean).join('+')||'—'}</span></span></div>`:''}
+      ${w2?`<div class="sheet-equip-row"><span class="sheet-equip-label">②左手</span><span class="sheet-equip-val">${w2.n}<span class="sheet-equip-detail">${w2.ap} ${w2.mh} 射程${w2.rng}</span></span></div>`:''}
       ${cat?`<div class="sheet-equip-row"><span class="sheet-equip-label">触媒</span><span class="sheet-equip-val">${cat.name}<span class="sheet-equip-detail">命中${cat.hit}</span></span></div>`:''}
-      ${ha?`<div class="sheet-equip-row"><span class="sheet-equip-label">頭防具</span><span class="sheet-equip-val">${ha.n}<span class="sheet-equip-detail">物${ha.ph}/魔${ha.mg} ${ha.w}${ha.ef&&ha.ef!=='—'?` ／ ${ha.ef.slice(0,30)}`:''}</span></span></div>`:''}
-      ${ba?`<div class="sheet-equip-row"><span class="sheet-equip-label">胴防具</span><span class="sheet-equip-val">${ba.n}<span class="sheet-equip-detail">物${ba.ph}/魔${ba.mg} ${ba.w}${ba.ef&&ba.ef!=='—'?` ／ ${ba.ef.slice(0,30)}`:''}</span></span></div>`:''}
+      ${ha?`<div class="sheet-equip-row"><span class="sheet-equip-label">③頭防具</span><span class="sheet-equip-val">${ha.n}<span class="sheet-equip-detail">物${ha.ph}/魔${ha.mg} ${ha.w}${ha.ef&&ha.ef!=='—'?` ／ ${ha.ef.slice(0,30)}`:''}</span></span></div>`:''}
+      ${ba?`<div class="sheet-equip-row"><span class="sheet-equip-label">④胴防具</span><span class="sheet-equip-val">${ba.n}<span class="sheet-equip-detail">物${ba.ph}/魔${ba.mg} ${ba.w}${ba.ef&&ba.ef!=='—'?` ／ ${ba.ef.slice(0,30)}`:''}</span></span></div>`:''}
+      ${sp1?`<div class="sheet-equip-row"><span class="sheet-equip-label">⑤予備</span><span class="sheet-equip-val">${sp1.label}<span class="sheet-equip-detail">${sp1.kind}・${sp1.detail}</span></span></div>`:''}
+      ${sp2?`<div class="sheet-equip-row"><span class="sheet-equip-label">⑥予備</span><span class="sheet-equip-val">${sp2.label}<span class="sheet-equip-detail">${sp2.kind}・${sp2.detail}</span></span></div>`:''}
     </div>
     <div style="flex:1">
       <div class="sheet-section-head">ダメージ・呪文</div>
@@ -1492,6 +1648,115 @@ function buildSheet() {
   <div class="sheet-seal-list">${sealItems||'<span style="color:var(--text3);font-size:11px;">—</span>'}</div>
 </div>
 `;
+}
+
+
+// ================================================================
+// PDF EXPORT — html2canvas + jsPDF 動的ロード版
+// ================================================================
+function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+    const el = document.createElement('script');
+    el.src = src;
+    el.onload = resolve;
+    el.onerror = reject;
+    document.head.appendChild(el);
+  });
+}
+
+async function exportPDF() {
+  const btn = document.getElementById('pdf-btn');
+  const status = document.getElementById('pdf-status');
+  btn.disabled = true;
+  status.style.display = 'inline';
+  status.textContent = 'ライブラリ読み込み中…';
+
+  try {
+    // ライブラリを動的にロード
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+
+    if (typeof html2canvas === 'undefined' || typeof window.jspdf === 'undefined') {
+      throw new Error('ライブラリの読み込みに失敗しました。インターネット接続を確認してください。');
+    }
+
+    status.textContent = 'シートをキャプチャ中…';
+    const sheetEl = document.getElementById('sheet-preview');
+
+    // ── 印刷用スタイルを一時適用 ──
+    const savedStyles = { background: sheetEl.style.background, color: sheetEl.style.color, padding: sheetEl.style.padding, border: sheetEl.style.border, width: sheetEl.style.width, maxWidth: sheetEl.style.maxWidth };
+    sheetEl.style.background = '#ffffff';
+    sheetEl.style.color      = '#111111';
+    sheetEl.style.padding    = '24px';
+    sheetEl.style.border     = 'none';
+    sheetEl.style.width      = '794px';
+    sheetEl.style.maxWidth   = '794px';
+
+    // CSS変数を印刷用明色に一時上書き
+    const root = document.documentElement;
+    const cssOverrides = { '--text':'#111', '--text2':'#333', '--text3':'#666', '--gold':'#7a5c00', '--gold2':'#4a3800', '--gold-dim':'#7a5c00', '--bg':'#fff', '--bg2':'#f8f8f8', '--bg3':'#f0f0f0', '--bg4':'#e8e8e8', '--border':'#ccc', '--border2':'#aaa', '--red2':'#880000', '--blue2':'#000088', '--teal2':'#006600' };
+    const savedVars = {};
+    Object.entries(cssOverrides).forEach(([k,v]) => { savedVars[k] = root.style.getPropertyValue(k); root.style.setProperty(k, v); });
+
+    const sheetDiv = sheetEl.querySelector('.sheet');
+    const savedSheetStyles = sheetDiv ? { background: sheetDiv.style.background, border: sheetDiv.style.border } : null;
+    if (sheetDiv) { sheetDiv.style.background = '#fff'; sheetDiv.style.border = '1px solid #ccc'; }
+
+    // キャプチャ
+    const canvas = await html2canvas(sheetEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false });
+
+    // スタイル復元
+    Object.entries(savedStyles).forEach(([k,v]) => { sheetEl.style[k] = v; });
+    Object.entries(savedVars).forEach(([k,v]) => { v ? root.style.setProperty(k,v) : root.style.removeProperty(k); });
+    if (sheetDiv && savedSheetStyles) { sheetDiv.style.background = savedSheetStyles.background; sheetDiv.style.border = savedSheetStyles.border; }
+
+    status.textContent = 'PDF生成中…';
+
+    // ── jsPDF でページ分割して出力 ──
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const MARGIN = 10, A4_W = 210, A4_H = 297;
+    const contentW = A4_W - MARGIN * 2;
+    const contentH = A4_H - MARGIN * 2;
+    const pxPerMm  = canvas.width / contentW;
+    const pageHpx  = Math.round(contentH * pxPerMm);
+    let offsetPx = 0, firstPage = true;
+
+    while (offsetPx < canvas.height) {
+      if (!firstPage) pdf.addPage();
+      firstPage = false;
+      const sliceHpx = Math.min(pageHpx, canvas.height - offsetPx);
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = pageHpx;
+      const ctx = pageCanvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height);
+      ctx.drawImage(canvas, 0, offsetPx, canvas.width, sliceHpx, 0, 0, canvas.width, sliceHpx);
+      pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', MARGIN, MARGIN, contentW, sliceHpx / pxPerMm);
+      offsetPx += pageHpx;
+    }
+
+    const charName = (document.getElementById('char-name').value || 'character').replace(/[\\/:*?"<>|]/g, '_');
+    pdf.save(`${charName}_sheet.pdf`);
+    status.textContent = '✓ 出力完了';
+    setTimeout(() => { status.style.display = 'none'; status.textContent = ''; }, 3000);
+
+  } catch(e) {
+    console.error('PDF export error:', e);
+    status.textContent = '';
+    status.style.display = 'none';
+    // フォールバック：ブラウザ印刷
+    const msg = e.message || String(e);
+    if (msg.includes('読み込み')) {
+      alert('PDFライブラリを読み込めませんでした。\nブラウザのメニュー「印刷 → PDFに保存」をご利用ください。');
+    } else {
+      alert('PDF出力でエラーが発生しました: ' + msg + '\nブラウザの印刷機能をお使いください。');
+    }
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 // ================================================================
