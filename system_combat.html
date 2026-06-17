@@ -420,6 +420,12 @@
             <td>1 AP</td>
             <td>手番中に武器を持ち替える。ラウンド開始時なら宣言のみで変更可能</td>
           </tr>
+          
+          <tr>
+            <td>ロールプレイ</td>
+            <td>X AP</td>
+            <td>戦闘中にロールプレイを行ってやりたいことをやる(逃走やMAP利用、相手の説得など)。消費APや判定の有無はGMが適宜判断する。</td>
+          </tr>
         </tbody>
       </table>
 
@@ -437,7 +443,7 @@
 
       <p>
         移動は上下左右の隣接マスに対して行う。斜め方向への移動はできない。
-        1APで1マス移動でき、手番中であれば何度でも移動できる。
+        1APで1マス移動でき、手番中であれば何度でも移動できる。戦闘MAPに配置される障害物や戦闘に参加しているキャラクターと同じマスには入れない。
       </p>
 
       <p style="margin-top:1.5rem;">
@@ -446,7 +452,7 @@
 
       <p>
         射程は移動と同じ方法で数える。
-        自分のいるマスを起点として上下左右に数え、到達できるマスが攻撃範囲となる。
+        自分のいるマスを起点として上下左右に移動して数え、到達できるマスが攻撃範囲となる。
       </p>
 
 <pre style="text-align:center; color:var(--text2); line-height:1.5;">
@@ -454,7 +460,7 @@
 </pre>
 
       <div class="note">
-        射程はマンハッタン距離で計算される。斜め方向は距離として数えない。
+        【特殊行動】スイッチ：敵、味方、自分が一列に3マス連なっている時にAP1を消費することでその味方と自分の立ち位置を入れ替えることが出来る。(味方の承諾は必要)
       </div>
 
     </div>
@@ -472,7 +478,7 @@
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>1ターンで使える行動力は基本<b style="color:var(--text);">3AP</b>。武器種ごとにAPコストと最大攻撃回数が異なり、ここに各素性の戦い方の個性が表れる。</p>
+      <p>1ターンで使える行動力は基本<b style="color:var(--text);">3AP</b>。武器ごとにAPコストと最大攻撃回数が異なる。</p>
 
       <table class="rule-table">
         <thead>
@@ -489,6 +495,7 @@
           <tr><td>移動</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>AP上限まで</td><td>1マス移動（マス目制）</td></tr>
           <tr><td>武器持ち替え</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>—</td><td>右手⇔左手の切り替えも含む</td></tr>
           <tr><td>アイテム使用</td><td><span class="ap-badge ap-badge--0">0 AP</span></td><td>制限なし</td><td>効果は弱め・ペナルティなし</td></tr>
+          <tr><td>ロールプレイ</td><td><span class="ap-badge ap-badge--0">X AP</span></td><td>制限なし</td><td>自由行動</td></tr>
         </tbody>
       </table>
 
@@ -528,7 +535,7 @@
           <tr>
             <td><strong style="color:var(--text)">防御</strong></td>
             <td>0 AP</td>
-            <td>CON / STR</td>
+            <td>盾装備時のみ盾</td>
             <td>ロールなし（常に発動）</td>
             <td>全般</td>
           </tr>
@@ -542,7 +549,7 @@
           <tr>
             <td><strong style="color:var(--text)">相殺</strong></td>
             <td>1 AP</td>
-            <td>INT</td>
+            <td>武器種による</td>
             <td>ダメージ比較（反撃判定あり）</td>
             <td>遠距離専用・触媒のみ</td>
           </tr>
@@ -560,19 +567,19 @@
           </thead>
           <tbody>
             <tr><td>通常成功</td><td>AGI × 5 以下</td><td rowspan="3" style="color:var(--teal2);">ダメージ完全無効</td><td rowspan="3" style="color:var(--red2);">全ダメージ（装甲軽減なし）</td></tr>
-            <tr><td>ハード（HD）</td><td>AGI × 1/2（× 5）以下</td></tr>
-            <tr><td>イクストリーム（EX）</td><td>AGI × 1/5（× 5）以下</td></tr>
+            <tr><td>ハード（HD）</td><td>ハード（HD）</td></tr>
+            <tr><td>イクストリーム（EX）</td><td>イクストリーム（EX）</td></tr>
             <tr><td style="color:var(--red2);">クリティカル</td><td style="color:var(--red2);">回避不可</td><td>—</td><td style="color:var(--red2);">全ダメージ（装甲無視）</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:0.5rem; font-size:12px; color:var(--text3);">※ 回避構え（1AP消費）を事前に行うと、この回避ロールにボーナスダイスが付く。</p>
+        <p style="margin-top:0.5rem; font-size:12px; color:var(--text3);">※【特殊行動】 回避構え：手番に1APを消費して宣言を事前に行うと、そのラウンドのみ次の回避ロールにボーナスダイス1が付く。</p>
       </div>
 
       <!-- 防御 -->
       <div class="rule-block" style="border-left-color:var(--blue);">
         <p class="rule-block-title" style="color:var(--blue2);">◆ 防御　— 装甲軽減（ロールなし）</p>
         <p>ロール不要で常に発動する安定択。物理装甲値または魔術耐性でダメージを固定軽減する。<br>
-        盾を装備している場合は盾で判定を行い、防御時に盾の追加軽減効果を乗せることができる。</p>
+        盾を装備している場合は盾で判定を行い、防御時に盾の追加軽減効果を乗せることができる。ダメージを0に軽減しても攻撃は成功したものとして扱われる</p>
         <table class="rule-table" style="margin-top:0.75rem;">
           <thead>
             <tr><th>攻撃の種類</th><th>軽減に使う値</th><th>クリティカル時</th></tr>
@@ -720,7 +727,7 @@
         </div>
       </div>
 
-      <p style="margin-top:1rem; margin-bottom: 1rem;">装甲値・魔術耐性・ダメージボーナスダイスは、いずれも下の共通テーブルを参照する。「合計値」が指す数値は文脈によって異なる——物理装甲値なら「装備の装甲値＋CON」、魔術耐性なら「POW＋CON」、ダメージボーナスなら「武器種ごとの参照能力値」そのものをこの表に当てはめる。</p>
+      <p style="margin-top:1rem; margin-bottom: 1rem;">装甲値・魔術耐性・ダメージボーナスダイスは、いずれも下の共通テーブルを参照する。「合計値」が指す数値は文脈によって異なる——物理装甲値なら「防具重量(軽0、中2、重、4)＋CON」、魔術耐性なら「POW＋CON」、ダメージボーナスなら「武器種ごとの参照能力値」そのものをこの表に当てはめる。</p>
 
       <table class="rule-table">
         <thead>
@@ -732,12 +739,12 @@
           <tr><td>9〜12</td><td>3</td><td>1d4</td></tr>
           <tr><td>13〜16</td><td>4</td><td>1d6</td></tr>
           <tr><td>17〜20</td><td>5</td><td>1d8</td></tr>
-          <tr><td>21〜24</td><td>6</td><td>2d8　← 特化の壁</td></tr>
-          <tr><td>25〜</td><td>7</td><td>3d8　← 極特化</td></tr>
+          <tr><td>21〜24</td><td>6</td><td>2d8</td></tr>
+          <tr><td>25〜</td><td>7</td><td>3d8</td></tr>
         </tbody>
       </table>
 
-      <p style="margin-top:1.5rem;">ダメージボーナスは、武器種ごとに参照する能力値が決まっている。</p>
+      <p style="margin-top:1.5rem;">ダメージボーナスは、武器種ごとに参照する能力値が決まっている。(一部例外あり)</p>
 
       <table class="rule-table">
         <thead>
@@ -756,8 +763,6 @@
         </tbody>
       </table>
 
-      <div class="note">「21〜24」のラインは“特化の壁”と呼ばれる。能力値を1点伸ばすだけでダイス数が1d8→2d8に跳ね上がるため、ビルドの分岐点になりやすい。</div>
-    </div>
   </section>
 
   <hr class="divider">
@@ -797,7 +802,7 @@
         <tbody>
           <tr><td>HP</td><td>(CON ＋ STR) × 2</td><td>体力と筋力で決まる生命力</td></tr>
           <tr><td>MP</td><td>POW ＋ INT ＋ FTH</td><td>魔術・奇跡の燃料。自然回復はなく、アイテム・刻印でのみ回復する</td></tr>
-          <tr><td>物理装甲値</td><td>装備の装甲値 ＋ CON → 共通テーブル参照</td><td>物理ダメージを固定軽減する</td></tr>
+          <tr><td>物理装甲値</td><td>防具重量(軽0、中2、重、4) ＋ CON → 共通テーブル参照</td><td>物理ダメージを固定軽減する</td></tr>
           <tr><td>魔術耐性</td><td>POW ＋ CON → 共通テーブル参照</td><td>魔術ダメージを固定軽減する</td></tr>
           <tr><td>クリティカル率</td><td>基本1%（出目1）＋ LCK5ごとに+1%</td><td>LCK20で最大6%</td></tr>
           <tr><td>イニシアチブ</td><td>AGI順（高い順に行動）</td><td>同値はLCKで比較。それでも同値なら同時行動</td></tr>
@@ -830,7 +835,7 @@
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>状態異常は一度付与されると、解除条件を満たさない限り永続する（戦闘終了時に全てリセットされる点を除く）。</p>
+      <p>状態異常は一度付与されると、解除条件を満たさない限り永続する（戦闘終了時に全てリセットされる点を除く）。また、戦闘MAPには状態異常を付与するものや解除する効果を持ったギミックが登場することがある。エネミーの一部は特定の状態異常に対する耐性を持つこともある。</p>
 
       <p style="margin-top:1.5rem; margin-bottom:0.5rem;"><b style="color:var(--text);">物理系</b></p>
       <div class="status-grid">
@@ -849,20 +854,20 @@
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">冷気</p>
-          <p class="status-card__effect">単体での効果はないが、3回付与されると「凍結」に変化する。燃焼は即座に解除する</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>炎属性でカウントリセット</span></div>
+          <p class="status-card__effect">5回付与されると「凍結」に変化する。</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>燃焼付与時に打ち消して全解除</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">凍結</p>
-          <p class="status-card__effect">行動不能（永続）。冷気が3スタックすると発生する</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>炎属性</span></div>
+          <p class="status-card__effect">移動不可。手番にSTRに成功すれば移動不可を無視して移動できる。</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>燃焼付与時に打ち消して全解除</</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">燃焼</p>
-          <p class="status-card__effect">ラウンド終了時に2d3ダメージ（装甲無視）。冷気属性で即座に解除する</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>冷気属性</span></div>
+          <p class="status-card__effect">ラウンド終了時に2d3ダメージ（装甲無視）。1手番に3回マス以上移動したら解除される。</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>冷気付与時に打ち消して全解除</</span></div>
         </div>
       </div>
 
@@ -899,7 +904,7 @@
         <div class="status-card">
           <span class="status-card__cat">Debuff</span>
           <p class="status-card__name">封印</p>
-          <p class="status-card__effect">取得している刻印の効果が全て無効化される</p>
+          <p class="status-card__effect">取得している刻印の効果が全て無効化される。手番にAP2消費で解除可能。</p>
           <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
         </div>
       </div>
@@ -932,15 +937,16 @@
           <tr><th>属性</th><th>効果</th><th>追加アクション</th><th>備考</th></tr>
         </thead>
         <tbody>
-          <tr><td>炎</td><td>対象の冷気カウントをリセットする</td><td>1APで味方の冷気カウントをリセット可能</td><td>－</td></tr>
-          <tr><td>冷気</td><td>対象の燃焼を即座に解除する</td><td>1APで味方の燃焼を解除可能</td><td>冷気は3回付与で凍結に変化</td></tr>
-          <tr><td>雷</td><td>物理装甲値を半減する（魔術耐性には無効）</td><td>—</td><td>装甲値半減後、残りダメージを通常通り適用</td></tr>
-          <tr><td>毒</td><td>－</td><td>—</td><td>累積上限なし</td></tr>
-          <tr><td>闇</td><td>－</td><td>—</td><td>エネミー側の追加ダメージは個別に記載</td></tr>
-          <tr><td>神聖</td><td>アンデッド・邪悪な存在に+2d4の固定ダメージ</td><td>—</td><td>エネミー側の追加ダメージは個別に記載</td></tr>
+          <tr><td>炎</td><td>燃焼1付与</td><td>1APで味方(自分含む)に燃焼1付与</td><td>－</td></tr>
+          <tr><td>冷気</td><td>冷気1付与</td><td>1APで味方(自分含む)に冷気1付与</td><td>冷気は5回付与で凍結に変化</td></tr>
+          <tr><td>雷</td><td>物理装甲値を半減して計算（魔術耐性には無効）</td><td>—</td><td>装甲値半減後、残りダメージを通常通り適用</td></tr>
+          <tr><td>毒</td><td>毒1付与</td><td>—</td><td>累積上限なし</td></tr>
+          <tr><td>闇</td><td>EX成功で恐怖or発狂を選んで付与</td><td>—</td><td>－</td></tr>
+          <tr><td>神聖</td><td>アンデッド・邪悪な存在に+2d4の固定ダメージ</td><td>—</td><td>－</td></tr>
           <tr><td>無属性</td><td>素の物理ダメージ</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
+       <div class="note">ダメージ0点でも属性の効果は発動する。応戦、相殺で0になった場合は効果なし</div>
     </div>
   </section>
 
@@ -1062,7 +1068,7 @@
           </tbody>
         </table>
       </div>
-      <div class="note">* 魔術・奇跡列は、装備した触媒の命中補正を加算する前の基本値。最終的な命中値は表の値＋触媒補正で決定する。</div>
+      <div class="note">魔術・奇跡列は、装備した触媒の命中補正を加算する前の基本値。最終的な命中値は表の値＋触媒補正で決定する。</div>
     </div>
   </section>
 
