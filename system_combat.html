@@ -266,14 +266,13 @@
     <p class="toc__title">Contents</p>
     <ul class="toc__list">
       <li><span>I</span><a href="#dice">ダイスとサクセスレベル</a></li>
-　　<li><span>II</span><a href="#battlefield">戦闘システム</a></li>
-      <li><span>III</span><a href="#ap">APと行動</a></li>
-      <li><span>IV</span><a href="#reaction">リアクション行動・武器スロット</a></li>
-      <li><span>V</span><a href="#damage">ダメージ計算</a></li>
-      <li><span>VI</span><a href="#stats">能力値・派生ステータス</a></li>
-      <li><span>VII</span><a href="#status">状態異常・属性</a></li>
-      <li><span>VIII</span><a href="#round">ラウンド構造とHP・死亡</a></li>
-      <li><span>IX</span><a href="#hit">命中値テーブル</a></li>
+　　　<li><span>II</span><a href="#battlefield">戦闘システム</a></li>
+      <li><span>III</span><a href="#reaction">リアクション行動・武器スロット</a></li>
+      <li><span>IV</span><a href="#damage">ダメージ計算</a></li>
+      <li><span>V</span><a href="#stats">能力値・派生ステータス</a></li>
+      <li><span>VI</span><a href="#status">状態異常・属性</a></li>
+      <li><span>VII</span><a href="#round">ラウンド構造とHP・死亡</a></li>
+      <li><span>VIII</span><a href="#hit">命中値テーブル</a></li>
     </ul>
   </div>
 
@@ -470,39 +469,7 @@
 
 <hr class="divider">
 
-  <!-- III. APと行動 -->
-  <section class="section" id="ap">
-    <div class="section-header">
-      <span class="section-num">III</span>
-      <h2 class="section-title">APと行動</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <p>1ターンで使える行動力は基本<b style="color:var(--text);">3AP</b>。武器ごとにAPコストと最大攻撃回数が異なる。</p>
-
-      <table class="rule-table">
-        <thead>
-          <tr><th>行動</th><th>APコスト</th><th>最大回数/ターン</th><th>備考</th></tr>
-        </thead>
-        <tbody>
-          <tr><td>攻撃：短剣</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>3回</td><td>手数</td></tr>
-          <tr><td>攻撃：直剣・槍・ハルバード・弓</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>2回</td><td>バランス型・リーチ・遠距離</td></tr>
-          <tr><td>攻撃：大剣・斧・ハンマー</td><td><span class="ap-badge ap-badge--2">2 AP</span></td><td>1回</td><td>重量型・高火力</td></tr>
-          <tr><td>攻撃：盾</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>1回</td><td>固定値が装甲/耐性。攻撃時には両方を足したのが固定値となる</td></tr>
-          <tr><td>魔術・奇跡：初級（兵士）</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>1回</td><td>基本呪文</td></tr>
-          <tr><td>魔術・奇跡：上級（英雄）</td><td><span class="ap-badge ap-badge--2">2 AP</span></td><td>1回</td><td>強力な呪文</td></tr>
-          <tr><td>魔術・奇跡：超級（伝説）</td><td><span class="ap-badge ap-badge--3">3 AP</span></td><td>1回</td><td>切り札。完全行動不能</td></tr>
-          <tr><td>移動</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>AP上限まで</td><td>1マス移動（マス目制）</td></tr>
-          <tr><td>武器持ち替え</td><td><span class="ap-badge ap-badge--1">1 AP</span></td><td>—</td><td>右手⇔左手の切り替えも含む</td></tr>
-          <tr><td>アイテム使用</td><td><span class="ap-badge ap-badge--0">0 AP</span></td><td>制限なし</td><td>効果は弱め・ペナルティなし</td></tr>
-          <tr><td>ロールプレイ</td><td><span class="ap-badge ap-badge--0">X AP</span></td><td>制限なし</td><td>自由行動</td></tr>
-        </tbody>
-      </table>
-
-
-  <hr class="divider">
-
-  <!-- IV. リアクション行動・武器スロット -->
+  <!-- III. リアクション行動・武器スロット -->
   <section class="section" id="reaction">
     <div class="section-header">
       <span class="section-num">IV</span>
@@ -686,7 +653,7 @@
 
   <hr class="divider">
 
-  <!-- V. ダメージ計算 -->
+  <!-- IV. ダメージ計算 -->
   <section class="section" id="damage">
     <div class="section-header">
       <span class="section-num">V</span>
@@ -767,7 +734,7 @@
 
   <hr class="divider">
 
-  <!-- VI. 能力値・派生ステータス -->
+  <!-- V. 能力値・派生ステータス -->
   <section class="section" id="stats">
     <div class="section-header">
       <span class="section-num">VI</span>
@@ -827,7 +794,7 @@
 
   <hr class="divider">
 
-  <!-- VII. 状態異常・属性 -->
+  <!-- VI. 状態異常・属性 -->
   <section class="section" id="status">
     <div class="section-header">
       <span class="section-num">VII</span>
@@ -952,7 +919,7 @@
 
   <hr class="divider">
 
-  <!-- VIII. ラウンド構造とHP・死亡 -->
+  <!-- VII. ラウンド構造とHP・死亡 -->
   <section class="section" id="round">
     <div class="section-header">
       <span class="section-num">VIII</span>
@@ -1011,7 +978,7 @@
 
   <hr class="divider">
 
-  <!-- IX. 命中値テーブル -->
+  <!-- VIII. 命中値テーブル -->
   <section class="section" id="hit">
     <div class="section-header">
       <span class="section-num">IX</span>
