@@ -266,7 +266,7 @@
     <p class="toc__title">Contents</p>
     <ul class="toc__list">
       <li><span>I</span><a href="#dice">ダイスとサクセスレベル</a></li>
-　　　<li><span>II</span><a href="#battlefield">戦闘システム</a></li>
+      <li><span>II</span><a href="#battlefield">戦闘システム</a></li>
       <li><span>III</span><a href="#reaction">リアクション行動・武器スロット</a></li>
       <li><span>IV</span><a href="#damage">ダメージ計算</a></li>
       <li><span>V</span><a href="#stats">能力値・派生ステータス</a></li>
@@ -288,7 +288,7 @@
 
       <div class="rule-block">
         <p class="rule-block__title">判定方式と命中判定</p>
-        <p>戦闘外の判定（探索・交渉・知識など）は「能力値 × 5」を技能値とし、技能値以下のロールで成功する。一方で命中判定は能力値を参照しない。素性と武器種の組み合わせで決まる固定値（35%〜75%）が、そのまま命中値となる。</p>
+        <p>戦闘外の判定（探索・交渉・知識など）は「能力値 × 5」を技能値とし、技能値以下のロールで成功する。一方で命中判定は能力値を参照しない。素性と武器種の組み合わせで決まる固定値（記載がないものは50%）が、そのまま命中値となる。</p>
       </div>
 
       <div class="rule-block">
@@ -315,27 +315,27 @@
       <div class="tier-legend">
         <div class="tier-legend__item">
           <span class="tier-legend__swatch" style="background:var(--gold2);"></span>
-          <span><b>クリティカル</b>（出目1）<br><span class="ex-val">装甲・魔術耐性無視＋ダメージボーナス×2</span></span>
+          <span><b>クリティカル</b>（出目1）<br><span class="ex-val">武器ダメージ＋ダメージボーナス（一段階上で計算）、武器の固有効果</span></span>
         </div>
         <div class="tier-legend__item">
           <span class="tier-legend__swatch" style="background:var(--gold);"></span>
-          <span><b>イクストリーム / EX</b>（命中値×1/5以下＝出目12以下）<br><span class="ex-val">＋ダメージボーナス×2</span></span>
+          <span><b>イクストリーム / EX</b>（命中値×1/5以下＝出目12以下）<br><span class="ex-val">武器ダメージ＋ダメージボーナス、武器の固有効果</span></span>
         </div>
         <div class="tier-legend__item">
           <span class="tier-legend__swatch" style="background:var(--gold-dim);"></span>
-          <span><b>ハード / HD</b>（命中値×1/2以下＝出目30以下）<br><span class="ex-val">＋ダメージボーナス</span></span>
+          <span><b>ハード / HD</b>（命中値×1/2以下＝出目30以下）<br><span class="ex-val">武器ダメージ＋ダメージボーナス、武器の固有効果</span></span>
         </div>
         <div class="tier-legend__item">
           <span class="tier-legend__swatch" style="background:var(--teal);"></span>
-          <span><b>通常成功</b>（命中値以下＝出目60以下）<br><span class="ex-val">武器固定値＋ダイス</span></span>
+          <span><b>通常成功</b>（命中値以下＝出目60以下）<br><span class="ex-val">武器ダメージ＋ダメージボーナス</span></span>
         </div>
         <div class="tier-legend__item">
           <span class="tier-legend__swatch" style="background:var(--bg3); border:1px solid var(--border2);"></span>
-          <span><b>失敗</b>（出目61〜99）<br><span class="ex-val">効果なし</span></span>
+          <span><b>失敗</b>（出目61〜99）<br><span class="ex-val">失敗</span></span>
         </div>
         <div class="tier-legend__item">
           <span class="tier-legend__swatch" style="background:var(--red);"></span>
-          <span><b>ファンブル</b>（出目100）<br><span class="ex-val">最悪の結果が発生する</span></span>
+          <span><b>ファンブル</b>（出目100）<br><span class="ex-val">失敗</span></span>
         </div>
       </div>
 
@@ -344,11 +344,12 @@
           <tr><th>成功度</th><th>条件</th><th>ダメージ効果</th></tr>
         </thead>
         <tbody>
-          <tr><td>ファンブル</td><td>出目100</td><td>最悪の結果が発生する（GM裁量）</td></tr>
-          <tr><td>通常成功</td><td>命中値以下</td><td>武器固定値＋武器ダイス</td></tr>
-          <tr><td>ハード（HD）</td><td>命中値 × 1/2 以下</td><td>＋ダメージボーナスダイス</td></tr>
-          <tr><td>イクストリーム（EX）</td><td>命中値 × 1/5 以下</td><td>＋ダメージボーナス1段階上</td></tr>
-          <tr><td>クリティカル</td><td>出目1</td><td>装甲・魔術耐性を無視＋ダメージボーナス1段階上</td></tr>
+          <tr><td>ファンブル（FB）</td><td>出目100</td><td>失敗</td></tr>
+          <tr><td>失敗（MS）</td><td>命中値超〜99</td><td>失敗</td></tr>
+          <tr><td>通常成功（SC）</td><td>命中値以下</td><td>武器ダメージ＋ダメージボーナス</td></tr>
+          <tr><td>ハード（HD）</td><td>命中値 × 1/2 以下</td><td>武器ダメージ＋ダメージボーナス、武器の固有効果</td></tr>
+          <tr><td>イクストリーム（EX）</td><td>命中値 × 1/5 以下</td><td>武器ダメージ＋ダメージボーナス、武器の固有効果</td></tr>
+          <tr><td>クリティカル（CR）</td><td>出目1</td><td>武器ダメージ＋ダメージボーナス（一段階上で計算）、武器の固有効果</td></tr>
         </tbody>
       </table>
 
@@ -384,6 +385,34 @@
 </pre>
 
       <p>戦闘フィールドは8×8マスで構成される。各キャラクターやエネミーはマス上に配置され、移動や射程はすべてこのマスを基準に処理する。</p>
+
+      <p style="margin-top:1.5rem;">フィールドには障害物が配置されることがある。代表的なものは以下の通り。</p>
+
+      <table class="rule-table">
+        <thead>
+          <tr><th>障害物</th><th>進入</th><th>射程通過</th><th>効果</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>岩・壁</td><td>不可</td><td>不可</td><td>—</td></tr>
+          <tr><td>穴</td><td>不可</td><td>可能</td><td>—</td></tr>
+          <tr><td>篝火・松明</td><td>可能</td><td>可能</td><td>進入時に燃焼を付与</td></tr>
+          <tr><td>毒沼</td><td>可能</td><td>可能</td><td>ラウンド開始時に毒1d3を付与</td></tr>
+          <tr><td>罠</td><td>可能</td><td>可能</td><td>進入時に起動する（下記参照）</td></tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top:1.5rem; margin-bottom:0.5rem;"><b style="color:var(--text);">罠の種類</b></p>
+
+      <table class="rule-table">
+        <thead>
+          <tr><th>罠</th><th>効果</th><th>備考</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>毒矢</td><td>指定の場所から毒矢が発射される（1d4＋毒1付与）</td><td>回避にPD+1</td></tr>
+          <tr><td>火炎舌</td><td>指定の場所から指定のマスへ炎が広がる（2d3＋燃焼付与）</td><td>回避にPD+1</td></tr>
+          <tr><td>地形変更</td><td>指定のマスを障害物に変更する</td><td>進入不可になった場合、その場にいたキャラクターは移動させられる</td></tr>
+        </tbody>
+      </table>
     </div>
 
 
@@ -411,19 +440,13 @@
           <tr>
             <td>攻撃</td>
             <td>武器ごとに異なる</td>
-            <td>装備している武器で攻撃する</td>
+            <td>装備している武器で攻撃する（射程・AP・攻撃回数は武器の設定に準拠）</td>
           </tr>
 
           <tr>
-            <td>装備変更</td>
-            <td>1 AP</td>
-            <td>手番中に武器を持ち替える。ラウンド開始時なら宣言のみで変更可能</td>
-          </tr>
-          
-          <tr>
             <td>ロールプレイ</td>
             <td>X AP</td>
-            <td>戦闘中にロールプレイを行ってやりたいことをやる(逃走やMAP利用、相手の説得など)。消費APや判定の有無はGMが適宜判断する。</td>
+            <td>戦闘中にロールプレイを行ってやりたいことをやる（逃走やMAP利用、相手の説得など）。消費APや判定の有無はGMが適宜判断する</td>
           </tr>
         </tbody>
       </table>
@@ -432,6 +455,41 @@
         命中判定でファンブル（出目100）が発生した場合、そのキャラクターの手番は即座に終了する。
       </div>
 
+    </div>
+
+
+    <div class="rule-block">
+      <p class="rule-block__title">特殊行動（1AP）</p>
+
+      <p>手番中に1APを消費して行う、移動・攻撃以外の行動。</p>
+
+      <table class="rule-table">
+        <thead>
+          <tr><th>特殊行動</th><th>タイミング</th><th>内容</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>装備入れ替え</td>
+            <td>手番中</td>
+            <td>装備している武器・防具を入れ替える。<b style="color:var(--gold-dim);">ラウンド開始時に宣言する場合のみAP消費なし</b></td>
+          </tr>
+          <tr>
+            <td>スイッチ</td>
+            <td>手番中</td>
+            <td>隣接しているキャラクターとマスを入れ替える。同意のない相手に対しては、STRまたはAGIの対抗ロールで上回った場合のみ成功する</td>
+          </tr>
+          <tr>
+            <td>回避構え</td>
+            <td>回避宣言時</td>
+            <td>直後の回避判定にボーナスダイス（BD）+1</td>
+          </tr>
+          <tr>
+            <td>逃走</td>
+            <td>手番中</td>
+            <td>1回目の宣言で逃走条件（逃げ道の発見）がわかる。条件を満たして再度宣言することで逃走できる</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
 
@@ -452,14 +510,11 @@
       <p>
         射程は移動と同じ方法で数える。
         自分のいるマスを起点として上下左右に移動して数え、到達できるマスが攻撃範囲となる。
+        射程はキャラクターを通過して数えることができる。
       </p>
 
-<pre style="text-align:center; color:var(--text2); line-height:1.5;">
-
-</pre>
-
       <div class="note">
-        【特殊行動】スイッチ：敵、味方、自分が一列に3マス連なっている時にAP1を消費することでその味方と自分の立ち位置を入れ替えることが出来る。(味方の承諾は必要)
+        キャラクターを通過して使用した攻撃の判定に失敗した場合、最初に通過したキャラクターに対して通常成功扱いで攻撃が発生する（対象が味方の場合、その攻撃の回避判定にPD+1）。
       </div>
 
     </div>
@@ -472,7 +527,7 @@
   <!-- III. リアクション行動・武器スロット -->
   <section class="section" id="reaction">
     <div class="section-header">
-      <span class="section-num">IV</span>
+      <span class="section-num">III</span>
       <h2 class="section-title">リアクション行動・武器スロット</h2>
       <div class="section-rule"></div>
     </div>
@@ -495,7 +550,7 @@
           <tr>
             <td><strong style="color:var(--text)">回避</strong></td>
             <td>0 AP</td>
-            <td>AGI</td>
+            <td>回避値（AGI）</td>
             <td>対抗ロール（成功度に応じた閾値以下で成功）</td>
             <td>全般</td>
           </tr>
@@ -505,20 +560,6 @@
             <td>盾装備時のみ盾</td>
             <td>ロールなし（常に発動）</td>
             <td>全般</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--text)">応戦</strong></td>
-            <td>1 AP</td>
-            <td>武器種による</td>
-            <td>ダメージ比較（反撃判定あり）</td>
-            <td>近接専用・近接武器のみ</td>
-          </tr>
-          <tr>
-            <td><strong style="color:var(--text)">相殺</strong></td>
-            <td>1 AP</td>
-            <td>武器種による</td>
-            <td>ダメージ比較（反撃判定あり）</td>
-            <td>遠距離専用・触媒のみ</td>
           </tr>
         </tbody>
       </table>
@@ -533,7 +574,7 @@
             <tr><th>攻撃側の成功度</th><th>回避側の必要ロール</th><th>成功時</th><th>失敗時</th></tr>
           </thead>
           <tbody>
-            <tr><td>通常成功</td><td>AGI × 5 以下</td><td rowspan="3" style="color:var(--teal2);">ダメージ完全無効</td><td rowspan="3" style="color:var(--red2);">全ダメージ（装甲軽減なし）</td></tr>
+            <tr><td>通常成功</td><td>回避値以下</td><td rowspan="3" style="color:var(--teal2);">ダメージ完全無効</td><td rowspan="3" style="color:var(--red2);">全ダメージ（装甲軽減なし）</td></tr>
             <tr><td>ハード（HD）</td><td>ハード（HD）</td></tr>
             <tr><td>イクストリーム（EX）</td><td>イクストリーム（EX）</td></tr>
             <tr><td style="color:var(--red2);">クリティカル</td><td style="color:var(--red2);">回避不可</td><td>—</td><td style="color:var(--red2);">全ダメージ（装甲無視）</td></tr>
@@ -552,102 +593,43 @@
             <tr><th>攻撃の種類</th><th>軽減に使う値</th><th>クリティカル時</th></tr>
           </thead>
           <tbody>
-            <tr><td>物理攻撃</td><td>物理装甲値（装備の装甲値 ＋ CON → 共通テーブル参照）</td><td rowspan="2" style="color:var(--red2);">装甲値・耐性ともに無視</td></tr>
-            <tr><td>魔術・奇跡攻撃</td><td>魔術耐性（POW ＋ CON → 共通テーブル参照）</td></tr>
+            <tr><td>物理攻撃</td><td>物理装甲値（CONを共通テーブルに当てはめた値 ＋ 防具の装甲値）</td><td rowspan="2" style="color:var(--red2);">装甲値・耐性ともに無視</td></tr>
+            <tr><td>魔術・奇跡攻撃</td><td>魔術耐性（POWを共通テーブルに当てはめた値 ＋ 防具の耐性値）</td></tr>
           </tbody>
         </table>
         <p style="margin-top:0.5rem; font-size:12px; color:var(--text3);">※ 「何もしない」場合も防御と同じ扱い（装甲値のみ軽減）。</p>
       </div>
 
-      <!-- 応戦 -->
-      <div class="rule-block" style="border-left-color:var(--purple);">
-        <p class="rule-block-title" style="color:var(--purple2);">◆ 応戦　— ダメージ比較・反撃（近接専用）</p>
-        <p>防御側も自分の近接武器のダメージを算出し、攻撃側のダメージと比較する。<br>
-        近接武器のみ使用可。触媒（杖・聖印）での応戦は不可。</p>
-        <div class="flow" style="margin-top:0.75rem;">
-          <div class="flow-step">
-            <div class="flow-dot">1</div>
-            <div class="flow-content">
-              <p class="flow-label">双方のダメージを算出する</p>
-              <p class="flow-desc">攻撃側：命中判定の成功度に応じたダメージを算出<br>防御側：命中判定の成功度に応じたダメージを算出(戦技不可)</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-dot">2</div>
-            <div class="flow-content">
-              <p class="flow-label">ダメージを比較する</p>
-              <p class="flow-desc">防御側のダメージ ＞ 攻撃側のダメージ　→　反撃発生<br>防御側のダメージ ≦ 攻撃側のダメージ　→　差分ダメージを受ける</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-dot">3</div>
-            <div class="flow-content">
-              <p class="flow-label">反撃ダメージを与える（反撃発生時）</p>
-              <p class="flow-desc">攻撃者に <strong style="color:var(--gold)">1d4 ダメージ</strong>（装甲貫通1）<br>反撃の大きさはダメージ差に関わらず常に 1d4 固定</p>
-            </div>
-          </div>
-        </div>
-        <p style="font-size:12px; color:var(--text3); margin-top:0.25rem;">※ 応戦で軽減しきれなかった攻撃のダメージは物理装甲値で軽減されない。</p>
-      </div>
-
-      <!-- 相殺 -->
-      <div class="rule-block" style="border-left-color:var(--gold-dim);">
-        <p class="rule-block-title" style="color:var(--gold);">◆ 相殺　— ダメージ比較・反撃（遠距離専用）</p>
-        <p>応戦の魔術版。遠距離攻撃（弓・魔術・奇跡）に対して同一の攻撃方法を使って相殺する。<br>
-        同一の種類でのみ可能。</p>
-        <div class="flow" style="margin-top:0.75rem;">
-          <div class="flow-step">
-            <div class="flow-dot">1</div>
-            <div class="flow-content">
-              <p class="flow-label">双方のダメージを算出する</p>
-              <p class="flow-desc">攻撃側：命中判定の成功度に応じたダメージを算出<br>防御側：命中判定の成功度に応じたダメージを算出(戦技不可)　魔術・奇跡の場合は1つ選んで使用する</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-dot">2</div>
-            <div class="flow-content">
-              <p class="flow-label">ダメージを比較する</p>
-              <p class="flow-desc">防御側のダメージ ＞ 攻撃側のダメージ　→　反撃発生<br>防御側のダメージ ≦ 攻撃側のダメージ　→　差分ダメージを受ける</p>
-            </div>
-          </div>
-          <div class="flow-step">
-            <div class="flow-dot">3</div>
-            <div class="flow-content">
-              <p class="flow-label">反撃ダメージを与える（反撃発生時）</p>
-              <p class="flow-desc">攻撃者に <strong style="color:var(--gold)">1d4 ダメージ</strong>（装甲貫通1）<br>反撃の大きさはダメージ差に関わらず常に 1d4 固定</p>
-            </div>
-          </div>
-        </div>
-        <p style="font-size:12px; color:var(--text3); margin-top:0.25rem;">※ 相殺で軽減しきれなかった攻撃のダメージは物理装甲値、魔術耐性で軽減されない。</p>
-      </div>
+      <div class="note" style="margin-top:1.5rem;">応戦・相殺は廃止された。リアクション行動は回避・防御の2種類のみとなる。</div>
 
 
-      <p style="margin-top:2rem;">装備は右手・左手の2スロット制。片手武器は両手のスロットに装備でき、両手武器は右手のみを占有する（左手は使用不可）。防具は頭・胴のみで、手・足のスロットは存在しない。</p>
+      <p style="margin-top:2rem;">武器スロットは2枠、防具スロットは2枠で構成される。両手武器は武器スロットの2枠を使用し、防具は同種のものを2つ同時に装備することはできない。</p>
 
       <div class="slot-diagram">
         <div class="slot-box">
-          <p class="slot-box__label">右手 / Main Hand</p>
-          <p class="slot-box__value">片手武器・両手武器・触媒</p>
-          <p class="slot-box__sub">あらゆる武器・触媒を装備可能</p>
+          <p class="slot-box__label">武器スロット</p>
+          <p class="slot-box__value">2枠</p>
+          <p class="slot-box__sub">両手武器は2枠を使用する</p>
         </div>
         <div class="slot-box">
-          <p class="slot-box__label">左手 / Off Hand</p>
-          <p class="slot-box__value">片手武器・触媒・盾</p>
-          <p class="slot-box__sub">両手武器を右手に装備中は使用不可</p>
+          <p class="slot-box__label">防具スロット</p>
+          <p class="slot-box__value">2枠</p>
+          <p class="slot-box__sub">同種の防具を2つ同時に装備することはできない</p>
         </div>
       </div>
 
       <table class="rule-table">
         <thead>
-          <tr><th>組み合わせ</th><th>右手</th><th>左手</th><th>備考</th></tr>
+          <tr><th>スロット</th><th>枠数</th><th>備考</th></tr>
         </thead>
         <tbody>
-          <tr><td>片手武器 × 2</td><td>片手武器</td><td>片手武器</td><td>二刀流・剣盾など</td></tr>
-          <tr><td>両手武器</td><td>両手武器</td><td>使用不可</td><td>大剣・斧・ハンマー</td></tr>
-          <tr><td>片手武器＋触媒</td><td>片手武器</td><td>触媒</td><td>近接＋魔術の複合</td></tr>
-          <tr><td>触媒 × 2</td><td>触媒（杖）</td><td>触媒（聖印）</td><td>魔術＋奇跡の同時運用</td></tr>
+          <tr><td>武器スロット</td><td>2枠</td><td>片手武器×2、または両手武器×1（2枠を占有）で装備する</td></tr>
+          <tr><td>防具スロット</td><td>2枠</td><td>同種の防具は2つ同時に装備できない</td></tr>
+          <tr><td>予備スロット</td><td>5枠</td><td>装備していない扱いとなる、控えの武器・防具を置く枠</td></tr>
         </tbody>
       </table>
+
+      <div class="note" style="margin-top:1rem;">装備パッシブは各装備の記載に準拠する。触媒は獲得時に、選択可能な範囲の中から最大2つまでを選んで登録する。</div>
     </div>
   </section>
 
@@ -656,7 +638,7 @@
   <!-- IV. ダメージ計算 -->
   <section class="section" id="damage">
     <div class="section-header">
-      <span class="section-num">V</span>
+      <span class="section-num">IV</span>
       <h2 class="section-title">ダメージ計算</h2>
       <div class="section-rule"></div>
     </div>
@@ -675,14 +657,14 @@
           <div class="flow__dot">2</div>
           <div class="flow__content">
             <p class="flow__label">成功度ボーナス加算</p>
-            <p class="flow__desc">HD：＋ダメージボーナスダイス　／　EX：＋ダメージボーナスダイス1段階上　／　クリティカル：装甲・魔術耐性無視＋ダメージボーナスダイス1段階上。ダメージボーナスダイスは参照能力値を下記の共通テーブルに当てはめて決定する。戦技の使用があればこのタイミングで宣言する。</p>
+            <p class="flow__desc">通常成功（SC）：武器ダメージ＋ダメージボーナス　／　ハード（HD）・イクストリーム（EX）：武器ダメージ＋ダメージボーナス、または武器の固有効果　／　クリティカル（CR）：武器ダメージ＋ダメージボーナス（一段階上で計算）。ファンブル（FB）・失敗（MS）はいずれもダメージなしで失敗となる。ダメージボーナスダイスは参照能力値を下記の共通テーブルに当てはめて決定する。戦技の使用があればこのタイミングで宣言する。</p>
           </div>
         </div>
         <div class="flow__step">
           <div class="flow__dot">3</div>
           <div class="flow__content">
             <p class="flow__label">防御行動による軽減</p>
-            <p class="flow__desc">応戦・相殺：双方のダメージを比較し、上回れば1d4の反撃。防御：装甲値で軽減。回避が成功した場合、ダメージは0になる。</p>
+            <p class="flow__desc">回避が成功した場合、ダメージは0になる。防御：装甲値で軽減する。</p>
           </div>
         </div>
         <div class="flow__step">
@@ -694,7 +676,7 @@
         </div>
       </div>
 
-      <p style="margin-top:1rem; margin-bottom: 1rem;">装甲値・魔術耐性・ダメージボーナスダイスは、いずれも下の共通テーブルを参照する。「合計値」が指す数値は文脈によって異なる——物理装甲値なら「防具重量(軽0、中2、重、4)＋CON」、魔術耐性なら「POW＋CON」、ダメージボーナスなら「武器種ごとの参照能力値」そのものをこの表に当てはめる。</p>
+      <p style="margin-top:1rem; margin-bottom: 1rem;">装甲値・魔術耐性・ダメージボーナスダイスは、いずれも下の共通テーブルを参照する。「合計値」が指す数値は文脈によって異なる——物理装甲値ならCON、魔術耐性ならPOW、ダメージボーナスなら「武器種ごとの参照能力値」そのものをこの表に当てはめる。装甲値・魔術耐性は、表で得た値に装備している防具の分を加算したものが最終的な数値になる。</p>
 
       <table class="rule-table">
         <thead>
@@ -723,7 +705,6 @@
           <tr><td>大剣</td><td>STR</td></tr>
           <tr><td>斧・ハンマー</td><td>STR</td></tr>
           <tr><td>槍・ハルバード</td><td>STR / DEX（高い方）</td></tr>
-          <tr><td>盾（応戦時）</td><td>STR / CON（高い方）</td></tr>
           <tr><td>弓</td><td>DEX</td></tr>
           <tr><td>魔術</td><td>INT</td></tr>
           <tr><td>奇跡</td><td>FTH</td></tr>
@@ -737,7 +718,7 @@
   <!-- V. 能力値・派生ステータス -->
   <section class="section" id="stats">
     <div class="section-header">
-      <span class="section-num">VI</span>
+      <span class="section-num">V</span>
       <h2 class="section-title">能力値・派生ステータス</h2>
       <div class="section-rule"></div>
     </div>
@@ -750,11 +731,11 @@
         </thead>
         <tbody>
           <tr><td>CON</td><td>体力</td><td>HP・物理装甲値・魔術耐性の算出</td><td>なし（GM裁量）</td></tr>
-          <tr><td>STR</td><td>筋力</td><td>HP算出・筋力武器のダメージボーナス</td><td>重いものを動かす・壁をよじ登る・力比べ</td></tr>
+          <tr><td>STR</td><td>筋力</td><td>筋力武器のダメージボーナス</td><td>重いものを動かす・壁をよじ登る・力比べ</td></tr>
           <tr><td>DEX</td><td>技量</td><td>技量武器のダメージボーナス</td><td>罠解除・鍵開け・繊細な作業・スリ</td></tr>
-          <tr><td>AGI</td><td>敏捷</td><td>イニシアチブ・回避の対抗ロール</td><td>追跡・逃走・バランス・狭所通過</td></tr>
-          <tr><td>INT</td><td>理力</td><td>魔術ダメージボーナス・相殺判定・MP算出</td><td>古代文字解読・魔術知識・罠看破・情報収集</td></tr>
-          <tr><td>FTH</td><td>信仰</td><td>奇跡ダメージボーナス・MP算出</td><td>なし（GM裁量）</td></tr>
+          <tr><td>AGI</td><td>敏捷</td><td>イニシアチブ・回避値・回避の対抗ロール</td><td>追跡・逃走・バランス・狭所通過</td></tr>
+          <tr><td>INT</td><td>理力</td><td>魔術ダメージボーナス</td><td>古代文字解読・魔術知識・罠看破・情報収集</td></tr>
+          <tr><td>FTH</td><td>信仰</td><td>奇跡ダメージボーナス</td><td>なし（GM裁量）</td></tr>
           <tr><td>POW</td><td>精神</td><td>MP算出・魔術耐性算出・精神系状態異常への抵抗</td><td>なし（GM裁量）</td></tr>
           <tr><td>LCK</td><td>運命</td><td>クリティカル率・瀕死時の生存判定</td><td>偶然の幸運・賭け・運任せの行動全般</td></tr>
         </tbody>
@@ -767,10 +748,11 @@
           <tr><th>ステータス</th><th>計算式</th><th>備考</th></tr>
         </thead>
         <tbody>
-          <tr><td>HP</td><td>(CON ＋ STR) × 2</td><td>体力と筋力で決まる生命力</td></tr>
-          <tr><td>MP</td><td>POW ＋ INT ＋ FTH</td><td>魔術・奇跡の燃料。自然回復はなく、アイテム・刻印でのみ回復する</td></tr>
-          <tr><td>物理装甲値</td><td>防具重量(軽0、中2、重、4) ＋ CON → 共通テーブル参照</td><td>物理ダメージを固定軽減する</td></tr>
-          <tr><td>魔術耐性</td><td>POW ＋ CON → 共通テーブル参照</td><td>魔術ダメージを固定軽減する</td></tr>
+          <tr><td>HP</td><td>CON × 2 ＋ 5</td><td>体力で決まる生命力</td></tr>
+          <tr><td>MP</td><td>POW × 2 ＋ 5</td><td>魔術・奇跡の燃料。自然回復はなく、アイテム・刻印でのみ回復する</td></tr>
+          <tr><td>物理装甲値</td><td>CON参照 ＋ 防具</td><td>CONを共通テーブルに当てはめた値に、装備した防具の装甲値を加算する</td></tr>
+          <tr><td>魔術耐性</td><td>POW参照 ＋ 防具</td><td>POWを共通テーブルに当てはめた値に、装備した防具の耐性値を加算する</td></tr>
+          <tr><td>回避</td><td>AGI × 2 ＋ 5</td><td>回避の対抗ロールに用いる基礎値</td></tr>
           <tr><td>クリティカル率</td><td>基本1%（出目1）＋ LCK5ごとに+1%</td><td>LCK20で最大6%</td></tr>
           <tr><td>イニシアチブ</td><td>AGI順（高い順に行動）</td><td>同値はLCKで比較。それでも同値なら同時行動</td></tr>
         </tbody>
@@ -785,7 +767,7 @@
         <tbody>
           <tr><td>自然回復</td><td>1時間ごとにHP・MPがそれぞれ+1（自動）</td><td>戦闘中は回復しない</td></tr>
           <tr><td>1晩の休息</td><td>HP・MPが全回復</td><td>宿屋・安全な野営地での睡眠</td></tr>
-          <tr><td>状態異常の回復</td><td>戦闘終了時に全てリセット</td><td>疲労のみ次ラウンド開始時に自動回復（戦闘中）</td></tr>
+          <tr><td>状態異常の回復</td><td>戦闘終了時に全てリセット</td><td>各状態異常に記載された解除条件を満たした場合はその時点で解除される</td></tr>
           <tr><td>アイテム回復</td><td>包帯・解毒薬・MP回復薬など</td><td>0APで使用可能</td></tr>
         </tbody>
       </table>
@@ -797,7 +779,7 @@
   <!-- VI. 状態異常・属性 -->
   <section class="section" id="status">
     <div class="section-header">
-      <span class="section-num">VII</span>
+      <span class="section-num">VI</span>
       <h2 class="section-title">状態異常・属性</h2>
       <div class="section-rule"></div>
     </div>
@@ -814,27 +796,21 @@
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
-          <p class="status-card__name">疲労</p>
-          <p class="status-card__effect">全ての判定にペナルティダイス（PD）+1</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>次ラウンド開始時に自動回復</span></div>
+          <p class="status-card__name">燃焼</p>
+          <p class="status-card__effect">ラウンド終了時に2d3ダメージ（装甲無視）。1手番に3マス以上移動したら解除される</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>1手番に3マス以上移動</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
           <p class="status-card__name">冷気</p>
-          <p class="status-card__effect">5回付与されると「凍結」に変化する。</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>燃焼付与時に打ち消して全解除</span></div>
+          <p class="status-card__effect">物理攻撃に1ダメージ追加。5スタック付与で2d6ダメージを与えて全解除</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>5スタックで自動解除</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Physical</span>
-          <p class="status-card__name">凍結</p>
-          <p class="status-card__effect">移動不可。手番にSTRに成功すれば移動不可を無視して移動できる。</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>燃焼付与時に打ち消して全解除</</span></div>
-        </div>
-        <div class="status-card">
-          <span class="status-card__cat">Physical</span>
-          <p class="status-card__name">燃焼</p>
-          <p class="status-card__effect">ラウンド終了時に2d3ダメージ（装甲無視）。1手番に3回マス以上移動したら解除される。</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>冷気付与時に打ち消して全解除</</span></div>
+          <p class="status-card__name">出血</p>
+          <p class="status-card__effect">移動すると1ダメージを受ける。5スタック付与で2d6ダメージを与えて全解除</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>5スタックで自動解除</span></div>
         </div>
       </div>
 
@@ -843,14 +819,14 @@
         <div class="status-card">
           <span class="status-card__cat">Mental</span>
           <p class="status-card__name">恐怖</p>
-          <p class="status-card__effect">命中・回避判定にPD+1。毎ラウンド開始時にPOWロールに成功すると解除される</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>POWロール成功</span></div>
+          <p class="status-card__effect">すべての判定にペナルティダイス（PD）+1</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>毎ラウンド開始時のPOWロール成功</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Mental</span>
           <p class="status-card__name">発狂</p>
-          <p class="status-card__effect">毎ラウンド開始時にPOWロール。失敗でAP-1、成功で解除される</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>POWロール成功</span></div>
+          <p class="status-card__effect">AP-1</p>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>毎ラウンド開始時のPOWロール成功</span></div>
         </div>
       </div>
 
@@ -872,7 +848,7 @@
           <span class="status-card__cat">Debuff</span>
           <p class="status-card__name">封印</p>
           <p class="status-card__effect">取得している刻印の効果が全て無効化される。手番にAP2消費で解除可能。</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
+          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>AP消費</span></div>
         </div>
       </div>
 
@@ -881,19 +857,13 @@
         <div class="status-card">
           <span class="status-card__cat">Special</span>
           <p class="status-card__name">死の宣告</p>
-          <p class="status-card__effect">付与時にLCKロールに失敗すると確定。付与から3ラウンド後に即死する</p>
+          <p class="status-card__effect">付与から3ラウンド後に即死する</p>
           <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
         </div>
         <div class="status-card">
           <span class="status-card__cat">Special</span>
-          <p class="status-card__name">石化</p>
-          <p class="status-card__effect">付与時にPOWロールに失敗すると確定。行動不能になり、瀕死時は即死亡が確定する</p>
-          <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>不可</span></div>
-        </div>
-        <div class="status-card">
-          <span class="status-card__cat">Special</span>
           <p class="status-card__name">狂喜</p>
-          <p class="status-card__effect">ダメージボーナスが1段階上昇する代わりに、防御行動（RA）が一切できなくなる</p>
+          <p class="status-card__effect">ダメージボーナスが1段階上昇する。代わりに回避はできなくなり、装甲値・耐性は0として扱われる</p>
           <div class="status-card__meta"><span><b></b></span><span><b>解除：</b>戦闘終了</span></div>
         </div>
       </div>
@@ -905,15 +875,15 @@
         </thead>
         <tbody>
           <tr><td>炎</td><td>燃焼1付与</td><td>1APで味方(自分含む)に燃焼1付与</td><td>－</td></tr>
-          <tr><td>冷気</td><td>冷気1付与</td><td>1APで味方(自分含む)に冷気1付与</td><td>冷気は5回付与で凍結に変化</td></tr>
-          <tr><td>雷</td><td>物理装甲値を半減して計算（魔術耐性には無効）</td><td>—</td><td>装甲値半減後、残りダメージを通常通り適用</td></tr>
+          <tr><td>冷気</td><td>冷気1付与</td><td>1APで味方(自分含む)に冷気1付与</td><td>5スタックで2d6ダメージを与えて全解除</td></tr>
+          <tr><td>雷</td><td>装甲を半減して計算（切り捨て）</td><td>—</td><td>装甲値半減後、残りダメージを通常通り適用</td></tr>
           <tr><td>毒</td><td>毒1付与</td><td>—</td><td>累積上限なし</td></tr>
-          <tr><td>闇</td><td>EX成功で恐怖or発狂を選んで付与</td><td>—</td><td>－</td></tr>
-          <tr><td>神聖</td><td>アンデッド・邪悪な存在に+2d4の固定ダメージ</td><td>—</td><td>－</td></tr>
-          <tr><td>無属性</td><td>素の物理ダメージ</td><td>—</td><td>—</td></tr>
+          <tr><td>血</td><td>出血1付与</td><td>—</td><td>5スタックで2d6ダメージを与えて全解除</td></tr>
+          <tr><td>闇</td><td>盲目・沈黙・封印のいずれかを選んで付与</td><td>—</td><td>－</td></tr>
+          <tr><td>聖</td><td>特定のエネミーに追加ダメージ</td><td>—</td><td>アンデッド・邪悪な存在などが対象</td></tr>
         </tbody>
       </table>
-       <div class="note">ダメージ0点でも属性の効果は発動する。応戦、相殺で0になった場合は効果なし</div>
+       <div class="note">ダメージ0点でも属性の効果は発動する。</div>
     </div>
   </section>
 
@@ -922,7 +892,7 @@
   <!-- VII. ラウンド構造とHP・死亡 -->
   <section class="section" id="round">
     <div class="section-header">
-      <span class="section-num">VIII</span>
+      <span class="section-num">VII</span>
       <h2 class="section-title">ラウンド構造とHP・死亡</h2>
       <div class="section-rule"></div>
     </div>
@@ -946,7 +916,7 @@
           <div class="flow__dot">3</div>
           <div class="flow__content">
             <p class="flow__label">ラウンド終了処理</p>
-            <p class="flow__desc">①継続ダメージの適用（毒：1点／燃焼：2d3）　②瀕死キャラクターのLCKロール（LCK×5以下で持ちこたえる）　③状態異常チェック（解除判定・冷気カウント確認・疲労の自動回復）</p>
+            <p class="flow__desc">①継続ダメージの適用（毒：1点／燃焼：2d3／冷気・出血：5スタックで2d6＋全解除）　②状態異常の解除判定（恐怖・発狂のPOWロールなど）</p>
           </div>
         </div>
       </div>
@@ -957,10 +927,9 @@
         </thead>
         <tbody>
           <tr><td>HP 0</td><td>瀕死状態へ移行する。行動不能になるが、即死ではない</td></tr>
-          <tr><td>瀕死中</td><td>毎ラウンド終了時にLCK×5以下のロールに成功すると持ちこたえる</td></tr>
-          <tr><td>LCKロール失敗</td><td>死亡</td></tr>
-          <tr><td>石化状態での瀕死</td><td>蘇生不可・即死亡が確定する（LCKロールはできない）</td></tr>
-          <tr><td>逃走</td><td>基本的に存在しない</td></tr>
+          <tr><td>瀕死中</td><td>手番が来たらLCKで判定する</td></tr>
+          <tr><td>LCKロール失敗</td><td>死亡（戦闘エリアから除外）</td></tr>
+          <tr><td>LCKロール成功</td><td>瀕死状態のまま戦闘エリアに残る</td></tr>
         </tbody>
       </table>
 
@@ -981,56 +950,64 @@
   <!-- VIII. 命中値テーブル -->
   <section class="section" id="hit">
     <div class="section-header">
-      <span class="section-num">IX</span>
+      <span class="section-num">VIII</span>
       <h2 class="section-title">命中値テーブル</h2>
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>命中値は素性ごとに武器種別で固定されている。最終的な命中値はこの表の値に、装備した触媒の命中補正を加えたものになる（魔術・奇跡列は触媒の補正を加える前の基本値）。命中値に上限はなく、100%を超えた分はHD/EXの達成確率上昇に転換される。</p>
+      <p>命中値は素性ごとに武器種別で固定されている。記載のない武器種・魔術・奇跡は基本値50%となる。最終的な命中値はこの表の値に、装備した触媒の命中補正を加えたものになる（魔術・奇跡列は触媒の補正を加える前の基本値）。命中値に上限はなく、100%を超えた分はHD/EXの達成確率上昇に転換される。</p>
 
       <div class="hit-table-key">
-        <span><span class="k-strong">金色の数値</span> ＝ 得意武器（65%以上）</span>
-        <span><span class="k-weak">暗色の数値</span> ＝ 不得意（40%以下）</span>
-        <span>全素性の命中値は35%〜75%の範囲（最大40%差）に収まる</span>
+        <span><span class="k-strong">金色の数値</span> ＝ 得意武器（70%以上）</span>
+        <span>記載のない武器種・魔術・奇跡の基本値は50%</span>
       </div>
 
       <div class="hit-table-wrap">
         <table class="hit-table">
           <thead>
             <tr>
-              <th>素性</th><th>短剣</th><th>直剣</th><th>大剣</th><th>斧・<br>ハンマー</th><th>槍・<br>ハルバード</th><th>盾</th><th>弓</th><th>魔術 *</th><th>奇跡 *</th><th>得意武器</th>
+              <th>素性</th><th>短剣</th><th>直剣</th><th>大剣</th><th>斧・<br>ハンマー</th><th>槍・<br>ハルバード</th><th>盾</th><th>弓</th><th>魔術</th><th>奇跡</th><th>得意武器</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>騎士</td><td>55%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">65%</td><td>55%</td><td>60%</td><td class="hit-cell--strong">65%</td><td class="hit-cell--weak">45%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">40%</td><td>直剣・盾・大剣</td>
+              <td>騎士</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">70%</td><td>55%</td><td>55%</td><td>全武器</td>
             </tr>
             <tr>
-              <td>傭兵</td><td class="hit-cell--strong">60%</td><td class="hit-cell--strong">65%</td><td>60%</td><td>50%</td><td>55%</td><td>50%</td><td>50%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">35%</td><td>短剣・直剣</td>
+              <td>守護者</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">80%</td><td class="hit-cell--strong">70%</td><td>50%</td><td>50%</td><td>50%</td><td>槍・盾</td>
             </tr>
             <tr>
-              <td>戦士</td><td>50%</td><td class="hit-cell--strong">60%</td><td class="hit-cell--strong">75%</td><td class="hit-cell--strong">70%</td><td class="hit-cell--strong">60%</td><td>55%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">35%</td><td>大剣・斧</td>
+              <td>戦士</td><td>50%</td><td>50%</td><td class="hit-cell--strong">80%</td><td class="hit-cell--strong">80%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>大剣・斧</td>
             </tr>
             <tr>
-              <td>盗賊</td><td class="hit-cell--strong">75%</td><td>55%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td>45%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--strong">65%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">35%</td><td>短剣・弓</td>
+              <td>侍</td><td>50%</td><td class="hit-cell--strong">80%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>60%</td><td>50%</td><td>50%</td><td>直剣・弓</td>
             </tr>
             <tr>
-              <td>呪術師</td><td>55%</td><td class="hit-cell--weak">45%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--strong">75%</td><td>45%</td><td>魔術</td>
+              <td>盗賊</td><td class="hit-cell--strong">80%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>60%</td><td>50%</td><td>50%</td><td>短剣・弓</td>
             </tr>
             <tr>
-              <td>魔法使い</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">35%</td><td class="hit-cell--weak">35%</td><td>45%</td><td class="hit-cell--strong">75%</td><td class="hit-cell--weak">40%</td><td>魔術</td>
+              <td>狩人</td><td>60%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">80%</td><td>50%</td><td>50%</td><td>弓・短剣</td>
             </tr>
             <tr>
-              <td>聖職者</td><td class="hit-cell--weak">45%</td><td>50%</td><td class="hit-cell--weak">40%</td><td>50%</td><td>55%</td><td class="hit-cell--strong">60%</td><td class="hit-cell--weak">45%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--strong">75%</td><td>奇跡・盾</td>
+              <td>呪術師</td><td>60%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">80%</td><td>50%</td><td>短剣・魔術</td>
             </tr>
             <tr>
-              <td>深きものの末裔</td><td>55%</td><td class="hit-cell--strong">60%</td><td>55%</td><td class="hit-cell--strong">60%</td><td class="hit-cell--strong">60%</td><td>55%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">45%</td><td class="hit-cell--weak">35%</td><td>直剣・斧・槍</td>
+              <td>魔法使い</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">85%</td><td>50%</td><td>魔術</td>
             </tr>
             <tr>
-              <td>狩人</td><td class="hit-cell--strong">65%</td><td>50%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">45%</td><td>50%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--strong">75%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">35%</td><td>弓・短剣</td>
+              <td>聖職者</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">85%</td><td>奇跡</td>
             </tr>
             <tr>
-              <td>廃人</td><td class="hit-cell--weak">45%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">40%</td><td class="hit-cell--weak">45%</td><td class="hit-cell--weak">45%</td><td>（全武器均等）</td>
+              <td>奇術師</td><td>50%</td><td>60%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">80%</td><td>直剣・奇跡</td>
+            </tr>
+            <tr>
+              <td>深きものの末裔</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">70%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">70%</td><td>50%</td><td>槍・魔術</td>
+            </tr>
+            <tr>
+              <td>刻み師</td><td class="hit-cell--strong">70%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td class="hit-cell--strong">70%</td><td>短剣・奇跡</td>
+            </tr>
+            <tr>
+              <td>廃人</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>50%</td><td>（全武器均等）</td>
             </tr>
           </tbody>
         </table>
