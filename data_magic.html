@@ -3,397 +3,898 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>魔術・奇跡 — 忘却の淵にて</title>
+<title>データ一覧：魔術・奇跡 — 忘却の淵にて</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-.data-controls{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;align-items:center}
-.search-box{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem 1rem;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
-.search-box:focus{border-color:var(--gold-dim)}.search-box::placeholder{color:var(--text3)}
-.filter-group{display:flex;flex-wrap:wrap;gap:.5rem}
-.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.1em;padding:4px 12px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);border-radius:2px;cursor:pointer;transition:all .2s}
-.filter-btn:hover{color:var(--gold);border-color:var(--gold-dim)}.filter-btn.active{background:var(--gold-dim);color:var(--gold2);border-color:var(--gold)}
-.result-count,.fav-notice{font-size:11px;font-family:'Noto Sans JP',sans-serif;margin-bottom:1rem}
-.result-count{color:var(--text3)}.fav-notice{color:var(--gold-dim);margin-bottom:1.5rem}
-.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:3rem}
-.data-card{background:var(--bg2);padding:1.25rem;position:relative;transition:background .15s}
-.data-card:hover{background:var(--bg3)}.data-card.hidden{display:none}.data-card.favorited{background:rgba(200,164,90,.06)}
-.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
-.card-id{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text3);flex-shrink:0;margin-top:2px}
-.card-name{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
-.card-name-en{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.15em;display:block;margin-top:2px}
-.fav-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px;flex-shrink:0;transition:color .2s,transform .15s;line-height:1}
-.fav-btn:hover{color:var(--gold);transform:scale(1.2)}.fav-btn.active{color:var(--gold2)}
-.card-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
-.tag{font-size:9px;font-family:'Noto Sans JP',sans-serif;letter-spacing:.08em;padding:2px 7px;border-radius:2px;font-weight:500}
-.tag-soldier{background:rgba(160,144,112,.2);color:var(--text2);border:1px solid var(--border2)}
-.tag-hero{background:rgba(200,164,90,.15);color:var(--gold);border:1px solid var(--gold-dim)}
-.tag-legend{background:rgba(192,64,48,.15);color:var(--red2);border:1px solid var(--red)}
-.tag-fire{background:rgba(200,80,40,.15);color:#e87050;border:1px solid #904030}
-.tag-ice{background:rgba(80,160,200,.15);color:#70b0e0;border:1px solid #4080a0}
-.tag-thunder{background:rgba(200,200,40,.15);color:#d0c050;border:1px solid #908030}
-.tag-poison{background:rgba(80,160,80,.15);color:#70c070;border:1px solid #408040}
-.tag-dark{background:rgba(112,80,144,.2);color:var(--purple2);border:1px solid var(--purple)}
-.tag-holy{background:rgba(200,164,90,.15);color:var(--gold2);border:1px solid var(--gold-dim)}
-.tag-none{background:rgba(100,90,64,.2);color:var(--text2);border:1px solid var(--border2)}
-.tag-buff{background:rgba(48,128,112,.15);color:var(--teal2);border:1px solid var(--teal)}
-.card-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:.75rem}
-.stat-item{background:var(--bg3);border-radius:2px;padding:4px 6px;text-align:center}
-.stat-label{font-size:8px;font-family:'Noto Sans JP',sans-serif;color:var(--text3);letter-spacing:.1em;display:block}
-.stat-val{font-size:12px;font-weight:500;color:var(--gold);display:block}
-.card-effect{font-size:11px;color:var(--text3);line-height:1.7;margin-bottom:.5rem}
-.card-status{font-size:11px;color:var(--teal2);line-height:1.7;margin-bottom:4px}
-.card-hd{font-size:11px;line-height:1.7;padding:4px 8px;border-radius:2px;margin-bottom:4px;background:rgba(200,164,90,.08);color:var(--text2)}
-.card-hd::before{content:'HD ';color:var(--gold-dim);font-weight:500;font-family:'Cinzel',serif;font-size:9px}
-.card-ex{font-size:11px;line-height:1.7;padding:4px 8px;border-radius:2px;margin-bottom:4px;background:rgba(200,164,90,.14);color:var(--text2)}
-.card-ex::before{content:'EX ';color:var(--gold);font-weight:500;font-family:'Cinzel',serif;font-size:9px}
-.card-flavor{font-size:10px;color:var(--text3);font-style:italic;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;line-height:1.6}
-.tab-group{display:flex;flex-wrap:wrap;gap:0;margin-bottom:2rem;border-bottom:1px solid var(--border)}
-.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.08em;padding:.6rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
-.tab-btn:hover{color:var(--gold)}.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold-dim)}
-.tab-content{display:none}.tab-content.active{display:block}
-.cat-table{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:1rem}
-.cat-table th{font-family:'Noto Sans JP',sans-serif;font-size:10px;color:var(--gold-dim);text-align:left;padding:6px 8px;border-bottom:1px solid var(--border2);letter-spacing:.1em}
-.cat-table td{padding:8px 8px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.6}
-.cat-table tr:last-child td{border-bottom:none}.cat-table td:first-child{color:var(--text);font-weight:500;white-space:nowrap}
-.cat-table tr:hover td{background:var(--bg3)}
-@media(max-width:640px){.card-grid{grid-template-columns:1fr}}
-
-/* ── キャラクター作成用テーブル ── */
-.cc-section { margin-bottom: 2.5rem; }
-.cc-section-title {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text3);
-  margin-bottom: 0.6rem;
-  padding-left: 0.5rem;
-  border-left: 2px solid var(--gold-dim);
-}
-.cc-table-wrap {
+/* ── 武器/魔術カードグリッド（シグネチャー要素） ── */
+.weapon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1px;
+  background: var(--border);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow-x: auto;
-  margin-bottom: 0.5rem;
+  overflow: hidden;
+  margin: 1rem 0 0.5rem;
 }
-.cc-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-  min-width: 700px;
+
+.weapon-card {
+  background: var(--bg2);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
-.cc-table th {
+
+.weapon-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.weapon-card__name {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--gold2);
+  letter-spacing: 0.03em;
+  line-height: 1.4;
+}
+
+.weapon-card__type {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.weapon-card__cats {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.weapon-card__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.55rem 0.85rem;
+  margin-bottom: 0.9rem;
+}
+
+.wstat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wstat__label {
   font-family: 'Noto Sans JP', sans-serif;
   font-size: 9px;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+}
+
+.wstat__val {
+  font-size: 12.5px;
+  color: var(--text);
   font-weight: 500;
-  letter-spacing: 0.12em;
-  color: var(--gold-dim);
-  text-align: left;
-  padding: 5px 8px;
-  border-bottom: 1px solid var(--border2);
-  background: var(--bg2);
+}
+
+.attr-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border2);
+}
+.attr--fire       { color: var(--red2);    border-color: var(--red); }
+.attr--cold       { color: var(--blue2);   border-color: var(--blue); }
+.attr--lightning  { color: var(--purple2); border-color: var(--purple); }
+.attr--poison     { color: var(--teal2);   border-color: var(--teal); }
+.attr--blood      { color: var(--red2);    border-color: var(--red2); }
+.attr--dark       { color: var(--purple2); border-color: var(--purple2); }
+.attr--holy       { color: var(--gold2);   border-color: var(--gold-dim); }
+.attr--none       { color: var(--text3);   border-color: var(--border2); }
+
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 9px;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--border2);
   white-space: nowrap;
 }
-.cc-table td {
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text2);
-  vertical-align: top;
-  line-height: 1.5;
-}
-.cc-table tr:last-child td { border-bottom: none; }
-.cc-table tr:hover td { background: var(--bg3); }
-.cc-table td:first-child { white-space: nowrap; }
-.cc-name { color: var(--text); font-weight: 400; }
-.cc-badge {
-  display: inline-block;
-  font-size: 8px;
-  font-family: 'Noto Sans JP', sans-serif;
-  padding: 1px 5px;
-  border-radius: 2px;
-  vertical-align: middle;
-  margin-left: 3px;
-}
-.cc-soldier { background: rgba(160,144,112,.2); color: var(--text2); border: 1px solid var(--border2); }
-.cc-hero    { background: rgba(200,164,90,.15); color: var(--gold); border: 1px solid var(--gold-dim); }
-.cc-legend  { background: rgba(192,64,48,.15); color: var(--red2); border: 1px solid var(--red); }
-.cc-waza { font-size: 10px; color: var(--text3); line-height: 1.6; }
-.cc-waza .hd { color: var(--gold-dim); font-weight: 500; }
-.cc-waza .ex { color: var(--gold); font-weight: 500; }
-.cc-waza .mp { font-size: 9px; color: var(--teal2); }
-.cc-waza .none { color: var(--text3); font-style: italic; }
-.cc-price { color: var(--gold); font-family: 'Cinzel', serif; font-size: 10px; white-space: nowrap; }
-.cc-price.legend { color: var(--red2); }
-.cc-cat-note {
-  font-size: 11px;
-  color: var(--text2);
-  line-height: 1.8;
-  padding: 0.6rem 1rem;
-  background: rgba(200,164,90,0.04);
-  border: 1px solid rgba(200,164,90,0.12);
-  border-radius: var(--radius);
-  margin-bottom: 1rem;
-}
-.cc-cat-note b { color: var(--gold-dim); }
+.cat--attack { color: var(--red2);    border-color: var(--red); }
+.cat--heal   { color: var(--teal2);   border-color: var(--teal); }
+.cat--field  { color: var(--purple2); border-color: var(--purple); }
+.cat--buff   { color: var(--blue2);   border-color: var(--blue); }
+.cat--ward   { color: var(--gold2);   border-color: var(--gold-dim); }
+.cat--tarot  { color: var(--text2);   border-color: var(--border2); }
+.cat--other  { color: var(--text3);   border-color: var(--border2); }
 
+.weapon-card__special {
+  font-size: 12px;
+  color: var(--text2);
+  line-height: 1.75;
+  margin-bottom: 0.9rem;
+  flex: 1;
+}
+.weapon-card__special-label {
+  display: block;
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.weapon-card__special p { margin: 0; }
+
+.weapon-card__flavor {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 11.5px;
+  line-height: 1.85;
+  padding: 0.7rem 0.85rem;
+  border-left: 2px solid var(--gold-dim);
+  background: rgba(255,255,255,0.012);
+  margin-top: auto;
+  color: var(--text2);
+  font-style: italic;
+}
+.weapon-card__flavor--empty {
+  color: var(--text3);
+  border-left: none;
+  border: 1px dashed var(--border2);
+  border-radius: 4px;
+}
+
+@media (max-width: 640px) {
+  .weapon-grid { grid-template-columns: 1fr; }
+  .weapon-card__stats { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
-<nav class="site-nav" role="navigation"><div class="site-nav__inner">
-  <a href="index.html" class="site-nav__logo">Oblivion</a>
-  <ul class="site-nav__links">
-    <li><a href="index.html">Top</a></li>
-    <li class="site-nav__item"><a href="world.html">世界観</a><ul class="site-nav__dropdown"><li><a href="world.html">概要</a></li><li><a href="world_detail.html">詳細設定</a></li></ul></li>
-    <li class="site-nav__item"><a href="system_combat.html">システム</a><ul class="site-nav__dropdown"><li><a href="system_combat.html">戦闘</a></li><li><a href="system_explore.html">探索</a></li></ul></li>
-    <li><a href="charcreate.html">キャラクター作成</a></li>
-    <li><a href="origins.html">素性・能力値</a></li>
-    <li class="site-nav__item"><a href="data_weapons.html">データ一覧</a><ul class="site-nav__dropdown"><li><a href="data_weapons.html">武器・防具</a></li><li><a href="data_magic.html">魔術・奇跡</a></li><li><a href="data_seals.html">刻印</a></li></ul></li>
-    <li class="site-nav__item"><a href="gm_enemies.html">GMツール</a><ul class="site-nav__dropdown"><li><a href="gm_enemies.html">エネミーリスト</a></li><li><a href="gm_artifacts.html">アーティファクト</a></li><li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li></ul></li>
-  </ul>
-</div></nav>
+
+<!-- ナビゲーション -->
+<nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
+  <div class="site-nav__inner">
+    <a href="index.html" class="site-nav__logo">Oblivion</a>
+    <ul class="site-nav__links">
+      <li><a href="index.html">Top</a></li>
+      <li class="site-nav__item">
+        <a href="world.html">世界観</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="world.html">概要</a></li>
+          <li><a href="world_detail.html">詳細設定</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="system_combat.html">システム</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="system_combat.html">戦闘</a></li>
+          <li><a href="system_explore.html">探索</a></li>
+        </ul>
+      </li>
+      <li><a href="charcreate.html">キャラクター作成</a></li>
+      <li><a href="origins.html">素性・能力値</a></li>
+      <li class="site-nav__item">
+        <a href="data_weapons.html">データ一覧</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="data_weapons.html">武器・防具</a></li>
+          <li><a href="data_magic.html">魔術・奇跡</a></li>
+          <li><a href="data_seals.html">刻印</a></li>
+        </ul>
+      </li>
+      <li class="site-nav__item">
+        <a href="gm_enemies.html">GMツール</a>
+        <ul class="site-nav__dropdown">
+          <li><a href="gm_enemies.html">エネミーリスト</a></li>
+          <li><a href="gm_artifacts.html">アーティファクト</a></li>
+          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 <div class="page-wrap">
+
   <div class="page-header">
-    <p class="page-eyebrow">Data — V-B</p>
-    <h1 class="page-title">Magic & Miracles</h1>
-    <p class="page-title-ja">魔術・奇跡・触媒</p>
+    <p class="page-eyebrow">Chapter VI</p>
+    <h1 class="page-title">Data — Magic &amp; Miracles</h1>
+    <p class="page-title-ja">データ一覧 — 魔術・奇跡</p>
     <div class="page-divider"></div>
   </div>
-  <div class="tab-group">
-    <button class="tab-btn active" onclick="switchTab('magic')">魔術（24種）</button>
-    <button class="tab-btn" onclick="switchTab('miracle')">奇跡（12種）</button>
-    <button class="tab-btn" onclick="switchTab('catalyst')">触媒（17種）</button>
-    <button class="tab-btn" onclick="switchTab('favorites')">★ お気に入り</button>
-    <button class="tab-btn" onclick="switchTab('charcreate')">📋 キャラクター作成用</button>
+
+  <!-- 目次 -->
+  <div class="toc">
+    <p class="toc__title">Contents</p>
+    <ul class="toc__list">
+      <li><span>I</span><a href="#magic">魔術</a></li>
+      <li><span>II</span><a href="#miracle">奇跡</a></li>
+    </ul>
   </div>
-  <div id="tab-magic" class="tab-content active">
-    <div class="data-controls">
-      <input class="search-box" type="text" placeholder="名前・効果・属性で検索…" oninput="filterCards('magic',this.value)">
-      <div class="filter-group" id="magic-filters">
-        <button class="filter-btn active" onclick="setRF('magic','all',this)">すべて</button>
-        <button class="filter-btn" onclick="setRF('magic','兵士',this)">兵士（初級）</button>
-        <button class="filter-btn" onclick="setRF('magic','英雄',this)">英雄（上級）</button>
-        <button class="filter-btn" onclick="setRF('magic','伝説',this)">伝説（超級）</button>
+
+  <p style="font-size:13px; color:var(--text2); line-height:2; max-width:680px; margin: 0 auto 3rem; text-align:center;">
+    魔術・奇跡はいずれも触媒を介して行使し、MPを消費する。魔術はINT、奇跡はFTHを参照能力値とする。ダメージ・属性・射程・MP・AP・最大使用回数・DB参照能力値、および固有の特殊効果を掲載する。
+  </p>
+
+
+  <section class="section" id="magic">
+    <div class="section-header">
+      <span class="section-num">I</span>
+      <h2 class="section-title">魔術</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>魔術はINTを参照能力値とする攻性の術式。触媒を介して行使し、MPを消費する。</p>
+      <div class="note">※同一の特殊効果は1ラウンドに1度のみ発動できる</div>
+      <div class="weapon-grid">
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">炎の矢</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX：ダメージ+1d4</p></div>
+          <div class="weapon-card__flavor">縫合の神の炎が凝縮された魔術。<br>熱は、内側から来る。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">霜の息</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--cold">冷気</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程通過した対象すべてに命中する<br>EX：冷気1付与</p></div>
+          <div class="weapon-card__flavor">名無しの者の息吹を模した魔術。<br>止まれ、と言うように、冷気が広がる。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">雷刃</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--lightning">雷</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">4m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD：射程2内の別の敵1体にも1d4ダメージ</p></div>
+          <div class="weapon-card__flavor">外なる神々の電磁エネルギーを刃に変えた魔術。<br>その力が何者のものだったか、術者は考えないことにしている。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">風刃</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--blood">血</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">4m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD：対象を1マス移動させる</p></div>
+          <div class="weapon-card__flavor">空気を切り裂く魔術。<br>見えない刃が、見えない場所まで届く。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">毒沼</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--field">設置</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1マスを中心に3×3を次のラウンド終了時まで毒沼にする(毒沼に入る&amp;上にいるとラウンド開始時に毒1付与)<br>EX：永続で毒沼にする</p></div>
+          <div class="weapon-card__flavor">腐敗とは、じっくりと待つことだ。<br>ヴェイルホロウの呪術師はそれを、技術として磨いた。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">炎壁</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--field">設置</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1マスと両隣の3マスを次のラウンド終了時まで炎の壁にする(炎の壁に入る&amp;上にいるとラウンド開始時に1d4ダメージと燃焼付与。)<br>EX：永続で炎の壁にする</p></div>
+          <div class="weapon-card__flavor">縫合の神の炎による壁。<br>通り抜けようとする者に、神は何も語らない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">闇の瞳</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX：ダメージ+1d6。恐怖付与</p></div>
+          <div class="weapon-card__flavor">深淵の残滓が目の形に凝固した魔術。<br>見た者の心に、何かが根を張る。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">石礫の雨</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>このダメージは装甲で軽減される<br>HD：ダメージ+1d4</p></div>
+          <div class="weapon-card__flavor">大地の力で石礫を降らせる魔術。<br>空から来るものを、人は防ぎきれない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">属性呪縛</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--buff">付与</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">4</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人(自分含む)の装備している武器に「炎」「雷」「冷気」から選んで1種の属性を付与する<br>HD 「毒」「血」「聖」も選択肢に含まれる<br>※武器属性は上書きされる。戦闘終了まで持続。</p></div>
+          <div class="weapon-card__flavor">セラフィット帝国の古代魔術が残した付与術。<br>帝国が滅んだ後も、この技術だけは各地に散らばった。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">速度の術式</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--buff">付与</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人(自分含む)を1ラウンドに1度だけAP消費なしで移動できる状態にする<br>HD 射程内の味方全員が対象になる<br>※戦闘終了まで持続。</p></div>
+          <div class="weapon-card__flavor">帝国の軍が行軍速度向上に使った術式の断片。<br>戦争が終わった後も、術式だけが残り続けた。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">魔力吸収</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">0</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">4</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>命中対象のMP-1d3。減少したMP分だけ使用者のMP回復。MPが0の場合HPを減少させる<br>EX ダメージ+1d4。MP減少量+1d3</p></div>
+          <div class="weapon-card__flavor">深淵の作法がある。<br>与えたものが返ってくることを、深淵は約束しない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">豪火球</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX：ダメージ+1d6。目標を中心とした3×3を攻撃範囲にできる。しないならダメージ+1d4</p></div>
+          <div class="weapon-card__flavor">大崩壊の炎を模したとされる大魔術。<br>その規模を前にして、術者は何を思うのか。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">氷槍</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4+1</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--cold">冷気</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程通過した対象すべてに命中する<br>EX 出血1付与 耐性貫通(3)</p></div>
+          <div class="weapon-card__flavor">名無しの者の冷気を槍の形に収束した魔術。<br>貫通しながら、時間を止めようとする。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">雷鳴撃</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6+2</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--lightning">雷</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">7</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>命中対象から射程2以内の敵1体にも1d6ダメージ<br>HD 最初の目標を選択して追加のダメージを与えられる</p></div>
+          <div class="weapon-card__flavor">外なる神々の雷を呼び降ろす魔術。<br>稲妻は、どこで止まるべきかを知らない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">地砕</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+1</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内すべてのキャラに攻撃する。このダメージは装甲で軽減される<br>使用したラウンドに「石礫の雨」を使用するなら命中判定+10%、ダメージ+1d4</p></div>
+          <div class="weapon-card__flavor">大地そのものを砕く魔術。<br>逃げ場はない。大地は、全員の足の下にある。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">深淵の手</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d8</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">8</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>耐性貫通(全)。使用者はPOWに失敗すると自身に発狂付与<br>EX ダメージ+1d8 POWにBD+1</p></div>
+          <div class="weapon-card__flavor">深淵の残滓が手の形に結晶化した禁呪。<br>手を伸ばした先に何があるのか、使い手は見ていない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">鍛錬術式</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--buff">付与</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人(自分含む)の装備している武器の命中+10%、射程+1にする<br>HD 装備中にラウンド終了時にHP1回復も与える<br>※重複不可。</p></div>
+          <div class="weapon-card__flavor">帝国の鍛冶師と魔術師の共同研究から生まれた術。<br>二つの技術が出会った場所に、この術式は生まれた。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">世界の消滅</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d10+2</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">7</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">POW</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>戦闘中に自身が使用した攻撃魔術の属性種類分だけダメージ+1d6<br>※2属性なら2d6。4属性なら4d6追加。</p></div>
+          <div class="weapon-card__flavor">世界の全ての属性が収束する魔術。<br>何かが終わる時、それはいつも静かに始まる。</div>
+        </article>
       </div>
     </div>
-    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
-    <p class="result-count" id="magic-count"></p>
-    <div class="card-grid" id="magic-grid"></div>
-  </div>
-  <div id="tab-miracle" class="tab-content">
-    <div class="data-controls">
-      <input class="search-box" type="text" placeholder="名前・効果・属性で検索…" oninput="filterCards('miracle',this.value)">
-      <div class="filter-group" id="miracle-filters">
-        <button class="filter-btn active" onclick="setRF('miracle','all',this)">すべて</button>
-        <button class="filter-btn" onclick="setRF('miracle','兵士',this)">兵士（初級）</button>
-        <button class="filter-btn" onclick="setRF('miracle','英雄',this)">英雄（上級）</button>
-        <button class="filter-btn" onclick="setRF('miracle','伝説',this)">伝説（超級）</button>
+  </section>
+
+  <hr class="divider">
+
+  <section class="section" id="miracle">
+    <div class="section-header">
+      <span class="section-num">II</span>
+      <h2 class="section-title">奇跡</h2>
+      <div class="section-rule"></div>
+    </div>
+    <div class="section-body">
+      <p>奇跡はFTHを参照能力値とする信仰由来の術式。攻撃・回復・加護など効果は幅広く、タロットを触媒とするものも多い。</p>
+      <div class="note">※同一の特殊効果は1ラウンドに1度のみ発動できる</div>
+      <div class="weapon-grid">
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">審判</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span><span class="cat-pill cat--tarot">タロット</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>「邪悪」へのダメージ+1d4<br>EX 命中した目標に「邪悪」を与える</p></div>
+          <div class="weapon-card__flavor">縫合の神の名のもとに下される裁き。<br>裁く側もまた、いつか裁かれる。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">縫合の手</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--heal">回復</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HP+1d4回復<br>HD 回復量+1d4</p></div>
+          <div class="weapon-card__flavor">縫合の神の加護が傷口を縫い合わせる奇跡。<br>傷は消えない。ただ、閉じることができる。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">神聖の盾</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--ward">加護</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人に魔術耐性+2を与える<br>※重複不可。戦闘終了まで持続</p></div>
+          <div class="weapon-card__flavor">縫合の神の加護を鎧に宿す奇跡。<br>見えない盾が、見えない攻撃を防ぐ。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">浄化の炎</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span><span class="cat-pill cat--heal">回復</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">4</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>命中後、この奇跡で与えた燃焼以外の状態異常があるならそれを解除できる</p></div>
+          <div class="weapon-card__flavor">浄化とは、燃やすことだと教団は説く。<br>何が残るかは、燃え尽きるまで分からない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">運命の輪</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--ward">加護</span><span class="cat-pill cat--tarot">タロット</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>次に行う判定に+10%(1回)<br>EX 自分の振った1d6で1が出た時にそれを2に変更できるようになる<br>※戦闘終了まで持続</p></div>
+          <div class="weapon-card__flavor">タロットの「運命の輪」を模した奇跡。<br>輪は回る。止まることを、輪は知らない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">戦車</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span><span class="cat-pill cat--tarot">タロット</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程通過した対象すべてに命中する<br>HD 近接武器を装備しているならその武器ダメージの半分(切り捨て)を追加する</p></div>
+          <div class="weapon-card__flavor">止まらない力がある。<br>タロットの「戦車」は、その形を借りた奇跡だ。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">塔</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span><span class="cat-pill cat--tarot">タロット</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+2</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--lightning">雷</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">4m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">4</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD成功は失敗として扱う</p></div>
+          <div class="weapon-card__flavor">タロットの「塔」は崩壊を意味する。<br>この奇跡を受けた者が何を思うか、使い手には関係ない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">恋人</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--ward">加護</span><span class="cat-pill cat--tarot">タロット</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">4</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内2人(自分選択可能)を選ぶ。2人のHPとMPは合算され、共通のものとして扱う<br>※戦闘終了まで持続。解除後は均等に配分される</p></div>
+          <div class="weapon-card__flavor">タロットの「恋人」が二者を結ぶ奇跡。<br>共に在ることを選んだ者だけが、この契約を交わせる。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">正義</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--heal">回復</span><span class="cat-pill cat--tarot">タロット</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人はラウンド終了時にHP1d3回復する状態になる<br>EX 射程内から好きなだけ対象に選べる<br>※戦闘終了まで持続</p></div>
+          <div class="weapon-card__flavor">タロットの「正義」が正しき者を支える奇跡。<br>正しさとは何かを、この奇跡は問わない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">吊るされた男</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--ward">加護</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>使用後、自身に死の宣告付与(戦闘終了以外で解除されない)<br>目標の取得している刻印1種か、エネミーなら特殊能力1つを自身に取得させる。<br>※状態異常に関係するものは取得できない</p></div>
+          <div class="weapon-card__flavor">自ら犠牲を受け入れた者が使える奇跡。<br>「吊るされた男」は逆さまの世界から、正しく物事を見る。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">神の審判</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">6</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>「アンデッド」「邪悪」へのダメージ+2d6<br>HD 装甲貫通(5)</p></div>
+          <div class="weapon-card__flavor">縫合の神が直接下す大審判。<br>神は、何も説明しない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">贖罪の一撃</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+2</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>使用者のHPが最大値の半分以下の場合、ダメージ+1d8<br>EX　死の宣告付与</p></div>
+          <div class="weapon-card__flavor">贖罪とは、何かを返すことだ。<br>何を返すのかを、この奇跡は使い手に委ねている。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">信仰の伝播</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--blood">血</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内から3人まで目標に選べる<br>HD ダメージ+1d4</p></div>
+          <div class="weapon-card__flavor">信仰は、一人の中だけに留まらない。<br>この奇跡は、そのことを証明しようとしている。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">大治癒</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--heal">回復</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>味方1体のHPを2d6回復する<br>HD MPも1d4回復する</p></div>
+          <div class="weapon-card__flavor">縫合の神の大きな加護。<br>癒えるべきものが、静かに癒えていく。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">祝福の詠唱</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--ward">加護</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">7</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内の味方全員に命中+5%。使用したラウンドは攻撃行動不可<br>EX 命中+5%。闇属性攻撃で状態異常を受けなくなる<br>※戦闘終了まで持続</p></div>
+          <div class="weapon-card__flavor">祝福とは、祈ることで与えられる力だ。<br>詠唱が戦場に満ちる間、使い手は攻撃をやめている。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">罪と罰</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">0</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">5</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">CON</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>自身の減少しているHPをダメージに追加<br>HP最大値を現在のHPにする</p></div>
+          <div class="weapon-card__flavor">罪は消えない。<br>ただ、どこへ向けるかを選ぶことはできる。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">蘇生</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--heal">回復</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">-</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">-</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">10</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">3</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>死亡した味方1人をHP1で蘇生する<br>1度でもこの奇跡の目標に選ばれたことがあるキャラクターには使用できない<br>※セッション間ではなく、キャラクターデータとしてを参照</p></div>
+          <div class="weapon-card__flavor">縫合の神の奇跡の中で最も稀少な力。<br>一度だけ。それ以上は、神も許さない。</div>
+        </article>
+        <article class="weapon-card weapon-card--magic">
+          <div class="weapon-card__head">
+            <h3 class="weapon-card__name">終焉の審判</h3>
+            <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span></span>
+          </div>
+          <div class="weapon-card__stats weapon-card__stats--magic">
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6+2</span></div>
+            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
+            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
+            <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">8</span></div>
+            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
+            <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
+            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">FTH</span></div>
+          </div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>「アンデッド」「邪悪」へのダメージ+1d8<br>この奇跡でHPを0にされた目標は即座に死亡する<br>EX ダメージ+1d8</p></div>
+          <div class="weapon-card__flavor">大崩壊から二百五十年。<br>この奇跡は、その答えを持っていると信じた者たちが生み出した。</div>
+        </article>
       </div>
     </div>
-    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
-    <p class="result-count" id="miracle-count"></p>
-    <div class="card-grid" id="miracle-grid"></div>
-  </div>
-  <div id="tab-catalyst" class="tab-content">
-    <div class="data-controls">
-      <input class="search-box" type="text" placeholder="名前・効果で検索…" oninput="filterCat(this.value)">
-      <div class="filter-group">
-        <button class="filter-btn active" onclick="setCatFilter('all',this)">すべて</button>
-        <button class="filter-btn" onclick="setCatFilter('杖',this)">杖（魔術）</button>
-        <button class="filter-btn" onclick="setCatFilter('聖印',this)">聖印（奇跡）</button>
-      </div>
-    </div>
-    <p class="result-count" id="catalyst-count"></p>
-    <div id="catalyst-container"></div>
-  </div>
-  
-  <div id="tab-charcreate" class="tab-content">
-    <div id="cc-magic-content"></div>
-  </div>
-  <div id="tab-favorites" class="tab-content">
-    <p class="fav-notice">★ をつけたカードがここに表示されます</p>
-    <div class="card-grid" id="fav-grid"><div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div></div>
-  </div>
+  </section>
+  <!-- ページナビ -->
   <nav class="page-nav">
-    <div><p class="page-nav__label">← Previous</p><a href="data_weapons.html" class="page-nav__link">武器・防具</a></div>
-    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="data_seals.html" class="page-nav__link">刻印</a></div>
+    <div>
+      <p class="page-nav__label">← Previous</p>
+      <a href="data_weapons.html" class="page-nav__link">データ一覧 武器・防具・触媒</a>
+    </div>
+    <div style="text-align:right;">
+      <p class="page-nav__label">Next →</p>
+      <a href="data_seals.html" class="page-nav__link">刻印</a>
+    </div>
   </nav>
+
 </div>
-<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
+
+<footer class="site-footer">
+  <p>忘却の淵にて — At the Edge of Oblivion</p>
+</footer>
+
 <script src="nav.js"></script>
-<script>
-const MAGIC=[
-{id:'M01',name:'炎の矢',en:'Flame Bolt',rank:'兵士',ap:'初級 1AP',mp:3,attr:'炎',range:5,dice:'1d6',fixed:'—',pierce:'—',status:'—',effect:'炎属性の単体射撃',hd:'—',ex:'ダメージ+1d4',flavor:'「マナの最初の使い方だ。難しくない。ただ燃やせばいい」'},
-{id:'M02',name:'霜の息',en:'Frost Breath',rank:'兵士',ap:'初級 1AP',mp:3,attr:'冷気',range:3,dice:'1d4',fixed:'—',pierce:'—',status:'—',effect:'選択方向の射程3・幅2マスに冷気を放つ。',hd:'—',ex:'ダメージ+1d4',flavor:'「空気そのものを止める呪文」'},
-{id:'M03',name:'帯雷',en:'Static Spark',rank:'兵士',ap:'初級 1AP',mp:3,attr:'雷',range:4,dice:'1d6',fixed:'—',pierce:'—',status:'—',effect:'雷属性の単体射撃',hd:'ダメージ+1d4',ex:'ダメージ+1d4。射程2内の別の敵1体にも1d4連鎖（命中判定不要）',flavor:'「空気が軋む音がする」'},
-{id:'M04',name:'毒霧',en:'Poison Mist',rank:'兵士',ap:'初級 1AP',mp:2,attr:'毒',range:3,dice:'－',fixed:'—',pierce:'1',status:'—',effect:'射程内1マスを中心に3×3を次のラウンド終了時まで毒沼にする(毒沼に入る&毒沼上にいるラウンド開始時に毒1付与)',hd:'1ラウンド持続増加',ex:'永続で毒沼にする',flavor:'「毒は見えないから、余計に恐ろしい」'},
-{id:'M05',name:'闇の一瞥',en:'Dark Glance',rank:'兵士',ap:'初級 1AP',mp:3,attr:'闇',range:2,dice:'1d6',fixed:'—',pierce:'—',status:'—',effect:'闇属性の単体射撃',hd:'ダメージ+1',ex:'ダメージ+1d6。恐怖付与(ロール不要)',flavor:'「一瞬で正気の縁が崩れる」'},
-{id:'M06',name:'風の刃',en:'Wind Blade',rank:'兵士',ap:'初級 1AP',mp:2,attr:'無属性',range:6,dice:'1d4',fixed:'—',pierce:'—',status:'—',effect:'無属性の斬撃。魔術耐性両方の軽減を受けない。',hd:'—',ex:'ダメージ+1。対象を1マス強制後退',flavor:'「属性を持たないがゆえに、どんな装備も意味をなさない」'},
-{id:'M07',name:'石礫の雨',en:'Gravel Storm',rank:'兵士',ap:'初級 1AP',mp:3,attr:'無属性',range:4,dice:'1d4',fixed:'—',pierce:'—',status:'—',effect:'無属性の範囲射撃（射程3内・半径2×2）。',hd:'ダメージ+1',ex:'ダメージ+1d4。命中対象全員に盲目付与（POWロール）',flavor:'「魔術と呼ぶには粗末だ。だが、確実に痛い」'},
-{id:'M08',name:'炎壁',en:'Flame Wall',rank:'兵士',ap:'初級 1AP',mp:4,attr:'炎',range:3,dice:'1d4',fixed:'—',pierce:'1',status:'—',effect:'術者前方1列3マスに炎の壁を展開。通過した敵に燃焼付与（ロール不要）壁は次ラウンド終了時まで。',hd:'壁の持続2ラウンドに延長',ex:'永続で壁は展開される',flavor:'「退路を断つ炎」'},
-{id:'M09',name:'属性呪縛',en:'Elemental Imprint',rank:'兵士',ap:'初級 1AP',mp:4,attr:'付与',range:1,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'味方1体（自分含む）の装備している武器に属性（炎・冷気・雷・毒・闇・神聖から選択）を1ラウンド付与。',hd:'効果が2ラウンドに延長',ex:'効果が4ラウンドに延長',flavor:'「武器に魔術を乗せる技術」'},
-{id:'M10',name:'速度の術式',en:'Haste',rank:'兵士',ap:'初級 1AP',mp:4,attr:'付与',range:1,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'味方1体（自分含む）を1ラウンド、一度だけAP消費なしで移動できる状態にする',hd:'効果が2ラウンドに延長',ex:'効果が3ラウンドに延長。射程2内の味方全員に付与',flavor:'「帝国の速度術式の断片」'},
-{id:'M11',name:'魔力吸収',en:'Mana Drain',rank:'兵士',ap:'初級 1AP',mp:4,attr:'闇',range:5,dice:'1',fixed:'—',pierce:'—',status:'—',effect:'闇属性の単体射撃。命中時、対象のMP-1d3。回収したMP分だけ術者のMPを回復。MPが0の場合HPへ直接ダメージ。',hd:'ダメージ+1。吸収MP量+1',ex:'ダメージ+1d4。吸収MP量+1d3',flavor:'「力を奪う」'},
-{id:'M12',name:'豪火球',en:'Fireball',rank:'英雄',ap:'上級 2AP',mp:7,attr:'炎',range:5,dice:'2d6',fixed:'—',pierce:'1',status:'—',effect:'炎属性の爆発射撃。2×2マスの円形範囲内全対象に命中判定',hd:'ダメージ+1d4',ex:'ダメージ+1d6。攻撃範囲3×3に拡大',flavor:'「帝国時代の攻城魔術」'},
-{id:'M13',name:'氷槍',en:'Ice Lance',rank:'英雄',ap:'上級 2AP',mp:6,attr:'冷気',range:6,dice:'2d4',fixed:'+1',pierce:'1',status:'—',effect:'冷気属性の貫通射撃。直線上全対象に命中判定',hd:'ダメージ+1d4',ex:'ダメージ+2d4',flavor:'「名無しの者の息吹を凝縮した槍」'},
-{id:'M14',name:'雷鳴撃',en:'Thunderstrike',rank:'英雄',ap:'上級 2AP',mp:6,attr:'雷',range:4,dice:'2d6',fixed:'—',pierce:'—',status:'—',effect:'雷属性の強撃。命中時、射程3内の別の敵1体に連鎖ダメージ1d6。',hd:'ダメージ+1d6',ex:'ダメージ+1d6。連鎖対象を最初の目標にも選べるようになる',flavor:'「金属鎧は敵だ」'},
-{id:'M16',name:'深淵の叫び',en:'Abyssal Scream',rank:'英雄',ap:'上級 2AP',mp:6,attr:'闇',range:6,dice:'1d6',fixed:'—',pierce:'—',status:'—',effect:'闇属性の範囲魔術。2×2マスの円形範囲内全対象に命中判定',hd:'ダメージ+1d4',ex:'ダメージ+1d6。恐怖と発狂を同時に付与',flavor:'「理性が崩れる音がする」'},
-{id:'M17',name:'魂の鎖',en:'Soul Chain',rank:'英雄',ap:'上級 2AP',mp:6,attr:'闇',range:3,dice:'1d4',fixed:'—',pierce:'—',status:'封印付与（POWロール）',effect:'闇属性の呪縛魔術。対象1体にPOWロール、失敗で封印付与',hd:'ダメージ+1d4。封印付与ロール不要',ex:'ダメージ+1d6。封印付与ロール不要＋沈黙付与',flavor:'「力ではなく可能性を奪う」'},
-{id:'M18',name:'地砕',en:'Earth Fist',rank:'英雄',ap:'上級 2AP',mp:6,attr:'無属性',range:4,dice:'2d4',fixed:'—',pierce:'全',status:'—',effect:'無属性の強撃。魔術耐性ではなく、装甲値で軽減される純粋な打撃。対象を1マス強制後退させる。',hd:'ダメージ+1d6',ex:'ダメージ+2d4。後退距離2マスに延長',flavor:'「どんな鎧も突き通す」'},
-{id:'M19',name:'鍛錬術式',en:'Empower Weapon',rank:'英雄',ap:'上級 2AP',mp:5,attr:'付与',range:2,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'味方1体（自分含む）の武器攻撃を2ラウンド強化。①命中+10% ②射程+1を同時付与。',hd:'効果が3ラウンドに延長',ex:'効果が3ラウンドに延長。射程2内の味方2体に付与可能',flavor:'「帝国の従軍魔術師が騎士に施した強化術式の断片」'},
-{id:'M20',name:'反射の幕',en:'Mirror Veil',rank:'英雄',ap:'上級 2AP',mp:5,attr:'無属性',range:1,dice:'—',fixed:'—',pierce:'—',status:'—',effect:'自分または味方1体に1ラウンド、魔術攻撃の相殺判定にBD+2を付与。相殺成功時の反射ダメージが2d4になる。',hd:'効果が2ラウンドに延長',ex:'効果が2ラウンドに延長。射程2内の味方全員に付与',flavor:'「帝国の対魔術師部隊が使っていた防護術式」'},
-{id:'M21',name:'炎帝顕現',en:'Solar Manifestation',rank:'伝説',ap:'超級 3AP',mp:8,attr:'炎',range:8,dice:'3d8',fixed:'—',pierce:'1',status:'燃焼付与（全対象・ロール不要）',effect:'射程8・半径3マスの巨大爆発。全対象に命中判定・装甲貫通1・燃焼付与（ロール不要）。術者HP-3（代償）。',hd:'ダメージ+2d6',ex:'ダメージ+3d6。燃焼中の対象の次ターンAP-1',flavor:'「縫合の神の炎の側面が、一瞬だけ世界に降りてきた」'},
-{id:'M22',name:'時間凍結',en:'Temporal Freeze',rank:'伝説',ap:'超級 3AP',mp:8,attr:'冷気',range:7,dice:'2d8',fixed:'—',pierce:'全',status:'凍結付与（全対象・ロール不要）',effect:'射程7・半径3マスの時間停止魔術。全対象に冷気2付与（ロール不要）・全装甲無視。術者は2ラウンドAP-1（魔術疲弊）。',hd:'ダメージ+2d6',ex:'ダメージ+2d8。凍結解除時に追加ダメージ1d6',flavor:'「名無しの者が最初に人類に見せた力」'},
-{id:'M23',name:'深淵解放',en:'Abyssal Release',rank:'伝説',ap:'超級 3AP',mp:7,attr:'闇',range:6,dice:'2d8',fixed:'—',pierce:'全',status:'発狂付与（全対象・ロール不要）',effect:'射程6・半径3マスに深淵の残滓を解き放つ。全対象に全装甲無視・発狂付与（ロール不要）。術者もPOWロール（失敗で恐怖付与）。',hd:'ダメージ+2d6',ex:'ダメージ+2d8。発狂付与した対象の次の行動を任意に決定（1ターン制御）',flavor:'「深淵を放つとは、自分も深淵に触れることだ」'},
-{id:'M24',name:'消滅',en:'Erasure',rank:'伝説',ap:'超級 3AP',mp:10,attr:'無属性',range:10,dice:'4d6',fixed:'—',pierce:'全',status:'—',effect:'射程10の単体消去魔術。全装甲・耐性無視。命中時、対象の全状態異常を解除した上でダメージ。対象HPが最大値30以下なら即死判定（LCKロール）。',hd:'ダメージ+2d6。即死判定条件がHP最大値40以下に拡大',ex:'ダメージ+3d6。即死判定失敗時、対象に石化付与',flavor:'「帝国が作った最後の魔術。標的を概念ごと消す」'},
-];
-
-const MIRACLE=[
-{id:'R01',name:'聖なる光',en:'Holy Light',rank:'兵士',ap:'初級 1AP',mp:3,attr:'神聖',range:5,dice:'1d6',fixed:'—',pierce:'—',status:'アンデッド+2d4',effect:'神聖属性の単体射撃。アンデッド・邪悪に+2d4固定ダメージ追加。',hd:'ダメージ+1',ex:'ダメージ+1d6。アンデッド・邪悪への追加ダメージ+1d4',flavor:'「廃墟には光が必要だ」'},
-{id:'R02',name:'縫合の手',en:'Mend',rank:'兵士',ap:'初級 1AP',mp:3,attr:'神聖',range:1,dice:'1d6',fixed:'—',pierce:'—',status:'回復',effect:'味方1体（自分含む）のHPを1d6回復する。戦闘外でも使用可能。',hd:'回復量+1d4',ex:'回復量+1d6。射程2内の味方全員にHP+1d3（回復の波及）',flavor:'「信仰が傷を塞ぐ」'},
-{id:'R03',name:'神聖の盾',en:'Sacred Ward',rank:'兵士',ap:'初級 1AP',mp:2,attr:'神聖',range:2,dice:'—',fixed:'—',pierce:'—',status:'魔術耐性+2',effect:'味方1体に1ラウンド、魔術耐性+2の加護を与える。アンデッド・邪悪からの攻撃に対しては+4。',hd:'加護が2ラウンドに延長',ex:'加護が2ラウンドに延長。物理ダメージも1d4軽減',flavor:'「信仰の厚さが壁の厚さになる」'},
-{id:'R04',name:'浄化の炎',en:'Purifying Flame',rank:'兵士',ap:'初級 1AP',mp:3,attr:'炎/神聖',range:4,dice:'1d6',fixed:'—',pierce:'1',status:'—',effect:'炎属性の神聖魔術',hd:'ダメージ+1d4。命中対象の状態異常を1種解除',ex:'ダメージ+1d6。アンデッド・邪悪に死の宣告付与（POWロール）',flavor:'「罪を焼く。腐敗を焼く。そして、邪悪を焼く」'},
-{id:'R05',name:'神罰',en:'Divine Judgment',rank:'英雄',ap:'上級 2AP',mp:5,attr:'神聖',range:6,dice:'2d8',fixed:'—',pierce:'全',status:'アンデッド+3d6(神聖属性効果の強化)',effect:'神聖属性の強撃。全装甲・耐性無視。FTHが15以上の場合命中判定のクリティカル率+3%。',hd:'ダメージ+1d4',ex:'ダメージ+2d4。命中対象の次ターンAP-1',flavor:'「縫合の神が世界に下す審判の、ほんの一端」'},
-{id:'R06',name:'大治癒',en:'Greater Heal',rank:'英雄',ap:'上級 2AP',mp:5,attr:'神聖',range:2,dice:'2d6',fixed:'—',pierce:'—',status:'状態異常1種除去',effect:'味方1体のHPを2d6+FTH参照ボーナス回復する。状態異常（毒・燃焼・疲労）を1種除去する。',hd:'回復量+1d6。状態異常除去数が2種に増加',ex:'回復量+2d6。射程3内の味方全員にHP+1d6回復',flavor:'「回路が太い者だけが使える大きな癒し」'},
-{id:'R07',name:'信仰の連鎖',en:'Chain of Faith',rank:'英雄',ap:'上級 2AP',mp:5,attr:'神聖/闇',range:4,dice:'1d6',fixed:'—',pierce:'—',status:'連鎖攻撃',effect:'神聖属性の連鎖攻撃。対象1体に命中後、射程3内の別の敵1体に連鎖（命中判定不要・ダメージ1d4）',hd:'連鎖が最大2体まで',ex:'ダメージ+1d4。連鎖が最大2体まで',flavor:'「信仰はつながる。縫合の神は分割されない」'},
-{id:'R08',name:'贖罪の一撃',en:'Penance Strike',rank:'英雄',ap:'上級 2AP',mp:5,attr:'神聖',range:4,dice:'1d8',fixed:'+2',pierce:'—',status:'死の宣告（EX以上）',effect:'神聖属性の強撃。術者のHP現在値が最大値の半分以下の場合、ダメージ+1d8。EX以上で死の宣告付与。',hd:'ダメージ+1d4（HP半分以下でなくても適用）',ex:'ダメージ+1d8。死の宣告付与ロール不要',flavor:'「苦しみが、力になる」'},
-{id:'R09',name:'祝福の詠唱',en:'Battle Blessing',rank:'英雄',ap:'上級 2AP',mp:6,attr:'神聖',range:3,dice:'—',fixed:'—',pierce:'—',status:'全体バフ',effect:'射程3内の味方全員に2ラウンド、命中判定に+10%と状態異常でのPOWロールに+5%を付与する。術者はこのラウンド攻撃行動不可。',hd:'効果が3ラウンドに延長',ex:'効果が3ラウンドに延長。命中判定+20%、POWロール+10%に強化',flavor:'「攻撃しなくても、仲間を強くすることが戦い方だ」'},
-{id:'R10',name:'縫合の祝福',en:'Sutured Blessing',rank:'伝説',ap:'超級 3AP',mp:7,attr:'神聖',range:3,dice:'—',fixed:'—',pierce:'—',status:'全体回復・耐性強化',effect:'射程3内の味方全員のHPを2d8+FTH参照ボーナス回復。全状態異常を1種除去。1ラウンド全員の物理・魔術耐性+3。術者はこのラウンド攻撃行動不可。',hd:'回復量+1d8。状態異常除去数が2種に増加',ex:'回復量+2d8。ラウンド終了時に全員HP自然回復+1d4（1ラウンド）',flavor:'「縫合の神が世界を修復しようとしたように、聖職者は仲間を修復する」'},
-{id:'R11',name:'蘇生',en:'Resurrection',rank:'伝説',ap:'超級 3AP',mp:8,attr:'神聖',range:2,dice:'—',fixed:'—',pierce:'—',status:'蘇生',effect:'戦闘不能状態の味方1体を蘇生。FTHロール成功でHP1d8+FTH参照ボーナスで復活。失敗でも対象はHP1で踏みとどまる（LCKロール・失敗で蘇生不可）。石化状態での戦闘不能には使用不可。術者HP-5・このターンの残りAP全消費。',hd:'回復量+1d8（FTHロール成功時）',ex:'FTHロール失敗時のLCKロール不要（必ずHP1で復活）',flavor:'「縫合の神に死者を返してもらう行為。代償を払う者にだけ答える」'},
-{id:'R12',name:'終焉の審判',en:'Final Judgment',rank:'伝説',ap:'超級 3AP',mp:10,attr:'神聖',range:6,dice:'3d8',fixed:'—',pierce:'全',status:'死の宣告（全対象）',effect:'射程6・3×3マスの範囲内全対象に特殊効果をすべて無視して死の宣告付与（ロール不要）。アンデッド・邪悪は即死判定（LCKロール）。術者FTH-3（1戦闘のみ）。',hd:'ダメージ+2d6。即死LCKロールにPD+1',ex:'ダメージ+2d8。アンデッド・邪悪は即死ロール不要',flavor:'「使った者は皆、翌日から夢を見なくなったという」'},
-];
-
-const CATALYST=[
-{type:'杖',name:'木の杖',en:'Wooden Staff',rank:'兵士',hit:'—',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'－',mp_r:'—',fl:'「安くて、折れそうで、なんとか機能する」'},
-{type:'杖',name:'学院の杖',en:'Academy Staff',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'－',mp_r:'—',fl:'「帝国学院が量産した標準品」'},
-{type:'杖',name:'炎術の杖',en:'Pyrostaff',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'炎属性魔術のダメージ+1（固定）。燃焼付与のPOWロールにPD+1。',mp_r:'初級炎EX→MP+1',fl:'「縫合の神の炎の側面を模した」'},
-{type:'杖',name:'雷術の杖',en:'Thunderstaff',rank:'兵士',hit:'+10%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'雷属性魔術のダメージ+1（固定）。',mp_r:'初級雷EX→MP+1',fl:'「外なる神々の電磁エネルギーを模して設計された」'},
-{type:'杖',name:'霜術の杖',en:'Froststaff',rank:'兵士',hit:'+5%',fixed:0,range:'+1',ap:'初級1AP/上級2AP',bonus:'冷気属性魔術のダメージ+2（固定）。',mp_r:'初級冷気EX→MP+1',fl:'「インスマス海岸で発見された。素材不明」'},
-{type:'杖',name:'禁呪の杖',en:'Forbidden Staff',rank:'英雄',hit:'+10%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'闇属性魔術の命中+10%、闇魔術の状態異常付与のPOWロールにPD+1。上級闇魔術のMP消費-1（最低1）。',mp_r:'上級闇EX→MP+1',fl:'「帝国の禁書庫にあったもの」'},
-{type:'杖',name:'深淵の杖',en:'Abyssal Staff',rank:'英雄',hit:'+10%',fixed:'+2',range:'+1',ap:'初級1AP/上級2AP',bonus:'闇属性魔術の装甲貫通+1,毎ラウンド終了時、使用した場合術者POWロール（失敗で疲労付与）。',mp_r:'上級闇EX→MP+2',fl:'「深淵の残滓が凝固した杖。使うほど精神を侵食する」'},
-{type:'杖',name:'叡智の杖',en:"Sage's Staff",rank:'英雄',hit:'+10%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'同一ターンに2回以上魔術を使用した場合、次の魔術命中+5%追加。',mp_r:'初級・上級EX→MP+1',fl:'「帝国学院の最上位生が卒業時に授与された触媒」'},
-{type:'杖',name:'帝国の至宝',en:'Imperial Relic',rank:'伝説',hit:'+7%',fixed:'+7',range:'+7',ap:'全AP対応',bonus:'装甲貫通+7。超級魔術のMP消費-7（最低7）。MP最大値+7。',mp_r:'全ランクEX→MP+7',fl:'「セラフィット帝国最高の術師が使ったという」'},
-{type:'聖印',name:'粗末な聖印',en:'Crude Seal',rank:'兵士',hit:'—',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'－',mp_r:'—',fl:'「信仰があれば、形は問わない」'},
-{type:'聖印',name:'白衣教団の聖印',en:'Covenant Seal',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'－',mp_r:'—',fl:'「テオフィリアの白衣教団が全聖職者に授ける標準品」'},
-{type:'聖印',name:'浄化の聖印',en:'Purifying Seal',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'神聖奇跡のアンデッド・邪悪への追加ダメージ+1d4。浄化・解除系奇跡の命中+5%追加。',mp_r:'初級神聖EX→MP+1',fl:'「廃墟浄化を専門とする修道士が使う」'},
-{type:'聖印',name:'守護の聖印',en:'Guardian Seal',rank:'兵士',hit:'+5%',fixed:0,range:'—',ap:'初級1AP/上級2AP',bonus:'防護・加護系奇跡の効果が1ラウンド延長。防護奇跡使用時、術者への次の攻撃命中にPD+1。',mp_r:'初級防護EX→MP+1',fl:'「仲間を守る者に縫合の神は力を与える」'},
-{type:'聖印',name:'信仰の焔',en:'Seal of Conviction',rank:'兵士',hit:'+5%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'炎属性奇跡の固定値+1。浄化の炎（R04）使用時、状態異常解除を2種に拡大。',mp_r:'初級炎奇跡EX→MP+1',fl:'「縫合の神の裁きの炎を聖印に封じたもの」'},
-{type:'聖印',name:'殉教者の聖印',en:"Martyr's Seal",rank:'英雄',hit:'－',fixed:'－',range:'—',ap:'初級1AP/上級2AP',bonus:'HP半分以下の場合、全奇跡の命中+10%追加・固定値+2追加。回復奇跡の回復量-1d4。',mp_r:'上級奇跡EX→MP+1',fl:'「信仰の回路が傷つくほど強まる」'},
-{type:'聖印',name:'審判の聖印',en:'Seal of Judgment',rank:'英雄',hit:'+5%',fixed:'+1',range:'—',ap:'初級1AP/上級2AP',bonus:'攻撃系奇跡の命中+10%、神罰・信仰の連鎖・贖罪の一撃使用時、状態異常付与のPOWロールにPD+1。上級攻撃奇跡のMP消費-1（最低1）。',mp_r:'上級攻撃奇跡EX→MP+2',fl:'「縫合の神の厳格な側面を宿す」'},
-{type:'聖印',name:'縫合の沈黙',en:'Seal of Divine Silence',rank:'伝説',hit:'+15%',fixed:'+2',range:'+1',ap:'全AP対応',bonus:'奇跡のクリティカル+15%',mp_r:'全ランクEX→MP+2（超級MP+1）',fl:'「縫合の神が世界を沈黙させる瞬間を封じた聖印」'},
-];
-
-const AC={炎:'fire',冷気:'ice',雷:'thunder',毒:'poison',闇:'dark',神聖:'holy',無属性:'none',付与:'buff'};
-const RC=r=>r==='兵士'?'tag-soldier':r==='英雄'?'tag-hero':'tag-legend';
-const favs=new Set(JSON.parse(localStorage.getItem('mfav')||'[]'));
-function saveFavs(){try{localStorage.setItem('mfav',JSON.stringify([...favs]));}catch(e){}}
-const st={magic:{rank:'all',search:''},miracle:{rank:'all',search:''}};
-let catFilter='all';
-
-function buildCard(d,type){
-  const id=type+d.id;const isFav=favs.has(id);
-  return `<div class="data-card${isFav?' favorited':''}" data-id="${id}" data-rank="${d.rank}" data-search="${[d.id,d.name,d.en,d.attr,d.effect,d.status||''].join(' ').toLowerCase()}">
-<div class="card-head"><span class="card-id">${d.id}</span><div style="flex:1"><span class="card-name">${d.name}</span><span class="card-name-en">${d.en}</span></div><button class="fav-btn${isFav?' active':''}" onclick="toggleFav('${id}',this)">★</button></div>
-<div class="card-badges"><span class="tag ${RC(d.rank)}">${d.rank}</span><span class="tag tag-${AC[d.attr]||'none'}">${d.attr}</span><span class="tag tag-none">${d.ap.replace('初級 ','').replace('上級 ','').replace('超級 ','')}</span><span class="tag tag-none">MP${d.mp}</span>${d.pierce&&d.pierce!=='—'?`<span class="tag tag-fire">貫通${d.pierce}</span>`:''}</div>
-<div class="card-stats"><div class="stat-item"><span class="stat-label">射程</span><span class="stat-val">${d.range}</span></div><div class="stat-item"><span class="stat-label">ダイス</span><span class="stat-val">${d.dice||'—'}</span></div><div class="stat-item"><span class="stat-label">固定値</span><span class="stat-val">${d.fixed||'—'}</span></div></div>
-${d.status&&d.status!=='—'?`<div class="card-status">◆ ${d.status}</div>`:''}
-<div class="card-effect">${d.effect}</div>
-${d.hd?`<div class="card-hd">${d.hd}</div>`:''}
-${d.ex?`<div class="card-ex">${d.ex}</div>`:''}
-<div class="card-flavor">${d.flavor}</div></div>`;
-}
-
-function renderGrid(gid,data,type){document.getElementById(gid).innerHTML=data.map(d=>buildCard(d,type)).join('');updateCount(type);}
-function updateCount(type){const gid=type+'-grid',cid=type+'-count';const t=document.querySelectorAll(`#${gid} .data-card`).length,v=document.querySelectorAll(`#${gid} .data-card:not(.hidden)`).length;document.getElementById(cid).textContent=v<t?`${v} / ${t} 件表示`:`全${t}件`;}
-function filterCards(type,q){st[type].search=q.toLowerCase();applyFilter(type);}
-function setRF(type,rank,btn){st[type].rank=rank;document.querySelectorAll(`#${type}-filters .filter-btn`).forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter(type);}
-function applyFilter(type){const{rank,search}=st[type];const gid=type+'-grid';document.querySelectorAll(`#${gid} .data-card`).forEach(c=>{const mr=rank==='all'||c.dataset.rank===rank,ms=!search||c.dataset.search.includes(search);c.classList.toggle('hidden',!(mr&&ms));});updateCount(type);}
-
-function renderCat(data){
-  const staffs=data.filter(c=>c.type==='杖'),seals=data.filter(c=>c.type==='聖印');
-  let html='';
-  if(staffs.length){html+=`<p style="font-size:12px;color:var(--text3);margin-bottom:.75rem;font-family:'Noto Sans JP',sans-serif;">杖（魔術用）— ${staffs.length}種</p>`;html+=buildCatTable(staffs);}
-  if(seals.length){html+=`<p style="font-size:12px;color:var(--text3);margin:1.5rem 0 .75rem;font-family:'Noto Sans JP',sans-serif;">聖印（奇跡用）— ${seals.length}種</p>`;html+=buildCatTable(seals);}
-  document.getElementById('catalyst-container').innerHTML=html||'<p style="color:var(--text3);padding:1rem 0;">該当なし</p>';
-  document.getElementById('catalyst-count').textContent=`${data.length}件`;
-}
-function buildCatTable(data){return `<div style="border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;"><table class="cat-table"><thead><tr><th>触媒名</th><th>レア</th><th>命中補正</th><th>固定値</th><th>射程補正</th><th>触媒ボーナス</th><th>EX時MP還元</th></tr></thead><tbody>${data.map(c=>`<tr><td>${c.name}<br><span style="font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim)">${c.en}</span></td><td><span class="tag ${RC(c.rank)}">${c.rank}</span></td><td style="color:var(--gold)">${c.hit}</td><td>${c.fixed||'—'}</td><td>${c.range||'—'}</td><td style="font-size:11px;max-width:240px">${c.bonus}</td><td style="font-size:11px;color:var(--teal2)">${c.mp_r}</td></tr>`).join('')}</tbody></table></div>`;}
-function filterCat(q){const filtered=CATALYST.filter(c=>{const mt=catFilter==='all'||c.type===catFilter,mq=!q||[c.name,c.en,c.bonus,c.fl].join(' ').toLowerCase().includes(q.toLowerCase());return mt&&mq;});renderCat(filtered);}
-function setCatFilter(v,btn){catFilter=v;document.querySelectorAll('#tab-catalyst .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');filterCat(document.querySelector('#tab-catalyst .search-box')?.value||'');}
-
-function toggleFav(id,btn){if(favs.has(id)){favs.delete(id);btn.classList.remove('active');btn.closest('.data-card').classList.remove('favorited');}else{favs.add(id);btn.classList.add('active');btn.closest('.data-card').classList.add('favorited');}saveFavs();renderFav();}
-function renderFav(){const all=[...MAGIC.map(d=>({...d,_t:'magic'})),...MIRACLE.map(d=>({...d,_t:'miracle'}))];const fd=all.filter(d=>favs.has(d._t+d.id));document.getElementById('fav-grid').innerHTML=fd.length?fd.map(d=>buildCard(d,d._t)).join(''):'<div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div>';}
-function switchTab(n){['magic','miracle','catalyst','favorites','charcreate'].forEach((nm,i)=>{document.querySelectorAll('.tab-btn')[i].classList.toggle('active',nm===n);document.getElementById('tab-'+nm).classList.toggle('active',nm===n);});}
-
-renderGrid('magic-grid',MAGIC,'magic');renderGrid('miracle-grid',MIRACLE,'miracle');renderCat(CATALYST);renderFav();renderCCMagic();
-function renderCCMagic(){
-  const SPELL_PRICES={'木の杖':30,'学院の杖':80,'炎術の杖':120,'雷術の杖':120,'霜術の杖':120,'禁呪の杖':440,'深淵の杖':560,'叡智の杖':480,'帝国の至宝':0,'粗末な聖印':20,'白衣教団の聖印':70,'浄化の聖印':100,'守護の聖印':90,'信仰の焔':130,'殉教者の聖印':400,'審判の聖印':460,'縫合の沈黙':0};
-  function sp(n){const p=SPELL_PRICES[n];if(p===undefined)return'—';if(p===0)return'入手不可';return p+'G';}
-  function spcls(n){return SPELL_PRICES[n]===0?'cc-price legend':'cc-price';}
-  function badgeCC(r){const cls={'兵士':'cc-soldier','英雄':'cc-hero','伝説':'cc-legend'}[r]||'';return `<span class="cc-badge ${cls}">${r}</span>`;}
-  function dmgCC(d,f){const dd=d&&d!=='—'?d:'';const ff=f&&f!=='—'?f:'';if(!dd&&!ff)return'—';if(dd&&ff)return dd+ff;return dd||ff;}
-  function wazaCC(hd,ex){
-    let parts=[];
-    if(hd&&hd!=='—')parts.push(`<span class="hd">HD</span> ${hd}`);
-    if(ex&&ex!=='—')parts.push(`<span class="ex">EX</span> ${ex}`);
-    return parts.length?parts.join('<br>'):'<span class="none">なし</span>';
-  }
-
-  // 触媒テーブル
-  const CAT_RANKS={'兵士':'兵士触媒：初級のみ','英雄':'英雄触媒：初級・上級','伝説':'伝説触媒：全ランク'};
-  let html=`<div class="cc-cat-note"><b>触媒について</b>：1キャラクターにつき触媒（杖または聖印）は2つまで装備可。<br>レアリティによる対応魔術ランク：<b>兵士触媒</b>→初級のみ ／ <b>英雄触媒</b>→初級・上級 ／ <b>伝説触媒</b>→全ランク</div>`;
-
-  ['杖','聖印'].forEach(type=>{
-    const rows=CATALYST.filter(c=>c.type===type);
-    html+=`<div class="cc-section"><p class="cc-section-title">${type}</p><div class="cc-table-wrap"><table class="cc-table">
-<thead><tr><th>名前</th><th>命中補正</th><th>固定値</th><th>射程補正</th><th>対応ランク</th><th>EX時MP還元</th><th>価格</th></tr></thead><tbody>`;
-    rows.forEach(c=>{
-      html+=`<tr>
-<td><span class="cc-name">${c.name}</span>${badgeCC(c.rank)}</td>
-<td>${c.hit}</td><td>${c.fixed||'—'}</td><td>${c.range||'—'}</td>
-<td style="font-size:10px">${CAT_RANKS[c.rank]||c.rank}</td>
-<td style="font-size:10px;color:var(--teal2)">${c.mp_r}</td>
-<td class="${spcls(c.name)}">${sp(c.name)}</td>
-</tr>`;
-    });
-    html+='</tbody></table></div></div>';
-  });
-
-  // 魔術テーブル
-  const RANKS=['兵士','英雄','伝説'];
-  const RANK_LABELS={'兵士':'初級','英雄':'上級','伝説':'超級'};
-  html+=`<div class="cc-section"><p class="cc-section-title">魔術</p><div class="cc-table-wrap"><table class="cc-table">
-<thead><tr><th>No</th><th>名前</th><th>AP / MP</th><th>射程</th><th>ダメージ</th><th>状態異常付与</th><th>HD/EX効果</th></tr></thead><tbody>`;
-  MAGIC.forEach(d=>{
-    html+=`<tr>
-<td style="color:var(--text3);font-size:10px">${d.id}</td>
-<td><span class="cc-name">${d.name}</span>${badgeCC(d.rank)}</td>
-<td>${RANK_LABELS[d.rank]||d.rank} ${d.ap.replace(/.*AP/,'')}<br><span style="color:var(--teal2);font-size:10px">MP${d.mp}</span></td>
-<td>${d.range}</td>
-<td>${dmgCC(d.dice,d.fixed)}</td>
-<td style="font-size:10px;max-width:120px">${d.status&&d.status!=='—'?d.status:'<span class="none">なし</span>'}</td>
-<td class="cc-waza" style="max-width:200px">${wazaCC(d.hd,d.ex)}</td>
-</tr>`;
-  });
-  html+='</tbody></table></div></div>';
-
-  // 奇跡テーブル
-  html+=`<div class="cc-section"><p class="cc-section-title">奇跡</p><div class="cc-table-wrap"><table class="cc-table">
-<thead><tr><th>No</th><th>名前</th><th>AP / MP</th><th>射程</th><th>ダメージ</th><th>状態異常付与</th><th>HD/EX効果</th></tr></thead><tbody>`;
-  MIRACLE.forEach(d=>{
-    html+=`<tr>
-<td style="color:var(--text3);font-size:10px">${d.id}</td>
-<td><span class="cc-name">${d.name}</span>${badgeCC(d.rank)}</td>
-<td>${RANK_LABELS[d.rank]||d.rank} ${d.ap.replace(/.*AP/,'')}<br><span style="color:var(--teal2);font-size:10px">MP${d.mp}</span></td>
-<td>${d.range}</td>
-<td>${dmgCC(d.dice,d.fixed)}</td>
-<td style="font-size:10px;max-width:120px">${d.status&&d.status!=='—'?d.status:'<span class="none">なし</span>'}</td>
-<td class="cc-waza" style="max-width:200px">${wazaCC(d.hd,d.ex)}</td>
-</tr>`;
-  });
-  html+='</tbody></table></div></div>';
-  document.getElementById('cc-magic-content').innerHTML=html;
-}
-
-</script>
 </body>
 </html>
