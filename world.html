@@ -201,6 +201,46 @@
   .region-images { flex-direction: row; }
   .region-img { aspect-ratio: 4 / 3; }
 }
+
+/* NPCカード（組織） */
+.npc-list { display: flex; flex-direction: column; gap: 1rem; }
+.npc-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-dim);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+}
+.npc-card__name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+.npc-card__role {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  color: var(--gold-dim);
+  letter-spacing: 0.2em;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+.npc-card__desc { font-size: 12px; color: var(--text3); line-height: 1.8; }
+
+/* 廃掘人の日常カード */
+.lifestyle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 1.5rem 0;
+}
+.lifestyle-card { background: var(--bg2); padding: 1.5rem; }
+.lifestyle-card__title { font-size: 14px; font-weight: 500; color: var(--gold); margin-bottom: 0.6rem; }
+.lifestyle-card__body { font-size: 12px; color: var(--text3); line-height: 1.85; }
 </style>
 </head>
 <body>
@@ -229,7 +269,7 @@
       <li class="site-nav__item">
         <a href="data_weapons.html">データ一覧</a>
         <ul class="site-nav__dropdown">
-          <li><a href="data_weapons.html">武器・防具・アイテム</a></li>
+          <li><a href="data_weapons.html">武器・防具</a></li>
           <li><a href="data_magic.html">魔術・奇跡</a></li>
           <li><a href="data_seals.html">刻印</a></li>
         </ul>
@@ -259,116 +299,284 @@
   <div class="toc">
     <p class="toc__title">Contents</p>
     <ul class="toc__list">
-      <li><span>I</span><a href="#origin">世界の成り立ち</a></li>
-      <li><span>II</span><a href="#history">セラフィット帝国と大崩壊</a></li>
-      <li><span>III</span><a href="#present">現在の世界</a></li>
-      <li><span>IV</span><a href="#regions">主要地域</a></li>
-      <li><span>V</span><a href="#magic">信仰と魔術体系</a></li>
-      <li><span>VI</span><a href="#tone">世界のトーン</a></li>
+      <li><span>I</span><a href="#overview">大陸概要と主要勢力図</a></li>
+      <li><span>II</span><a href="#regions">主要地域</a></li>
+      <li><span>III</span><a href="#factions">主要組織・勢力</a></li>
+      <li><span>IV</span><a href="#lookers">廃掘人の日常</a></li>
     </ul>
   </div>
 
-  <!-- I. 世界の成り立ち -->
-  <section class="section" id="origin">
+  <!-- I. 大陸概要と主要勢力図 -->
+  <section class="section" id="overview">
     <div class="section-header">
       <span class="section-num">I</span>
-      <h2 class="section-title">世界の成り立ち</h2>
+      <h2 class="section-title">大陸概要と主要勢力図</h2>
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>世界が誕生した太古、この大地は「外なる神々（The Outer Presences）」と呼ばれる存在たちによって観測されていた。彼らは宇宙の深淵に棲む存在であり、善悪の概念を超えた純粋な「力の塊」である。古代の神学者たちはこれらを大きく三つに分類した。</p>
+      <p>物語の舞台「アルゴス大陸」は不規則な台形に近く、北部に険しい山脈、中央部に広大な廃墟帯、南部に海岸線が広がる。かつてはセラフィット帝国の版図が大陸の大半を覆っていたが、大崩壊から二百五十年を経た現在、その七割が廃墟・荒野・怪異の縄張りとなっており、人が安全に暮らせる地域は限られている。</p>
+      <p style="margin-top:1rem;">世界は「完全には滅んでいない」。各地に小規模な都市国家・集落が点在し、人々はなんとか文明の火を繋いでいる。大崩壊の後遺症は今も続いており、夜になると霧が深まり、廃墟には怪異が集う。この世界で生まれた者にとって、廃墟は「廃墟」ではなく「風景」であり、霧は「異常」ではなく「季節の一つ」だ。</p>
 
-      <div class="deity-grid">
-        <div class="deity-card">
-          <p class="deity-card__name">The Sutured Ones</p>
-          <span class="deity-card__name-ja">縫合の神</span>
-          <p class="deity-card__desc">秩序と構造を司る者たち。神聖魔術の源泉であり、聖職者はその加護のもとに奇跡を行使する。人の形をしているとも、巨大な幾何学的構造体であるとも伝えられるが、直接姿を見た者はいない。</p>
-        </div>
-        <div class="deity-card">
-          <p class="deity-card__name">The Abyssal Choir</p>
-          <span class="deity-card__name-ja">深淵の神</span>
-          <p class="deity-card__desc">混沌と変質を司る者たち。魔術師が扱う「魔力」は、深淵の神が宇宙に漏らす思念が結晶化したものだという説がある。理性を持って近づけば力となり、無防備に触れれば発狂を招く。</p>
-        </div>
-        <div class="deity-card">
-          <p class="deity-card__name">The Nameless Throng</p>
-          <span class="deity-card__name-ja">名無しの者</span>
-          <p class="deity-card__desc">深きものをはじめとする、人類と異質な血を持つ生命体たちを統べる存在。その実態は最も不明瞭であり、海の底、土の中、夢の深部に潜んでいるとされる。「深きものの末裔」はこの名無しの者の意志を血に宿している。</p>
-        </div>
+      <!-- ── 勢力バランス地図 ── -->
+      <!-- ── 勢力バランス地図 ── -->
+      <p style="font-size:13px; color:var(--text2); margin-bottom:1.25rem; line-height:1.9;">アルゴス大陸における現在の勢力分布を示す。帝国崩壊から二百五十年、大陸の支配権は未だ定まらず、各勢力が複雑に絡み合っている。</p>
+
+      <div style="background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:1rem; margin-bottom:2rem;">
+        <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.3em; color:var(--gold-dim); text-transform:uppercase; margin-bottom:0.75rem;">Argos Continent — Power Balance Map</p>
+
+        <svg viewBox="0 0 680 420" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:auto; display:block;">
+          <defs>
+            <!-- 霧のフィルター -->
+            <filter id="fog">
+              <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="3" result="noise"/>
+              <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
+              <feComposite in="SourceGraphic" in2="gray" operator="over"/>
+            </filter>
+            <!-- 海のグラデーション -->
+            <radialGradient id="seaGrad" cx="50%" cy="80%" r="60%">
+              <stop offset="0%" stop-color="#0d1f2d"/>
+              <stop offset="100%" stop-color="#060e14"/>
+            </radialGradient>
+            <!-- テオフィリアのグラデーション -->
+            <radialGradient id="theoGrad" cx="30%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#1e1a2e"/>
+              <stop offset="100%" stop-color="#12101a"/>
+            </radialGradient>
+            <!-- メルクリアのグラデーション -->
+            <radialGradient id="merGrad" cx="50%" cy="50%" r="60%">
+              <stop offset="0%" stop-color="#1a1408"/>
+              <stop offset="100%" stop-color="#100e08"/>
+            </radialGradient>
+            <!-- ヴェイルホロウのグラデーション -->
+            <radialGradient id="veilGrad" cx="50%" cy="50%" r="70%">
+              <stop offset="0%" stop-color="#0f1a10"/>
+              <stop offset="100%" stop-color="#0a0e0a"/>
+            </radialGradient>
+            <!-- 霧エリアのグラデーション -->
+            <radialGradient id="fogGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#303030" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#1a1a1a" stop-opacity="0.6"/>
+            </radialGradient>
+          </defs>
+
+          <!-- 背景（海） -->
+          <rect width="680" height="420" fill="url(#seaGrad)"/>
+
+          <!-- 海の微細テクスチャライン -->
+          <g stroke="#0d2030" stroke-width="0.5" opacity="0.4">
+            <path d="M0,350 Q170,340 340,355 Q510,370 680,345"/>
+            <path d="M0,370 Q170,360 340,375 Q510,390 680,365"/>
+            <path d="M0,390 Q170,380 340,395 Q510,410 680,385"/>
+          </g>
+
+          <!-- ── 大陸本体 ── -->
+          <!-- メルクリア中央部（荒野・廃墟帯） -->
+          <path d="M120,80 L560,80 L590,140 L600,220 L560,300 L480,340 L380,360 L260,355 L160,320 L110,240 L100,160 Z"
+                fill="#1a1610" stroke="#3a3020" stroke-width="1"/>
+
+          <!-- テオフィリア（北西・山岳） -->
+          <path d="M100,80 L240,80 L220,60 L180,40 L130,40 L100,60 Z"
+                fill="url(#theoGrad)" stroke="#3a2060" stroke-width="1"/>
+          <!-- 山脈の表現 -->
+          <g fill="none" stroke="#3a3060" stroke-width="0.8" opacity="0.7">
+            <path d="M110,72 L125,52 L140,72"/>
+            <path d="M135,70 L150,48 L165,70"/>
+            <path d="M160,68 L175,46 L190,68"/>
+            <path d="M185,70 L200,50 L215,70"/>
+          </g>
+
+          <!-- 北方山脈（最北部・テオフィリア北側の険しい山岳帯） -->
+          <path d="M115,40 L165,8 L215,38 L260,32 L300,42 L260,46 L215,52 L165,30 L130,52 Z"
+                fill="#1c1c22" stroke="#454550" stroke-width="1"/>
+          <g fill="none" stroke="#5a5a68" stroke-width="0.8" opacity="0.75">
+            <path d="M128,44 L148,18 L165,40"/>
+            <path d="M155,38 L178,14 L198,38"/>
+            <path d="M192,36 L215,16 L235,40"/>
+            <path d="M225,38 L248,22 L268,40"/>
+          </g>
+          <!-- 雪冠の表現 -->
+          <g fill="#c8c8d4" opacity="0.5">
+            <path d="M145,24 L148,18 L152,25 Z"/>
+            <path d="M175,20 L178,14 L182,21 Z"/>
+            <path d="M212,22 L215,16 L219,23 Z"/>
+          </g>
+
+          <!-- ヴェイルホロウ（東部・深い森） -->
+          <path d="M520,100 L590,100 L600,180 L570,220 L530,200 L510,150 Z"
+                fill="url(#veilGrad)" stroke="#2a4a2a" stroke-width="1"/>
+          <!-- 森の表現 -->
+          <g fill="#1e3a1e" opacity="0.6">
+            <circle cx="540" cy="130" r="8"/>
+            <circle cx="555" cy="120" r="7"/>
+            <circle cx="570" cy="135" r="8"/>
+            <circle cx="548" cy="150" r="7"/>
+            <circle cx="565" cy="155" r="8"/>
+            <circle cx="558" cy="140" r="6"/>
+          </g>
+
+          <!-- インスマス海岸（南部） -->
+          <path d="M160,320 L480,340 L450,380 L380,400 L280,405 L180,390 Z"
+                fill="#0d1820" stroke="#1a3040" stroke-width="1"/>
+          <!-- 燐光の表現 -->
+          <g fill="#00a090" opacity="0.15">
+            <circle cx="240" cy="370" r="12"/>
+            <circle cx="320" cy="380" r="10"/>
+            <circle cx="400" cy="365" r="14"/>
+            <circle cx="280" cy="390" r="8"/>
+            <circle cx="360" cy="390" r="9"/>
+          </g>
+
+          <!-- 廃帝都アルカーナ（中央・霧） -->
+          <ellipse cx="310" cy="195" rx="75" ry="60"
+                   fill="#282828" stroke="#505050" stroke-width="1" opacity="0.85"/>
+          <!-- 霧の渦 -->
+          <g fill="none" stroke="#404040" stroke-width="0.8" opacity="0.5">
+            <ellipse cx="310" cy="195" rx="55" ry="44"/>
+            <ellipse cx="310" cy="195" rx="38" ry="30"/>
+            <ellipse cx="310" cy="195" rx="22" ry="16"/>
+          </g>
+          <!-- 霧の中の廃墟のシルエット -->
+          <g fill="#353535" opacity="0.6">
+            <rect x="298" y="175" width="4" height="20"/>
+            <rect x="308" y="170" width="5" height="25"/>
+            <rect x="319" y="178" width="4" height="18"/>
+            <polygon points="298,175 300,165 302,175"/>
+            <polygon points="308,170 310.5,158 313,170"/>
+            <polygon points="319,178 321,168 323,178"/>
+          </g>
+
+          <!-- ── 境界線・街道 ── -->
+          <!-- 主要街道 -->
+          <g stroke="#5a4a2a" stroke-width="1" stroke-dasharray="4,3" fill="none" opacity="0.6">
+            <!-- テオフィリア〜メルクリア -->
+            <path d="M185,78 L220,130 L260,170"/>
+            <!-- メルクリア内部街道 -->
+            <path d="M180,200 L260,170 L310,195"/>
+            <path d="M390,200 L310,195"/>
+            <path d="M390,200 L420,240 L400,290"/>
+            <!-- インスマス海岸への道 -->
+            <path d="M280,290 L290,340"/>
+          </g>
+
+          <!-- ── ラベル ── -->
+          <!-- テオフィリア -->
+          <text x="165" y="58" font-family="'Cinzel', serif" font-size="9" fill="#9080c0" letter-spacing="1" text-anchor="middle">THEOPHILIA</text>
+          <text x="165" y="70" font-family="serif" font-size="7.5" fill="#6a5a90" text-anchor="middle">神聖教国</text>
+          <!-- テオフィリアの勢力圏 -->
+          <ellipse cx="165" cy="62" rx="52" ry="22" fill="none" stroke="#5040a0" stroke-width="0.8" stroke-dasharray="3,2" opacity="0.5"/>
+
+          <!-- メルクリア（3都市） -->
+          <text x="190" y="185" font-family="'Cinzel', serif" font-size="8" fill="#c8a45a" text-anchor="middle">CARNIVAL</text>
+          <circle cx="190" cy="190" r="4" fill="#c8a45a" opacity="0.8"/>
+
+          <text x="148" y="245" font-family="'Cinzel', serif" font-size="7" fill="#a08838" text-anchor="middle">BRIDGE PORT</text>
+          <circle cx="148" cy="250" r="3" fill="#a08838" opacity="0.7"/>
+
+          <text x="430" y="215" font-family="'Cinzel', serif" font-size="7" fill="#a08838" text-anchor="middle">SOLTAFORT</text>
+          <circle cx="430" cy="220" r="3" fill="#a08838" opacity="0.7"/>
+
+          <!-- 霧際の集落「ミスト・エッジ・タウン」 -->
+          <circle cx="245" cy="160" r="2.5" fill="#888880" opacity="0.7"/>
+          <text x="245" y="152" font-family="serif" font-size="6.5" fill="#80807a" text-anchor="middle">霧際の集落</text>
+
+          <!-- テオフィリア辺境の農村群 -->
+          <circle cx="135" cy="100" r="2" fill="#9080c0" opacity="0.5"/>
+          <circle cx="175" cy="112" r="2" fill="#9080c0" opacity="0.5"/>
+          <text x="155" y="124" font-family="serif" font-size="6.5" fill="#7a6a9a" text-anchor="middle">辺境の農村</text>
+
+          <!-- メルクリア周辺の小村 -->
+          <circle cx="500" cy="260" r="2" fill="#a08838" opacity="0.5"/>
+          <circle cx="220" cy="280" r="2" fill="#a08838" opacity="0.5"/>
+
+          <!-- メルクリア連合のラベル -->
+          <text x="290" y="248" font-family="serif" font-size="8" fill="#7a6030" text-anchor="middle">メルクリア自由都市連合</text>
+
+          <!-- アルカーナ -->
+          <text x="310" y="186" font-family="'Cinzel', serif" font-size="8.5" fill="#808080" letter-spacing="0.5" text-anchor="middle">ARKANA</text>
+          <text x="310" y="197" font-family="serif" font-size="7" fill="#606060" text-anchor="middle">（霧に沈む）</text>
+          <text x="310" y="218" font-family="serif" font-size="7" fill="#505050" text-anchor="middle">廃帝都</text>
+
+          <!-- ヴェイルホロウ -->
+          <text x="555" y="148" font-family="'Cinzel', serif" font-size="8" fill="#4a8a4a" text-anchor="middle">VEILHOLLOW</text>
+          <text x="555" y="160" font-family="serif" font-size="7" fill="#3a6a3a" text-anchor="middle">呪術師の隠れ里</text>
+
+          <!-- 東方の海路——東の国（侍の故地）への示唆 -->
+          <g stroke="#5a6a78" stroke-width="0.8" stroke-dasharray="2,3" opacity="0.5" fill="none">
+            <path d="M615,170 Q650,180 672,200"/>
+          </g>
+          <circle cx="672" cy="200" r="2.5" fill="#6a7a88" opacity="0.7"/>
+          <text x="630" y="218" font-family="'Cinzel', serif" font-size="7.5" fill="#5a6a78" text-anchor="middle" opacity="0.85">EASTERN LANDS</text>
+          <text x="630" y="229" font-family="serif" font-size="7" fill="#4a5a68" text-anchor="middle" opacity="0.8">東の国（海の彼方）</text>
+          <text x="630" y="239" font-family="serif" font-size="6" fill="#3d4a56" text-anchor="middle" opacity="0.7">——侍はここより海を渡る</text>
+
+          <!-- インスマス海岸 -->
+          <text x="320" y="372" font-family="'Cinzel', serif" font-size="8" fill="#308070" text-anchor="middle">INNSMOUTH COAST</text>
+          <text x="320" y="384" font-family="serif" font-size="7" fill="#205a50" text-anchor="middle">深海沿岸</text>
+
+          <!-- 北方山脈 -->
+          <text x="195" y="14" font-family="'Cinzel', serif" font-size="8" fill="#9a9aa8" letter-spacing="0.5" text-anchor="middle">NORTHERN RANGE</text>
+          <text x="195" y="24" font-family="serif" font-size="7" fill="#7a7a88" text-anchor="middle">北方山脈——戦士の郷</text>
+
+          <!-- 海のラベル -->
+          <text x="560" y="390" font-family="'Cinzel', serif" font-size="8" fill="#0d3a5a" text-anchor="middle" opacity="0.6">ABYSSAL SEA</text>
+          <text x="100" y="405" font-family="serif" font-size="7" fill="#0d2a3a" text-anchor="middle" opacity="0.5">深淵の海</text>
+
+          <!-- ── 勢力圏の凡例 ── -->
+          <g transform="translate(12, 256)">
+            <rect width="145" height="149" rx="3" fill="#0d0b08" fill-opacity="0.85" stroke="#3a3020" stroke-width="0.8"/>
+            <text x="8" y="16" font-family="'Cinzel',serif" font-size="7.5" fill="#7a6030" letter-spacing="0.15em">LEGEND</text>
+            <line x1="8" y1="20" x2="137" y2="20" stroke="#3a3020" stroke-width="0.5"/>
+
+            <circle cx="18" cy="33" r="4" fill="#9080c0" opacity="0.5"/>
+            <text x="27" y="37" font-family="serif" font-size="8" fill="#a090b0">テオフィリア（神権）</text>
+
+            <circle cx="18" cy="50" r="4" fill="#c8a45a" opacity="0.6"/>
+            <text x="27" y="54" font-family="serif" font-size="8" fill="#a08838">メルクリア（自治）</text>
+
+            <circle cx="18" cy="67" r="4" fill="#4a8a4a" opacity="0.6"/>
+            <text x="27" y="71" font-family="serif" font-size="8" fill="#3a6a3a">ヴェイルホロウ（異端）</text>
+
+            <circle cx="18" cy="84" r="4" fill="#308070" opacity="0.5"/>
+            <text x="27" y="88" font-family="serif" font-size="8" fill="#207060">インスマス（深きもの）</text>
+
+            <rect x="14" y="97" width="8" height="8" fill="#404040" opacity="0.7"/>
+            <text x="27" y="105" font-family="serif" font-size="8" fill="#606060">アルカーナ（霧・不明）</text>
+
+            <rect x="14" y="114" width="8" height="8" fill="#5a5a68" opacity="0.7"/>
+            <text x="27" y="122" font-family="serif" font-size="8" fill="#7a7a88">北方山脈（戦士の郷）</text>
+
+            <circle cx="18" cy="139" r="3" fill="#6a7a88" opacity="0.7"/>
+            <text x="27" y="139" font-family="serif" font-size="8" fill="#5a6a78">東の国（海の彼方・侍）</text>
+          </g>
+
+          <!-- ── 勢力対立矢印 ── -->
+          <!-- テオフィリア→ヴェイルホロウ（対立） -->
+          <line x1="220" y1="68" x2="510" y2="130" stroke="#c04030" stroke-width="0.8" stroke-dasharray="5,3" opacity="0.35"/>
+          <!-- テオフィリア→メルクリア（緊張） -->
+          <line x1="200" y1="78" x2="220" y2="120" stroke="#a08030" stroke-width="0.8" stroke-dasharray="3,3" opacity="0.3"/>
+
+          <!-- 方位 -->
+          <g transform="translate(618, 30)">
+            <circle cx="0" cy="0" r="16" fill="none" stroke="#3a3020" stroke-width="0.8"/>
+            <text x="0" y="-5" font-family="'Cinzel',serif" font-size="9" fill="#7a6030" text-anchor="middle">N</text>
+            <line x1="0" y1="0" x2="0" y2="-12" stroke="#c8a45a" stroke-width="1"/>
+            <circle cx="0" cy="0" r="2" fill="#c8a45a"/>
+          </g>
+        </svg>
+
+        <p style="font-size:11px; color:var(--text3); margin-top:0.75rem; line-height:1.7;">点線は街道。赤点線は勢力間の緊張・対立関係を示す。アルカーナの霧のエリアは実効支配者なし。</p>
       </div>
+
+      <div class="note">大陸の成り立ち・外なる神々・大崩壊の真相など、世界の根源にまつわる設定は<a href="world_detail.html" style="color:var(--gold); text-decoration:none;">詳細設定ページ</a>を参照。</div>
     </div>
   </section>
 
   <hr class="divider">
 
-  <!-- II. セラフィット帝国と大崩壊 -->
-  <section class="section" id="history">
-    <div class="section-header">
-      <span class="section-num">II</span>
-      <h2 class="section-title">セラフィット帝国と大崩壊</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="timeline">
-        <div class="timeline__item">
-          <p class="timeline__date">約300年前</p>
-          <p class="timeline__title">セラフィット帝国の全盛期</p>
-          <p class="timeline__desc">縫合の神の加護のもとで神聖魔術を発展させ、外なる神々の研究も並行して行った。帝都アルカーナには世界最大の神学図書館が建立され、禁断とされた呪文書までもが「学術的目的」のもとに収集・分類された。</p>
-        </div>
-        <div class="timeline__item">
-          <p class="timeline__date">約250年前</p>
-          <p class="timeline__title">大崩壊（The Unravelling）</p>
-          <p class="timeline__desc">突如として帝国各地で「境界の侵食」が始まった。物理的な壁が意味をなさなくなり、人の理性と狂気の境が融解し、死者が動き出し、海から名状しがたい形をした何かが這い上がった。帝国は三年で滅んだ。</p>
-        </div>
-        <div class="timeline__item">
-          <p class="timeline__date">大崩壊から3年後</p>
-          <p class="timeline__title">帝都アルカーナの消滅</p>
-          <p class="timeline__desc">帝都は深霧の底に沈み、地図から消えた都市として語り継がれている。最後の帝国皇帝エドガー四世の消息は不明のままだ。</p>
-        </div>
-        <div class="timeline__item">
-          <p class="timeline__date">現在</p>
-          <p class="timeline__title">廃帝国の後継地帯</p>
-          <p class="timeline__desc">各地に小規模な都市国家・集落が点在し、人々はなんとか文明の火を繋いでいる。大崩壊の後遺症は今も続いており、霧・怪異・正気を失う者の数は戦争や飢饉による死者に匹敵するとも言われる。</p>
-        </div>
-      </div>
-
-      <div class="lore-quote">
-        <p>「太陽が絶えなかった時代があった。そう、確かにあったのだ。今となっては誰も信じまい」</p>
-        <cite>——廃人の独白、断片的な日記より</cite>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- III. 現在の世界 -->
-  <section class="section" id="present">
-    <div class="section-header">
-      <span class="section-num">III</span>
-      <h2 class="section-title">現在の世界</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <p>大崩壊から二百五十年。世界は「完全には滅んでいない」。</p>
-      <p style="margin-top:1rem;">各地に小規模な都市国家・集落が点在し、人々はなんとか文明の火を繋いでいる。しかしセラフィット帝国の偉業を再現できる者はおらず、失われた技術・魔術・奇跡の断片を求めて廃墟を漁る者たちが後を絶たない。彼らを「廃掘人（ルーカー）」と呼ぶ。</p>
-
-      <div class="rule-block" style="margin-top:1.5rem;">
-        <p class="rule-block__title">廃掘人（ルーカー）とは</p>
-        <p>失われた帝国の知識・魔術・秘宝を求めて廃墟に踏み込む者たちの総称。動機は様々だ——金、知識、失った何かの痕跡、あるいは「動いていれば死について考えずに済む」という逃避。この世界を「前進させる」のはほとんどの場合この種の人々だ。</p>
-      </div>
-
-      <div class="rule-block">
-        <p class="rule-block__title">大崩壊の後遺症</p>
-        <p>夜になると霧が深まり、廃墟には怪異が集い、海の近くでは奇妙な夢を見る者が増えている。正気を失った者の数は、戦争や飢饉による死者に匹敵するとも言われる。この世界で生まれた者にとって、廃墟は「廃墟」ではなく「風景」であり、霧は「異常」ではなく「季節の一つ」だ。</p>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <!-- IV. 主要地域（アコーディオン） -->
+  <!-- II. 主要地域（アコーディオン） -->
   <section class="section" id="regions">
     <div class="section-header">
-      <span class="section-num">IV</span>
+      <span class="section-num">II</span>
       <h2 class="section-title">主要地域 — アルゴス大陸</h2>
       <div class="section-rule"></div>
     </div>
@@ -406,6 +614,18 @@
                   <div class="region-detail__section">
                     <p class="region-detail__heading">三つの主要都市</p>
                     <p class="region-detail__body">最大の商業都市「カーニヴァル」、港湾都市「ブリッジ・ポート」（深きものの末裔の人口比率が高い）、傭兵ギルド本部がある要塞都市「ソルタフォート」。三都市の利害対立は常にあり、全会一致が原則の評議会では重要な決定がほとんど下せない。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——カーニヴァル：賑騒と猜疑の都市</p>
+                    <p class="region-detail__body">一日は太陽が昇る二時間前、中央市場の場所取りから始まる。夜明け直前、廃掘人が昨夜持ち帰ったものを抱えて現れる頃が最も美しい時間だ——小さな石が帝国貨幣だったり、動物の骨だと思っていたものが刻印の石板だったりすることを、誰もが知っている。「じっと見る」のは無礼だが「全く見ない」のも不信任の表明——横目でさりげなく見るのがカーニヴァルの礼儀だ。屋台の名物「廃煮（アンラヴェル・ポット）」は何が入っているかその日次第。毎月末の夜には廃掘人が集まる「廃神祭」が開かれ、語り座（テル・サークル）で体験談が語られる。命に関わる嘘を三度つけば、ギルド「深根」の籍を失う。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——ブリッジ・ポート：二つの文化の接触点</p>
+                    <p class="region-detail__body">港の一角「波の下広場」は昼は普通の市場だが、夜になると深きものの末裔が篝火を海に向けて灯し、複雑な旋律の歌——「波の音に名前をつけている」——を響かせる。深海藻を煮出した「波汁」は二日酔いに効くと評判で、廃神祭の翌朝は行列ができる。深きものの末裔と内陸出身者は互いの存在が経済的に必要すぎて、露骨な差別は少ない。「理解できないものが怖いのは仕方ない。私たちも内陸の人間が何を話しているかわからない時は不安になる」と若い漁師は言う。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——ソルタフォート：規律と記憶の要塞都市</p>
+                    <p class="region-detail__body">一日は朝六時の鐘で始まり、街路は帝国時代の格子状の設計を維持している。傭兵ギルドの「仕事板」には毎朝新しい依頼が貼り出され、長く生き残った傭兵ほど依頼人の「目」を見て判断する——目が泳ぐ依頼人の依頼は断るのが暗黙の鉄則だ。この都市には帝国時代の行政文書を保管する「記録の間」があり、書き師ドーラ・ウィンタームーンが二十年管理している。彼女が「保管できない」と判断した記録は残らない——その基準は説明されない。</p>
                   </div>
                   <div class="region-detail__section">
                     <div class="region-detail__quote">「ここでは何でも買えるし、何でも売れる。命以外はな」<br><small style="font-style:normal; color:var(--text3);">——カーニヴァルの市場での格言</small></div>
@@ -451,7 +671,15 @@
                     <p class="region-detail__body">教団は一枚岩ではなく「浄化派」「縫合派」「観察派」の三派閥が存在する。最も政治的権力を持つ浄化派は魔術師・呪術師への迫害を推進。穏健な縫合派は医療・農業の実績を担う。外部にほぼ知られていない観察派は、外なる神々の研究を「理解のために制限しながら行う」立場をとる。</p>
                   </div>
                   <div class="region-detail__section">
-                    <div class="region-detail__quote">「神は慈悲を持てと言っている」——そう言いながら、呪術師を地下の独房に収監する男がいる。<br><small style="font-style:normal; color:var(--text3);">——廃掘人の手記より</small></div>
+                    <p class="region-detail__heading">生活誌——首都ホワイトゲート：信仰と石の都</p>
+                    <p class="region-detail__body">一日は日の出の一時間前、白衣教団の鐘塔の音から始まる。礼拝は義務ではないが「欠席が続くと近所からの目線が変わる」という社会的圧力で維持されている。市場は品目ごとに区画が指定され、農産物は南区、医薬品は北区と帝国時代の都市計画が今も残る。修道院の食事は身分に関わらず同じ皿——その平等は形式的なものだと誰もが知っているが、形式が維持されること自体に意味があるとされる。住民の信仰の多くは神学的確信ではなく「礼拝に行く」「教団に逆らわない」という実践であり、それが「本当の信仰か」という議論は何百年も決着していない。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——辺境の農村：教団の「普通」が届かない場所</p>
+                    <p class="region-detail__body">巡回の聖職者は年に数回しか訪れず、その間は村が自ら問題を解決する。だから辺境には「教団には言えない知恵」がある——呪術師の魔除けの結界を聖職者が来る時だけ外し、去った後に戻す農家。村の年寄りが持つ「夢見の知識」（どの方角から霧が深まるか等）は神学的根拠を持たないが外れたことがない。食卓は季節に直結し、村の最重要スキルは保存——塩漬け・燻製・乾燥・発酵の技術が各村独自に発展している。収穫祭の夜に語られる「帝国の話」は、語るたびに少しずつ変わる——それこそが「生きた記憶」だと村人は理解している。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「神は慈悲を持てと言っている」——そう言いながら、呪術師を地下の独房に収監する男がいる。<br><small style="font-style:normal; color:var(--text3);">——テオフィリアの民間に伝わる逸話</small></div>
                   </div>
                   <div class="region-detail__tags">
                     <span class="region-detail__tag">聖職者の出身地</span>
@@ -492,6 +720,13 @@
                   <div class="region-detail__section">
                     <p class="region-detail__heading">霧の中の時間</p>
                     <p class="region-detail__body">証言には矛盾も多い。同じ場所について「三時間しかいなかった」という者と「三日間さまよった」という者がおり、二人の体験談の内容はほぼ同じだ。霧の内部では時間の流れが異常をきたしているという説が根強い。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——霧際の集落「ミスト・エッジ・タウン」</p>
+                    <p class="region-detail__body">廃帝都を包む霧の縁には、正式な名前を持たない集落がある。人口は数十人から百人前後を行き来し、廃墟探索の拠点とする者・霧の研究をする者・単に他に行けず留まった者が混在する。集落には「霧読み（ミスト・リーダー）」と呼ばれる者が数人おり、出発前の廃掘人が必ず相談する。「今日の霧は機嫌が良い／悪い」という答えが比喩か実感かは霧読み本人も説明しないが、「機嫌が悪い」と言われた日に入った廃掘人の生還率は有意に低いという記録がギルドに残っている。霧から戻った者は集落端の「戻り小屋」に一晩泊まる慣習がある——表向きは体の回復のためだが、実際は「本人が本人のままか」を確認する時間だ。</p>
+                  </div>
+                  <div class="region-detail__section">
+                    <div class="region-detail__quote">「霧は壁ではない。霧は招待状だ」<br><small style="font-style:normal; color:var(--text3);">——廃掘人ヴァレリア・ノース、失踪前最後の手記より</small></div>
                   </div>
                   <div class="region-detail__section">
                     <div class="region-detail__quote">「霧の向こうには、まだ何かが動いているのが見えた。人の形をしていた。少なくとも、最初は」<br><small style="font-style:normal; color:var(--text3);">——生還した廃掘人の証言</small></div>
@@ -537,6 +772,10 @@
                     <p class="region-detail__body">海岸の沖合い深くに、水没した古い構造物があるという伝説が絶えない。大崩壊の五年前から沿岸の漁村で「夜に海へ帰る者」の数が急増していたという記録がある。名無しの者の「合図」はまだ続いているかもしれない。</p>
                   </div>
                   <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——漁村の日常：二つの血が混じる場所</p>
+                    <p class="region-detail__body">漁師は夜明け前に海に出るが、深きものの血が濃い者は真夜中過ぎから「今日の海が何を考えているか」がわかると言う。漁から戻った後の網の修繕や塩漬け作業は全員で行い、深きものの末裔も内陸出身者も同じ作業台を囲む。十二歳になると子供は夜の海岸に一人で連れ出される「試し」を受ける——深きものの血が濃い子供には何かが起きることがあるが、大人たちはその内容を語らない。「今まで一度も子供が帰ってこなかったことはない」とだけ老漁師は答える。波の声が聞こえる者は多いが、その内容を「わかるけど言いたくない」と言う者が多い。</p>
+                  </div>
+                  <div class="region-detail__section">
                     <div class="region-detail__quote">「波の音が変わった日から、父は夜に海を見るようになった。三ヶ月後、父は帰ってこなかった」<br><small style="font-style:normal; color:var(--text3);">——沿岸住民の証言</small></div>
                   </div>
                   <div class="region-detail__tags">
@@ -580,6 +819,10 @@
                     <p class="region-detail__body">内部には独自の倫理規定「暗約」が存在し、同族への呪術使用を禁じている。ここで発展した呪術体系は深淵の残滓と「交渉し共存する技術」だ。力を支配するのではなく、力に一部を譲渡することで残りを借りる——その代償は術者の精神の一部であり、ベテランの呪術師ほど目に「うつろな部分」が混じると言われる。</p>
                   </div>
                   <div class="region-detail__section">
+                    <p class="region-detail__heading">生活誌——森の中の秘密の村：力と代償の日常</p>
+                    <p class="region-detail__body">集落に初めて辿り着いた者がまず気づくのは「音が違う」こと——左から来るはずの音が右から来る、上から来るはずの音が足元から来る感覚で、慣れるまで数週間かかる。暗約の最も基本的な規定は「対価なしに力を使わない」ことで、誰かの痛みを呪術で和らげるにも何か（金銭でなくてよい）を受け取らなければならない。「無償は無責任だ」という哲学が背景にある。子供たちは「禁じられた場所から遠ざかる」より先に「感じること」を学び、七歳で深淵の残滓のごく薄い欠片に初めて「触れる」。長老「三面のアデライン」は代償が最も進んだ例とされ、話の途中で何年も前のことを「今起きていること」のように語ることがある。</p>
+                  </div>
+                  <div class="region-detail__section">
                     <div class="region-detail__quote">「私たちは力を盗んでいるのではない。借りているのだ。返す先が、私たちの精神だというだけで」<br><small style="font-style:normal; color:var(--text3);">——ヴェイルホロウの呪術師</small></div>
                   </div>
                   <div class="region-detail__tags">
@@ -599,49 +842,151 @@
 
   <hr class="divider">
 
-  <!-- V. 信仰と魔術体系 -->
-  <section class="section" id="magic">
+  <!-- III. 主要組織・勢力 -->
+  <section class="section" id="factions">
     <div class="section-header">
-      <span class="section-num">V</span>
-      <h2 class="section-title">信仰と魔術体系</h2>
+      <span class="section-num">III</span>
+      <h2 class="section-title">主要組織・勢力</h2>
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <div class="rule-block">
-        <p class="rule-block__title">魔術の源泉「マナ」と「深淵の残滓」</p>
-        <p>魔術は大きく二つの源泉から力を汲む。一つは「マナ」——大地・大気・生命体に漂う自然の力の総称で、理力（INT）の高い術者が操作することで魔術を発動させる。もう一つは「深淵の残滓」——大崩壊の際に世界に染み込んだ外なる神々の思念の欠片。これを利用した魔術は威力が高いが、使用者の精神（POW）を侵食するリスクを伴う。</p>
+      <p style="font-size:13px; color:var(--text2); margin-bottom:1.25rem; line-height:1.9;">アルゴス大陸における勢力の概観と、その内側を支える組織群。帝国崩壊から二百五十年、大陸の支配権は未だ定まらず、各勢力が複雑に絡み合っている。</p>
+
+<!-- ── 勢力説明 ── -->
+      <div class="section-header" style="margin-bottom:1rem;">
+        <span class="section-num" style="font-size:11px;">▍</span>
+        <h3 class="section-title" style="font-size:15px;">現在の勢力図</h3>
+        <div class="section-rule"></div>
       </div>
-      <div class="rule-block">
-        <p class="rule-block__title">奇跡の仕組み「信仰の回路」</p>
-        <p>聖職者が行使する「奇跡」は術者自身の力ではなく、縫合の神との「信仰の回路（サーキット・オブ・フェイス）」を通じて神の力を借りる行為だ。信仰（FTH）の高さが直接的に奇跡の威力に結びつく。戒律を破った聖職者が奇跡を使えなくなる事例が報告されており、これは「信仰の回路の遮断」と呼ばれる。</p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--border); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:2.5rem;">
+
+        <div style="background:var(--bg2); padding:1.25rem;">
+          <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.15em; color:#9080c0; margin-bottom:0.25rem;">THEOPHILIA</p>
+          <p style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:0.6rem;">テオフィリア神聖教国</p>
+          <p style="font-size:12px; color:var(--text3); line-height:1.8;">大陸北西部。白衣教団が統治する最大の組織的勢力。軍事・宗教・医療を一元管理し、名目上の「大陸の秩序」を主張する。内部は三派閥に分裂しており、魔術師・呪術師への迫害と引き換えに民衆の支持を維持している。</p>
+          <p style="font-size:11px; color:#6a5a90; margin-top:0.5rem; font-style:italic;">勢力：大（人口・資源・軍事力の大半を握る）</p>
+        </div>
+
+        <div style="background:var(--bg2); padding:1.25rem;">
+          <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.15em; color:#c8a45a; margin-bottom:0.25rem;">MERCURIA</p>
+          <p style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:0.6rem;">メルクリア自由都市連合</p>
+          <p style="font-size:12px; color:var(--text3); line-height:1.8;">大陸中央部。三都市の緩やかな連合体。テオフィリアと敵対も従属もしない中立を維持しているが、経済的にはテオフィリアへの依存が大きい。廃掘人・傭兵・商人が集まり情報と物資の集積地となっている。</p>
+          <p style="font-size:11px; color:#7a6030; margin-top:0.5rem; font-style:italic;">勢力：中（経済力は大陸随一だが軍事力は散発的）</p>
+        </div>
+
+        <div style="background:var(--bg2); padding:1.25rem;">
+          <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.15em; color:#4a8a4a; margin-bottom:0.25rem;">VEILHOLLOW</p>
+          <p style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:0.6rem;">ヴェイルホロウ衆</p>
+          <p style="font-size:12px; color:var(--text3); line-height:1.8;">大陸東部の森。テオフィリアに追われた者たちの集合体で、統一した政治機構を持たない。「暗約」により内部の結束を保つ。呪術の力では大陸随一だが人口は少なく、外部との公式な交流を持たない。</p>
+          <p style="font-size:11px; color:#3a6a3a; margin-top:0.5rem; font-style:italic;">勢力：小〜中（数は少ないが一人ひとりが強力）</p>
+        </div>
+
+        <div style="background:var(--bg2); padding:1.25rem;">
+          <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.15em; color:#308070; margin-bottom:0.25rem;">INNSMOUTH</p>
+          <p style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:0.6rem;">インスマスの潮族</p>
+          <p style="font-size:12px; color:var(--text3); line-height:1.8;">大陸南部の沿岸。深きものの末裔を中心とした緩やかな共同体。陸上の政治には干渉しないが、海と海底神殿に関わる事項には断固とした態度を示す。名無しの者との関係が深く、他勢力には不可解な行動が多い。</p>
+          <p style="font-size:11px; color:#205a50; margin-top:0.5rem; font-style:italic;">勢力：不明（陸上の基準では測れない）</p>
+        </div>
+
+        <div style="background:var(--bg2); padding:1.25rem; grid-column: 1 / -1;">
+          <p style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.15em; color:#606060; margin-bottom:0.25rem;">ARKANA — UNCLAIMED</p>
+          <p style="font-size:13px; font-weight:500; color:var(--text); margin-bottom:0.6rem;">廃帝都アルカーナ（無主の地）</p>
+          <p style="font-size:12px; color:var(--text3); line-height:1.8;">大陸中央部の霧に沈んだ都市。いかなる勢力の支配も及ばず、廃掘人たちが命がけで踏み込む場所。テオフィリア・メルクリア・ヴェイルホロウのいずれもが「アルカーナを制した者が大陸を制する」と信じており、それぞれが独自の調査・侵入を続けている。現時点でアルカーナの深部に到達した者の証言は存在しない。</p>
+          <p style="font-size:11px; color:#505050; margin-top:0.5rem; font-style:italic;">勢力：概念的（存在するだけで全勢力のバランスを規定する）</p>
+        </div>
+
       </div>
-      <div class="rule-block">
-        <p class="rule-block__title">刻印（Inscription）——力の痕跡を肉体に宿す</p>
-        <p>セラフィット帝国時代に発展した特殊な技法。外なる神々の力・古代魔術の法則・生命の根源的なパターンを微細な紋様として人体の深部に刻み込む。一度刻まれた刻印は生涯消えることなく、その者のあり方の一部となる。帝国の滅亡後、刻印の技法は断片的にしか伝わっていない。施術者「刻み師（スクライバー）」は大陸全体でわずか七名しか存在しない。</p>
+
+      
+
+<!-- ── 組織 ── -->
+      <div class="section-header" style="margin-bottom:1rem;">
+        <span class="section-num" style="font-size:11px;">▍</span>
+        <h3 class="section-title" style="font-size:15px;">主要組織</h3>
+        <div class="section-rule"></div>
       </div>
+
+      <div class="npc-list" style="margin-bottom:2.5rem;">
+
+        <div class="npc-card" style="border-left-color:#9080c0;">
+          <p class="npc-card__name">白衣教団</p>
+          <span class="npc-card__role">宗教・政治組織 — テオフィリア全土 / 大陸各地に支部</span>
+          <p class="npc-card__desc">縫合の神を奉じる大陸最大の宗教組織にして、テオフィリアの実質的な支配機構。聖職者の養成・医療・農業・建築技術の管理を通じて民衆の生活を掌握している。表向きは慈悲と秩序を掲げるが、魔術師・呪術師・深きものの末裔への迫害を「神の意志」として実施する。内部は「浄化派」「縫合派」「観察派」の三派閥に分裂しており、外部には一枚岩に見えるが実態は常に内部権力闘争中だ。PCが魔術師や呪術師、あるいは疑わしい素性を持つ場合、この組織が最初の障壁となる可能性が高い。</p>
+        </div>
+
+        <div class="npc-card" style="border-left-color:#c8a45a;">
+          <p class="npc-card__name">廃掘人ギルド「深根（ディープルート）」</p>
+          <span class="npc-card__role">互助・情報組織 — メルクリア・カーニヴァル本部 / 各廃墟拠点</span>
+          <p class="npc-card__desc">メルクリアを本拠とする廃掘人の互助組織。構成員は約三百名。主要な機能は廃掘人同士の情報共有、遺体や遺品の回収と遺族への送還、そして「言ってはいけないこと」の管理だ。公開すると社会的混乱を招くと判断された情報を「封印記録」として保管しており、その内容を知ろうとする者とそれを守ろうとする者の間に常に緊張がある。加入には「経験ある廃掘人二名の推薦」が必要で、新入りには「アルカーナには近づくな」とだけ伝えられる。</p>
+        </div>
+
+        <div class="npc-card" style="border-left-color:#6060a0;">
+          <p class="npc-card__name">帝国遺産研究会「刻まれた者たち」</p>
+          <span class="npc-card__role">秘密結社 — メルクリア・ヴェイルホロウ・テオフィリア観察派に非公式構成員</span>
+          <p class="npc-card__desc">セラフィット帝国の失われた技術・刻印・術式を回収・復元することを目的とした秘密結社。公式な組織を持たず、「共通の目的を持つ個人の緩やかなネットワーク」として機能する。刻み師・魔術師・廃掘人・白衣教団の内部告発者まで、立場の異なる者たちが「知識の回収」という一点で繋がっている。外部からは存在を認識されておらず、構成員同士も互いの全貌を知らない。PCが帝国時代の刻印の断片を入手したとき、最初に「接触してくる側」はこの組織の可能性が高い。</p>
+        </div>
+
+        <div class="npc-card" style="border-left-color:#4a8a4a;">
+          <p class="npc-card__name">ヴェイルホロウの暗約衆</p>
+          <span class="npc-card__role">呪術師集団 — ヴェイルホロウ（大陸東部の深い森）</span>
+          <p class="npc-card__desc">ヴェイルホロウに集まった呪術師・異端魔術師たちの自治体。「暗約（ダーク・コヴェナント）」という倫理規定のもとに運営され、同族への呪術使用を禁じている。外部からは「呪われた者の巣窟」と恐れられるが、内部には独自の学術体系と精神的な共同体がある。テオフィリアとは公式に敵対関係にあり、「白衣教団が手を出せない場所」としての森の深さが唯一の防衛線だ。呪術師PCにとっては故郷か師の出身地であることが多く、この組織との関係がシナリオの軸になることもある。</p>
+        </div>
+
+        <div class="npc-card" style="border-left-color:#c04030;">
+          <p class="npc-card__name">影廊（シャドウコリドー）</p>
+          <span class="npc-card__role">非合法組織・情報売買 — メルクリア三都市の地下 / テオフィリア周辺</span>
+          <p class="npc-card__desc">大陸で唯一の組織的な情報売買・暗殺・密輸ネットワーク。「誰が雇い主か」を絶対に明かさないという原則で動いており、テオフィリア・メルクリア・ヴェイルホロウの全勢力が裏では利用していると言われる。廃掘人の間では「影廊が依頼を断ったことは一度もない」という噂があるが、依頼の代価が「金」以外の場合があることも知られている。PCがアルカーナに関する情報を求めると、高確率でこの組織の名前が出てくる。</p>
+        </div>
+
+        <div class="npc-card" style="border-left-color:#308070;">
+          <p class="npc-card__name">潮の盟約</p>
+          <span class="npc-card__role">深きものの末裔の共同体 — インスマス海岸全域 / 一部海底</span>
+          <p class="npc-card__desc">インスマス海岸に暮らす深きものの末裔たちの緩やかな共同体。陸上の政治には干渉しないが、海底神殿と名無しの者への信仰に関わる事項には断固とした態度を示す。「老長老」と呼ばれる数名の長老が合議で意思決定を行い、陸上の法律や勢力の支配を認めていない。PCが深きものの末裔の素性を持つ場合、この組織との血縁的・信仰的なつながりがバックストーリーに組み込める。海底神殿への道を知る者は、この組織を通じてのみ接触できる。</p>
+        </div>
+
+      </div>
+
+      
     </div>
   </section>
 
   <hr class="divider">
 
-  <!-- VI. 世界のトーン -->
-  <section class="section" id="tone">
+  <!-- IV. 廃掘人の日常 -->
+  <section class="section" id="lookers">
     <div class="section-header">
-      <span class="section-num">VI</span>
-      <h2 class="section-title">世界のトーン</h2>
+      <span class="section-num">IV</span>
+      <h2 class="section-title">廃掘人の日常——廃墟を生業とする者たちの生き方</h2>
       <div class="section-rule"></div>
     </div>
     <div class="section-body">
-      <p>「忘却の淵にて」は暗く退廃した世界を舞台としているが、「絶望だけを描く世界」ではない。廃墟の中に残った美しい彫刻。見知らぬ旅人に食事を分け与える老農夫。深淵の怪異を前にしても仲間の手を離さないPCたち——「そこにまだ人間らしさがある」という瞬間の輝きが、暗い世界のコントラストをより際立たせる。</p>
+      <p>廃掘人（ルーカー）は失われた帝国の知識・魔術・秘宝を求めて廃墟に踏み込む者たちの総称だ。動機は金、知識、失った何かの痕跡、あるいは「動いていれば死について考えずに済む」という逃避——様々だが、この世界を前進させるのはほとんどの場合この種の人々である。</p>
 
-      <div class="lore-quote" style="margin-top:1.5rem;">
-        <p>淵の縁に立つことの意味は、落ちることではない。落ちないために、ここに立っていることだ。</p>
-        <cite>——世界観拡張資料集より</cite>
+      <div class="lifestyle-grid">
+        <div class="lifestyle-card">
+          <p class="lifestyle-card__title">道具と準備</p>
+          <p class="lifestyle-card__body">装備は「最小限」が原則。重い鎧は動きを制限し、派手な松明は遠くから見える。最も重要な装備は地図だが、廃墟の地図は外部から入手できないため廃掘人は自分で地図を作りながら進む——亡くなった者の最後の地図は「封印記録」として保管されることがある。光源は松明か帝国時代の「永続光石」だが、光石の中には「人を引きつける光」を発するものがあり、光の質を見極めることも必須技術の一つだ。</p>
+        </div>
+        <div class="lifestyle-card">
+          <p class="lifestyle-card__title">廃掘人の職業病</p>
+          <p class="lifestyle-card__body">長年廃墟を歩いた者には共通する変化が現れる。最も多いのは「音への過敏」——廃墟では音が命に関わる情報のため、日常生活でも些細な音が気になるようになる。次に多いのは「夢の問題」——深淵の残滓に長く接触した者の多くが「霧の中を歩いている」「石板の文字が読めそうで読めない」といった夢を繰り返し見るようになる。これを職業病として受け入れる者もいれば「これは汚染だ」と見る者もおり、境界は誰にもわからない。</p>
+        </div>
+        <div class="lifestyle-card">
+          <p class="lifestyle-card__title">廃掘人の引退</p>
+          <p class="lifestyle-card__body">引退の方法は三つ。「満足した時」——十分なものを手に入れ、もう廃墟に行く必要がなくなった時。「体が動かなくなった時」——怪我や老齢で、頭だけで廃掘人を続ける者もいる。そして最も多いのが「帰ってこなかった時」だ。深根のギルドはこれを「死亡」とは呼ばず「行ったまま（ゴーン・インサイド）」と呼ぶ——「帰ってこなかった者は、今もどこかにいるかもしれない」という考え方が、廃掘人の精神的な支柱の一つになっている。</p>
+        </div>
       </div>
 
-      <div class="note">詳細な設定（大崩壊の詳細記録・三つの説・人物録・怪異録・廃掘人の手記）は<a href="world_detail.html" style="color:var(--gold); text-decoration:none;">詳細設定ページ</a>を参照。</div>
+      <div class="lore-quote">
+        <p>歴史は王と戦争を記録する。だが、誰かが毎朝パンを焼いていなければ、王も戦士も存在できない。</p>
+        <cite>——廃掘人ギルド「深根」の記録員、アナベル・ティスの覚書より</cite>
+      </div>
+
+      <div class="note">武器・防具・素性・能力値など、キャラクター作成に関わるデータは<a href="data_weapons.html" style="color:var(--gold); text-decoration:none;">データ一覧</a>・<a href="origins.html" style="color:var(--gold); text-decoration:none;">素性・能力値</a>の各ページを参照。世界の根源——外なる神々・帝国史・大崩壊・信仰魔術体系——は<a href="world_detail.html" style="color:var(--gold); text-decoration:none;">詳細設定ページ</a>を参照。</div>
     </div>
   </section>
+
 
   <!-- ページナビ -->
   <nav class="page-nav">
