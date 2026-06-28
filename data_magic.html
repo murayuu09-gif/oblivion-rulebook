@@ -244,8 +244,8 @@
     </div>
     <div class="section-body">
       <p>魔術はINTを参照能力値とする攻性の術式。触媒を介して行使し、MPを消費する。</p>
-      <div class="note">※同一の特殊効果は1ラウンドに1度のみ発動できる</div>
-      <div class="weapon-grid">
+      <div class="note"></div>
+      <div class="weapon-grid">HD/EXの特殊効果は1ラウンドに1度のみ発動できる
         <article class="weapon-card weapon-card--magic">
           <div class="weapon-card__head">
             <h3 class="weapon-card__name">炎の矢</h3>
@@ -515,7 +515,7 @@
             <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
             <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
           </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>耐性貫通(全)。使用者はPOWに失敗すると自身に発狂付与<br>EX ダメージ+1d8 POWにBD+1</p></div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>耐性貫通(4)。使用者はPOWに失敗すると自身に発狂付与<br>EX ダメージ+1d8 POWにBD+1</p></div>
           <div class="weapon-card__flavor">深淵の残滓が手の形に結晶化した禁呪。<br>手を伸ばした先に何があるのか、使い手は見ていない。</div>
         </article>
         <article class="weapon-card weapon-card--magic">
@@ -532,7 +532,7 @@
             <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
             <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
           </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人(自分含む)の装備している武器の命中+10%、射程+1にする<br>HD 装備中にラウンド終了時にHP1回復も与える<br>※重複不可。</p></div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人(自分含む)の装備している武器の命中+10%、射程+1にする<br>HD 装備中にラウンド終了時にHP1回復も与える<br>※累積しない、戦闘終了まで持続</p></div>
           <div class="weapon-card__flavor">帝国の鍛冶師と魔術師の共同研究から生まれた術。<br>二つの技術が出会った場所に、この術式は生まれた。</div>
         </article>
         <article class="weapon-card weapon-card--magic">
@@ -566,7 +566,7 @@
     </div>
     <div class="section-body">
       <p>奇跡はFTHを参照能力値とする信仰由来の術式。攻撃・回復・加護など効果は幅広く、タロットを触媒とするものも多い。</p>
-      <div class="note">※同一の特殊効果は1ラウンドに1度のみ発動できる</div>
+      <div class="note">HD/EXの特殊効果は1ラウンドに1度のみ発動できる</div>
       <div class="weapon-grid">
         <article class="weapon-card weapon-card--magic">
           <div class="weapon-card__head">
@@ -659,7 +659,7 @@
             <span class="weapon-card__cats"><span class="cat-pill cat--attack">攻撃</span><span class="cat-pill cat--tarot">タロット</span></span>
           </div>
           <div class="weapon-card__stats weapon-card__stats--magic">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4</span></div>
+            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+1</span></div>
             <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
             <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
             <div class="wstat"><span class="wstat__label">MP</span><span class="wstat__val">3</span></div>
@@ -718,7 +718,7 @@
             <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
             <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
           </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人はラウンド終了時にHP1d3回復する状態になる<br>EX 射程内から好きなだけ対象に選べる<br>※戦闘終了まで持続</p></div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内1人はラウンド終了時にHP1d3回復する状態になる<br>EX 射程内から好きなだけ対象に選べる<br>※累積しない、戦闘終了まで持続</p></div>
           <div class="weapon-card__flavor">タロットの「正義」が正しき者を支える奇跡。<br>正しさとは何かを、この奇跡は問わない。</div>
         </article>
         <article class="weapon-card weapon-card--magic">
@@ -735,7 +735,7 @@
             <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
             <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
           </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>使用後、自身に死の宣告付与(戦闘終了以外で解除されない)<br>目標の取得している刻印1種か、エネミーなら特殊能力1つを自身に取得させる。<br>※状態異常に関係するものは取得できない</p></div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>使用後、自身に死の宣告付与(戦闘終了以外で解除されない)<br>目標の取得している刻印1種か、エネミーなら特殊能力1つを自身に取得させる。<br>※戦闘終了まで持続、状態異常に関係するものは取得できない</p></div>
           <div class="weapon-card__flavor">自ら犠牲を受け入れた者が使える奇跡。<br>「吊るされた男」は逆さまの世界から、正しく物事を見る。</div>
         </article>
         <article class="weapon-card weapon-card--magic">
@@ -820,7 +820,7 @@
             <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">1</span></div>
             <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">-</span></div>
           </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内の味方全員に命中+5%。使用したラウンドは攻撃行動不可<br>EX 命中+5%。闇属性攻撃で状態異常を受けなくなる<br>※戦闘終了まで持続</p></div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>射程内の味方全員に命中+5%。使用したラウンドは攻撃行動不可<br>EX 命中+5%。闇属性攻撃で状態異常を受けなくなる<br>※累積しない、戦闘終了まで持続</p></div>
           <div class="weapon-card__flavor">祝福とは、祈ることで与えられる力だ。<br>詠唱が戦場に満ちる間、使い手は攻撃をやめている。</div>
         </article>
         <article class="weapon-card weapon-card--magic">
@@ -837,7 +837,7 @@
             <div class="wstat"><span class="wstat__label">最大使用回数</span><span class="wstat__val">2</span></div>
             <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">CON</span></div>
           </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>自身の減少しているHPをダメージに追加<br>HP最大値を現在のHPにする</p></div>
+          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>自身の減少しているHPをダメージに追加<br>HP最大値を現在のHPにする<br>※セッション終了まで持続</p></div>
           <div class="weapon-card__flavor">罪は消えない。<br>ただ、どこへ向けるかを選ぶことはできる。</div>
         </article>
         <article class="weapon-card weapon-card--magic">
