@@ -3,1319 +3,336 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>データ一覧：刻印 — 忘却の淵にて</title>
+<title>刻印 — 忘却の淵にて</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-/* ── 刻印カード（weapon-cardを継承） ── */
-.weapon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin: 1rem 0 0.5rem;
-}
-.weapon-card {
-  background: var(--bg2);
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.weapon-card__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-}
-.weapon-card__name {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--gold2);
-  letter-spacing: 0.03em;
-  line-height: 1.4;
-}
-.weapon-card__cats {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-.weapon-card__special {
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.75;
-  margin-bottom: 0.9rem;
-  flex: 1;
-}
-.weapon-card__special-label {
-  display: block;
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-}
-.weapon-card__special p { margin: 0; }
-.weapon-card__flavor {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 11.5px;
-  line-height: 1.85;
-  padding: 0.7rem 0.85rem;
-  border-left: 2px solid var(--gold-dim);
-  background: rgba(255,255,255,0.012);
-  margin-top: auto;
-  color: var(--text2);
-  font-style: italic;
-}
-.weapon-card__flavor--empty {
-  color: var(--text3);
-  border-left: none;
-  border: 1px dashed var(--border2);
-  border-radius: 4px;
-}
-.subsection-title {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gold-dim);
-  letter-spacing: 0.05em;
-  margin: 1.75rem 0 0.75rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--border);
-}
-
-/* ── フィルター＆タブバー ── */
-.data-controls {
-  display: flex;
-  gap: 2rem;
-  align-items: center;
-  flex-wrap: wrap;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--border);
-}
-.control-group {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.control-label {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-right: 4px;
-}
-.filter-btn, .tab-btn {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 11px;
-  padding: 3px 12px;
-  border-radius: 2px;
-  border: 1px solid var(--border2);
-  background: none;
-  color: var(--text3);
-  cursor: pointer;
-  letter-spacing: 0.05em;
-  transition: all 0.15s;
-}
-.filter-btn:hover, .tab-btn:hover {
-  color: var(--text);
-  border-color: var(--gold-dim);
-}
-.filter-btn.active, .tab-btn.active {
-  background: rgba(200,164,90,0.1);
-  border-color: var(--gold-dim);
-  color: var(--gold);
-}
-
-/* カード非表示 */
-.weapon-card.hidden { display: none; }
-/* パネル非表示 */
-.seal-panel { display: none; }
-.seal-panel.active { display: block; }
-
-/* 種別ごとの左ライン */
-.seal-card[data-type="常時"] { border-left: 2px solid var(--gold-dim); }
-.seal-card[data-type="条件"] { border-left: 2px solid var(--red); }
-.seal-card[data-type="発動"] { border-left: 2px solid var(--purple); }
-
-@media (max-width: 640px) {
-  .weapon-grid { grid-template-columns: 1fr; }
-  .data-controls { gap: 1rem; }
-}
+.data-controls{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;align-items:center}
+.search-box{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.6rem 1rem;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-box:focus{border-color:var(--gold-dim)}.search-box::placeholder{color:var(--text3)}
+.filter-group{display:flex;flex-wrap:wrap;gap:.5rem}
+.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.1em;padding:4px 12px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);border-radius:2px;cursor:pointer;transition:all .2s}
+.filter-btn:hover{color:var(--gold);border-color:var(--gold-dim)}.filter-btn.active{background:var(--gold-dim);color:var(--gold2);border-color:var(--gold)}
+.result-count,.fav-notice{font-size:11px;font-family:'Noto Sans JP',sans-serif;margin-bottom:1rem}
+.result-count{color:var(--text3)}.fav-notice{color:var(--gold-dim);margin-bottom:1.5rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:3rem}
+.data-card{background:var(--bg2);padding:1.25rem;position:relative;transition:background .15s}
+.data-card:hover{background:var(--bg3)}.data-card.hidden{display:none}.data-card.favorited{background:rgba(200,164,90,.06)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.5rem}
+.card-id{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text3);flex-shrink:0;margin-top:2px}
+.card-name{font-size:14px;font-weight:500;color:var(--text);flex:1;line-height:1.3}
+.card-name-en{font-family:'Cinzel',serif;font-size:9px;color:var(--gold-dim);letter-spacing:.15em;display:block;margin-top:2px}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:14px;color:var(--text3);padding:2px;flex-shrink:0;transition:color .2s,transform .15s;line-height:1}
+.fav-btn:hover{color:var(--gold);transform:scale(1.2)}.fav-btn.active{color:var(--gold2)}
+.card-badges{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:.75rem}
+.tag{font-size:9px;font-family:'Noto Sans JP',sans-serif;letter-spacing:.08em;padding:2px 7px;border-radius:2px;font-weight:500}
+.tag-origin{background:rgba(112,80,144,.2);color:var(--purple2);border:1px solid var(--purple)}
+.tag-generic{background:rgba(200,164,90,.12);color:var(--gold);border:1px solid var(--gold-dim)}
+.tag-ap{background:rgba(48,128,112,.15);color:var(--teal2);border:1px solid var(--teal)}
+.tag-hit{background:rgba(48,96,160,.15);color:var(--blue2);border:1px solid var(--blue)}
+.tag-dmg{background:rgba(192,64,48,.15);color:var(--red2);border:1px solid var(--red)}
+.tag-hdex{background:rgba(200,164,90,.15);color:var(--gold);border:1px solid var(--gold-dim)}
+.tag-hp{background:rgba(80,160,80,.15);color:#70c070;border:1px solid #408040}
+.tag-mp{background:rgba(112,80,144,.15);color:var(--purple2);border:1px solid var(--purple)}
+.tag-other{background:rgba(120,100,80,.15);color:var(--text2);border:1px solid var(--border2)}
+.card-trigger{font-size:10px;color:var(--gold-dim);font-family:'Noto Sans JP',sans-serif;margin-bottom:.4rem;letter-spacing:.05em}
+.card-trigger::before{content:'⚡ '}
+.card-effect{font-size:12px;color:var(--text2);line-height:1.75;margin-bottom:.5rem}
+.card-condition{font-size:11px;color:var(--text3);line-height:1.6;margin-bottom:.5rem;padding:4px 8px;background:var(--bg3);border-radius:2px}
+.card-condition::before{content:'条件 ';color:var(--gold-dim);font-family:'Noto Sans JP',sans-serif;font-size:9px;font-weight:500}
+.card-flavor{font-size:10px;color:var(--text3);font-style:italic;border-top:1px solid var(--border);padding-top:.5rem;margin-top:.5rem;line-height:1.6}
+.tab-group{display:flex;flex-wrap:wrap;gap:0;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.08em;padding:.6rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
+.tab-btn:hover{color:var(--gold)}.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold-dim)}
+.tab-content{display:none}.tab-content.active{display:block}
+.rule-summary{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:2rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem}
+.rl{font-size:10px;font-family:'Noto Sans JP',sans-serif;color:var(--gold-dim);letter-spacing:.1em;margin-bottom:4px}
+.rv{font-size:13px;color:var(--text2);line-height:1.6}
+@media(max-width:640px){.card-grid{grid-template-columns:1fr}}
+.cc-section{margin-bottom:2.5rem}
+.cc-section-title{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.2em;color:var(--text3);margin-bottom:.6rem;padding-left:.5rem;border-left:2px solid var(--gold-dim)}
+.cc-table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto;margin-bottom:.5rem}
+.cc-table{width:100%;border-collapse:collapse;font-size:11px;min-width:700px}
+.cc-table th{font-family:'Noto Sans JP',sans-serif;font-size:9px;font-weight:500;letter-spacing:.12em;color:var(--gold-dim);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border2);background:var(--bg2);white-space:nowrap}
+.cc-table td{padding:6px 8px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.cc-table tr:last-child td{border-bottom:none}.cc-table tr:hover td{background:var(--bg3)}
+.cc-table td:first-child{white-space:nowrap}.cc-name{color:var(--text);font-weight:400}
+.cc-badge{display:inline-block;font-size:8px;font-family:'Noto Sans JP',sans-serif;padding:1px 5px;border-radius:2px;vertical-align:middle;margin-left:3px}
+.cc-generic{background:rgba(200,164,90,.15);color:var(--gold);border:1px solid var(--gold-dim)}
+.cc-origin{background:rgba(112,80,144,.2);color:var(--purple2);border:1px solid var(--purple)}
 </style>
 </head>
 <body>
-
-<!-- ナビゲーション -->
-<nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
-  <div class="site-nav__inner">
-    <a href="index.html" class="site-nav__logo">Oblivion</a>
-    <ul class="site-nav__links">
-      <li><a href="index.html">Top</a></li>
-      <li class="site-nav__item">
-        <a href="world.html">世界観</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="world.html">概要</a></li>
-          <li><a href="world_detail.html">詳細設定</a></li>
-        </ul>
-      </li>
-      <li class="site-nav__item">
-        <a href="system_combat.html">システム</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="system_combat.html">戦闘</a></li>
-          <li><a href="system_explore.html">探索</a></li>
-        </ul>
-      </li>
-      <li><a href="charcreate.html">キャラクター作成</a></li>
-      <li><a href="origins.html">素性・能力値</a></li>
-      <li class="site-nav__item">
-        <a href="data_weapons.html">データ一覧</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="data_weapons.html">武器・防具</a></li>
-          <li><a href="data_magic.html">魔術・奇跡</a></li>
-          <li><a href="data_seals.html">刻印</a></li>
-        </ul>
-      </li>
-      <li class="site-nav__item">
-        <a href="gm_enemies.html">GMツール</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="gm_enemies.html">エネミーリスト</a></li>
-          <li><a href="gm_artifacts.html">アーティファクト</a></li>
-          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-</nav>
+<nav class="site-nav" role="navigation"><div class="site-nav__inner">
+  <a href="index.html" class="site-nav__logo">Oblivion</a>
+  <ul class="site-nav__links">
+    <li><a href="index.html">Top</a></li>
+    <li class="site-nav__item"><a href="world.html">世界観</a><ul class="site-nav__dropdown"><li><a href="world.html">概要</a></li><li><a href="world_detail.html">詳細設定</a></li></ul></li>
+    <li class="site-nav__item"><a href="system_combat.html">システム</a><ul class="site-nav__dropdown"><li><a href="system_combat.html">戦闘</a></li><li><a href="system_explore.html">探索</a></li></ul></li>
+    <li><a href="charcreate.html">キャラクター作成</a></li>
+    <li><a href="origins.html">素性・能力値</a></li>
+    <li class="site-nav__item"><a href="data_weapons.html">データ一覧</a><ul class="site-nav__dropdown"><li><a href="data_weapons.html">武器・防具</a></li><li><a href="data_magic.html">魔術・奇跡</a></li><li><a href="data_seals.html">刻印</a></li></ul></li>
+    <li class="site-nav__item"><a href="gm_enemies.html">GMツール</a><ul class="site-nav__dropdown"><li><a href="gm_enemies.html">エネミーリスト</a></li><li><a href="gm_artifacts.html">アーティファクト</a></li><li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li></ul></li>
+  </ul>
+</div></nav>
 
 <div class="page-wrap">
-
   <div class="page-header">
-    <p class="page-eyebrow">Chapter V — Data</p>
-    <h1 class="page-title">刻印</h1>
-    <p class="page-title-ja">Inscriptions</p>
+    <p class="page-eyebrow">Data — V-C</p>
+    <h1 class="page-title">Inscriptions</h1>
+    <p class="page-title-ja">刻印一覧</p>
     <div class="page-divider"></div>
   </div>
 
-  <div class="section">
-    <p class="section-body" style="margin-bottom:1.5rem">
-      刻印とは、体に刻まれた術式の痕跡だ。キャラクターは素性に応じた刻印スロットを持ち、汎用または素性専用の刻印を選択して取得する。刻印は戦闘・探索を問わず、そのキャラクターの在り方そのものを形作る。
-    </p>
+  <div class="rule-summary">
+    <div><p class="rl">選択数</p><p class="rv">汎用＋自素性専用あわせて<strong style="color:var(--gold)">4種</strong>を作成時に選択</p></div>
+    <div><p class="rl">重複取得</p><p class="rv">同一刻印の重複取得不可</p></div>
+    <div><p class="rl">封印状態</p><p class="rv">「封印」状態異常中は全刻印の効果が無効化。一部を除いて刻印で受けている効果も即時無効化される。</p></div>
+  </div>
 
-    <!-- コントロールバー -->
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchTab('generic')">汎用（20種）</button>
+    <button class="tab-btn" onclick="switchTab('origin')">素性専用（77種）</button>
+    <button class="tab-btn" onclick="switchTab('favorites')">★ お気に入り</button>
+    <button class="tab-btn" onclick="switchTab('charcreate')">📋 キャラクター作成用</button>
+  </div>
+
+  <!-- 汎用タブ -->
+  <div id="tab-generic" class="tab-content active">
     <div class="data-controls">
-      <div class="control-group">
-        <span class="control-label">Category</span>
-        <button class="tab-btn active" data-cat="汎用">汎用</button>
-<button class="tab-btn" data-cat="素性別">素性別</button>
-
-      </div>
-      <div class="control-group">
-        <span class="control-label">種別</span>
-        <button class="filter-btn active" data-filter="all">すべて</button>
-<button class="filter-btn" data-filter="常時">常時</button>
-<button class="filter-btn" data-filter="条件">条件</button>
-<button class="filter-btn" data-filter="発動">発動</button>
-
+      <input class="search-box" type="text" placeholder="名前・効果・カテゴリで検索…" oninput="filterSeals('generic',this.value)">
+      <div class="filter-group" id="generic-cat-filters">
+        <button class="filter-btn active" onclick="setCF('generic','all',this)">すべて</button>
+        <button class="filter-btn" onclick="setCF('generic','AP・AGI',this)">AP・AGI</button>
+        <button class="filter-btn" onclick="setCF('generic','命中強化',this)">命中・ダメージ</button>
+        <button class="filter-btn" onclick="setCF('generic','HD/EX強化',this)">HD/EX強化</button>
+        <button class="filter-btn" onclick="setCF('generic','HP・生存',this)">HP・生存</button>
+        <button class="filter-btn" onclick="setCF('generic','MP・触媒',this)">MP・触媒</button>
       </div>
     </div>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="generic-count"></p>
+    <div class="card-grid" id="generic-grid"></div>
+  </div>
 
-    <!-- 汎用パネル -->
-    <div class="seal-panel active" id="panel-汎用">
-      <div class="weapon-grid seal-grid" data-category="汎用">
-        <div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">刻まれた技</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>取得時に武器種を1種選択する。その武器種の命中値+5%（常時）。同じ武器種を対象に重複取得不可（別の武器種は別途取得可）。</p>
-  </div>
-  <div class="weapon-card__flavor">技は肉体に刻まれる。<br>頭が忘れても、手が覚えている。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">刻まれた根</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>取得時に能力値を1種選択する。その能力値+1。同じ能力値を対象に重複取得不可（別の能力値は別途取得可）。</p>
-  </div>
-  <div class="weapon-card__flavor">能力とは、持って生まれるものではなく<br>繰り返しの中で根を張るものだ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">星読み</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>クリティカル率+1%。LCK10以上のキャラクターのみ取得可。</p>
-  </div>
-  <div class="weapon-card__flavor">星は人を選ばない。<br>ただ、読める者だけが星に選ばれたと思い込む。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">節制の賜物</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>キャラクター作成時のゴールド+200G。</p>
-  </div>
-  <div class="weapon-card__flavor">「贅沢は人を弱くする」とある商人は言った。<br>彼の財布は、今も膨らんでいる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">疾風の術式</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>ラウンド開始時にAP+1。AGI12以上のキャラのみ取得可能。</p>
-  </div>
-  <div class="weapon-card__flavor">セラフィット帝国の軍師が編み出した術式の断片。<br>速さとは、余白を消すことだと彼らは言った。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">踏み込みの術式</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>ラウンド終了時にAPが1以上余っていれば次ラウンドのAP+1。AGI11以上のキャラのみ取得可能。</p>
-  </div>
-  <div class="weapon-card__flavor">一歩の余韻が、次の一歩を生む。<br>帝国の歩兵はそのようにして、戦場を渡り歩いた。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">残滓の循環</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>HD/EX成功をしたラウンド終了時にMP1回復（最大1）。</p>
-  </div>
-  <div class="weapon-card__flavor">魔力は消えない。<br>形を変えて、使い手のもとへ戻ってくる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">研ぎ澄まされた一手</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>通常成功の攻撃に、ダメージ+2。(ラウンド1回まで)</p>
-  </div>
-  <div class="weapon-card__flavor">一番確かな一撃は、最も地味な瞬間に宿る。<br>EXでもCRでもなく、ただ正確に。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">武芸百般</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>両手武器を片手で装備できるようになる。その場合は命中-10%。</p>
-  </div>
-  <div class="weapon-card__flavor">「重い」「使いにくい」という言葉を<br>この者の辞書には見つけられない。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">試練の鋼</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>同じ相手に対して2回以上攻撃している場合、その相手への命中値+5%。</p>
-  </div>
-  <div class="weapon-card__flavor">同じ相手と戦い続けることで、剣は磨かれる。<br>敵もまた、最良の教師だ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">日々の鍛錬</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>HP+5。</p>
-  </div>
-  <div class="weapon-card__flavor">特別な才能など、最初からなかった。<br>ただ、続けることだけが残った。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">術式の残滓</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>MP最大値+3。魔術/奇跡使用後、ラウンド終了時にMP1回復（最大1）。</p>
-  </div>
-  <div class="weapon-card__flavor">使い終えた魔力が、静かに戻ってくる。<br>深淵ですら、返すものは返す。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">まだ終わらない</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1戦闘に1回のみ、HP0になった時点でLCKロールを行い、成功すればHP1で踏み留まる（瀕死状態にならない）。</p>
-  </div>
-  <div class="weapon-card__flavor">「まだだ」と呟いた者がいた。<br>倒れながら、それでも立ち上がった者が。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">死の淵から</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>HP最大値の1/4以下の間、攻撃の命中判定にBD+1を得る。</p>
-  </div>
-  <div class="weapon-card__flavor">死の縁に立った者だけが知る。<br>恐怖の向こうに、奇妙な静けさがあることを。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">深淵の洞察</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、命中判定の前に宣言することで、その判定においてEX・クリティカルが発生しない代わりに、命中値+10%を得る。</p>
-  </div>
-  <div class="weapon-card__flavor">深淵を覗いた者は、見え過ぎることを恐れるようになる。<br>確実な一手だけが、深淵には通じる。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">過充填</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、魔術・奇跡使用の前に宣言とMP5を消費することで命中値+10%。</p>
-  </div>
-  <div class="weapon-card__flavor">限界を超えた魔力は、術者を焼きながら正確に届く。<br>それでも使い続ける者が、この大陸にはいる。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">不沈の意志</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、恐怖・発狂・封印のいずれかが付与される時、POWロールを行う。成功すればその状態異常を受けない。</p>
-  </div>
-  <div class="weapon-card__flavor">恐怖は消えない。ただ、受け取らないことはできる。<br>意志とは、拒絶の技術だ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">生ける戦場</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、毒・冷気・出血のいずれかが付与される時、CONロールを行う。成功すればその状態異常を受けない。</p>
-  </div>
-  <div class="weapon-card__flavor">戦場で何年も生き続けた者の体は、もはや外の毒を毒と思わない。<br>慣れとは、静かな鎧だ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">手段を選ばず</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンド1回、近接攻撃でダメージを与えた時に毒1付与。</p>
-  </div>
-  <div class="weapon-card__flavor">「綺麗な戦い方など、死んでからすればいい」<br>——廃掘人の格言より</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">探索の極意</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>非戦闘時の戦闘に関与しないすべての判定にBD+1。</p>
-  </div>
-  <div class="weapon-card__flavor">戦い以外のすべてに、この者の本当の才能がある。<br>その事実を、本人は知らない。</div>
-</div>
+  <!-- 素性専用タブ -->
+  <div id="tab-origin" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果・素性で検索…" oninput="filterSeals('origin',this.value)">
+      <div class="filter-group" id="origin-filters">
+        <button class="filter-btn active" onclick="setOF('all',this)">すべて</button>
+<button class="filter-btn" onclick="setOF('騎士',this)">騎士</button>
+<button class="filter-btn" onclick="setOF('守護者',this)">守護者</button>
+<button class="filter-btn" onclick="setOF('戦士',this)">戦士</button>
+<button class="filter-btn" onclick="setOF('侍',this)">侍</button>
+<button class="filter-btn" onclick="setOF('盗賊',this)">盗賊</button>
+<button class="filter-btn" onclick="setOF('狩人',this)">狩人</button>
+<button class="filter-btn" onclick="setOF('呪術師',this)">呪術師</button>
+<button class="filter-btn" onclick="setOF('魔法使い',this)">魔法使い</button>
+<button class="filter-btn" onclick="setOF('聖職者',this)">聖職者</button>
+<button class="filter-btn" onclick="setOF('奇術師',this)">奇術師</button>
+<button class="filter-btn" onclick="setOF('深きもの',this)">深きもの</button>
+<button class="filter-btn" onclick="setOF('刻み師',this)">刻み師</button>
+<button class="filter-btn" onclick="setOF('廃人',this)">廃人</button>
+
       </div>
     </div>
-
-    <!-- 素性別パネル -->
-    <div class="seal-panel" id="panel-素性別">
-      
-<h3 class="subsection-title">騎士</h3>
-<div class="weapon-grid seal-grid" data-category="騎士">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">誓いの盾</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>ラウンド開始時に名乗りを挙げながら「盾」で判定する。成功すればそのラウンドの間、自身の左右1マスを含めた3マスを障害物として扱う(失敗すれば自身のマスのみ)。<br>盾装備時のみ。装備変更、移動後は効果消失。2ラウンドに1回のみ。</p>
-  </div>
-  <div class="weapon-card__flavor">盾とは、防ぐものではなく<br>「ここまでだ」と宣言するものだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">名誉の一閃</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、直剣・大剣・槍で通常成功した時、ダメージ+1d4。</p>
-  </div>
-  <div class="weapon-card__flavor">騎士の一撃には、技術だけでなく<br>誰かへの誓いが乗っている。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">剣に誓って</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>戦闘開始時に味方プレイヤーか戦闘に参加している味方NPCの中から「守護対象」を1名宣言する。その対象がHP0になる時、『守護対象を護ると剣に誓ったあの日』を思い出すロールプレイをする。その後守護対象が受けるはずだったダメージや効果を自分が代わりに受ける。この効果が発動された戦闘ではすべての判定に+10%。1セッションに1回。</p>
-  </div>
-  <div class="weapon-card__flavor">「守る」と誓った日のことを、騎士は忘れない。<br>剣が折れても、その誓いだけは残る。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">不死の肉体</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>装甲+1。耐性+1。</p>
-  </div>
-  <div class="weapon-card__flavor">傷ついても、また立つ。<br>騎士の肉体は、意志によって鍛えられる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">選ばれし聖剣</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>装備の入れ替えができなくなる。装備している近接武器の命中+5%。ダメージ+2。</p>
-  </div>
-  <div class="weapon-card__flavor">「この剣だけが、私の剣だ」と決めた者の刃は<br>他のどんな武器よりも深く、正確に届く。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">騎士団の連携</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、「スイッチ」でのAP消費が0になる。</p>
-  </div>
-  <div class="weapon-card__flavor">かつて帝国騎士団は、一人でなく一体として戦った。<br>その記憶が、今も戦場に息づいている。</div>
-</div>
-</div>
-<h3 class="subsection-title">守護者</h3>
-<div class="weapon-grid seal-grid" data-category="守護者">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">我が槍に集え</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>ラウンド開始時に名乗りを挙げながら「槍」で判定する。成功すれば自身を中心とした3×3マスにいる味方(自分含む)はそのラウンドの間、命中+5%。射程+1。<br>槍装備時のみ。3ラウンドに1回のみ。</p>
-  </div>
-  <div class="weapon-card__flavor">名乗りとは、仲間への合図だ。<br>声が届く限り、この槍の下に旗は立つ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">盾殴り</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>盾での攻撃成功時、目標とSTR対抗をして相手を上回る成功値なら1マス移動させる。移動先が壁や障害物なら移動させる代わりに1d4ダメージ。</p>
-  </div>
-  <div class="weapon-card__flavor">盾は防ぐだけではない。<br>そのことを、相手は殴られて初めて理解する。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">魔槍の使い手</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>自身の装備している「槍」を射程+2、装甲貫通(3)として攻撃できるようになる。<br>その攻撃は命中-10%、2ラウンドに1回まで行える。</p>
-  </div>
-  <div class="weapon-card__flavor">届かない距離など、ない。<br>意志が十分ならば、槍はどこまでも伸びる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">清廉潔白</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>状態異常の解除判定にBD+1。解除のAP消費-1。<br>この刻印は封印を付与されていても効果が発動される。</p>
-  </div>
-  <div class="weapon-card__flavor">封印されても、呪われても、この者の信念は揺れない。<br>魂に刻まれたものは、誰にも縛れない。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">信仰の英雄</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>奇跡の命中+10%。CON-1。STR-1。</p>
-  </div>
-  <div class="weapon-card__flavor">強さを削ってでも、信仰を選んだ。<br>その選択を、守護者は後悔しない。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">守護団</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>守護者or聖職者と隣接するマスにいるならば互いの装甲+2、耐性+2。</p>
-  </div>
-  <div class="weapon-card__flavor">背中を預けることを知っている者は<br>一人の時よりも、強くなれる。</div>
-</div>
-</div>
-<h3 class="subsection-title">戦士</h3>
-<div class="weapon-grid seal-grid" data-category="戦士">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">渾身の鉄槌</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>大剣・斧・ハンマーによる攻撃にダメージ+2。</p>
-  </div>
-  <div class="weapon-card__flavor">考えない。ただ、全力で叩く。<br>それが戦士の哲学だ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">暴風の静けさ</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>命中判定に失敗した時に次の命中判定にBD+1。<br>効果発動後、次の自分の手番開始まで装甲-2、耐性-2。</p>
-  </div>
-  <div class="weapon-card__flavor">外れた時、戦士は怒らない。<br>次の一手を、静かに準備しているだけだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">鉄山靠</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>手番に1AP消費して射程1以内のキャラクターを1マス移動させる。<br>移動先が壁や障害物なら移動させる代わりに1d4ダメージ。</p>
-  </div>
-  <div class="weapon-card__flavor">体ごとぶつかることを、恥と思わない者がいる。<br>壁も、敵も、同じだ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">脳まで筋肉ゆえに</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>魔術の命中+15%。INT-1。POW-1。</p>
-  </div>
-  <div class="weapon-card__flavor">「頭より体で覚えた」と戦士は言った。<br>魔術ですら、その体が引き寄せる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">戦士の肉体</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>毒、燃焼、出血の効果でダメージを受ける時、上限を3にする。<br>探索時の些細なダメージを無効化する。</p>
-  </div>
-  <div class="weapon-card__flavor">毒も炎も出血も、この体には上限がある。<br>傷つくことを、この体は知り尽くした。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">北方の闘士</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>防具を装備できなくなる。冷気の状態異常にならなくなる。POWロールにBD+1。</p>
-  </div>
-  <div class="weapon-card__flavor">防具を脱いだのは、重いからではない。<br>鎧より、自分の体を信じることにしたのだ。</div>
-</div>
-</div>
-<h3 class="subsection-title">侍</h3>
-<div class="weapon-grid seal-grid" data-category="侍">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">不壊活性</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、命中判定の前に攻撃に使用する武器の属性を無にする。<br>変更前の属性の効果を自身に与える。その攻撃の命中+10%、ダメージ+2。<br>無属性武器には使用できない。</p>
-  </div>
-  <div class="weapon-card__flavor">属性とは、武器に宿るものではなく<br>使い手の意志が決めるものだと、侍は知っている。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">居合</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、攻撃回数が残っている武器を装備しているなら防御/回避の代わりに居合を宣言し、その武器で命中判定を行い、DB参照なしのダメージを目標に与える。<br>武器の特殊効果は発動できない。自分の受けるダメージは回避失敗と同様。</p>
-  </div>
-  <div class="weapon-card__flavor">抜くか、抜かぬか。<br>その一瞬に、侍の全てがある。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">二刀の極意</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、左右それぞれに武器を装備しているなら命中判定をどちらかの武器に統合して行う。攻撃回数はそれぞれ減らし、与えるダメージは2つの合計となる。<br>DB参照が異なる場合は高い方を参照し、1回分のみ適用。</p>
-  </div>
-  <div class="weapon-card__flavor">左右の刃が一つの意志で動く時、<br>それはもはや二本ではない。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">命知らず</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、回避判定の前に宣言し、直後に行う回避判定にPD+2をつける。<br>自身が行う次の命中判定にBD+2をつける。(重複しない。)</p>
-  </div>
-  <div class="weapon-card__flavor">「受けた上で斬り返す」<br>それを技術と呼ぶ者と、無謀と呼ぶ者がいる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">異国の文化</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>空いている刻印スロットの分だけ命中+10%、攻撃のダメージ+2。<br>非戦闘時の戦闘に関与しないすべての判定にPD+1。</p>
-  </div>
-  <div class="weapon-card__flavor">この大陸の常識を、侍は持っていない。<br>それが、最大の強みになることがある。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">殺しの技巧</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>攻撃に装甲貫通(3)。攻撃のダメージ-3。</p>
-  </div>
-  <div class="weapon-card__flavor">確実に傷つける技術がある。<br>華やかさを捨てた先に、それはある。</div>
-</div>
-</div>
-<h3 class="subsection-title">盗賊</h3>
-<div class="weapon-grid seal-grid" data-category="盗賊">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">影の足音</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>まだ手番が来ていない目標への攻撃に命中+5%。<br>手番に1APを消費して「潜伏*」状態になれる。</p>
-  </div>
-  <div class="weapon-card__flavor">気づかれる前に終わらせる。<br>盗賊の仕事とは、常にそういうものだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">逃げ足の哲学</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>ラウンド開始時に宣言することで、そのラウンドの自分の手番を最後にする。そのラウンドの間、命中+5%と、1回目の移動をAP0で行えるようになる。</p>
-  </div>
-  <div class="weapon-card__flavor">「最後に動く者が、最後まで生き残る」<br>——路地裏で育った者の格言より</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">牽制投擲</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>自身の装備している「短剣」を射程+2、装甲貫通(1)として攻撃できるようになる。<br>その攻撃は命中-10%、1ラウンドに2回まで行える。</p>
-  </div>
-  <div class="weapon-card__flavor">短剣は、刺すためだけにあるのではない。<br>飛ばして、距離を作ることもできる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">毒手</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>攻撃の前に装備している武器の属性は毒に変更される。<br>元々毒属性の武器なら装甲貫通(1)を付与。</p>
-  </div>
-  <div class="weapon-card__flavor">触れるだけで終わらせる。<br>武器の属性より、手が毒を知っている。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">計略と暴力</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>取得時にSTRかINTのどちらかを選択し、能力値+2。<br>1ラウンドに1回、選択した判定にBD+1。</p>
-  </div>
-  <div class="weapon-card__flavor">知恵で騙すか、力で押すか。<br>どちらを選ぶかより、両方持っていることが重要だ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">窮鼠猫を噛む</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>HP最大値の1/4以下の間、回避判定にBD+1を得る。</p>
-  </div>
-  <div class="weapon-card__flavor">追い詰められた者は、恐ろしい。<br>盗賊はそのことを、何度も証明してきた。</div>
-</div>
-</div>
-<h3 class="subsection-title">狩人</h3>
-<div class="weapon-grid seal-grid" data-category="狩人">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">天運の矢</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1戦闘に1回、攻撃前に賭けを宣言する。1d100で奇数が出たなら次の攻撃で与えるダメージが2倍になる。偶数なら攻撃は自動失敗になる。</p>
-  </div>
-  <div class="weapon-card__flavor">運に全てを賭ける瞬間がある。<br>狩人はその瞬間を、静かに選ぶ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">狩人の目</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、障害物や他キャラクターを無視して命中+10%で攻撃できる。<br>この効果で攻撃するラウンドには移動できない。</p>
-  </div>
-  <div class="weapon-card__flavor">障害物も、仲間の背も、狩人の視線は貫く。<br>獲物だけが、その目に映っている。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">追跡の本能</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>攻撃した敵を「標的」にする。標的への命中判定+5%、ダメージ+2。<br>別の敵を攻撃すると標的は変更される。</p>
-  </div>
-  <div class="weapon-card__flavor">一度狙った獲物を、狩人は忘れない。<br>標的を変えるのは、次の狩りが始まった時だ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">死の気配</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>HP半分以下の敵を目標にしての攻撃に命中+5%、射程+1。</p>
-  </div>
-  <div class="weapon-card__flavor">半分死んでいる者から、死の匂いがする。<br>狩人の鼻は、それを嗅ぎ分ける。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">星に愛された者</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>クリティカル率+1%。さらに瀕死状態でのLCKロールにBD+1を得る。</p>
-  </div>
-  <div class="weapon-card__flavor">星は、この者を気に入っている。<br>死の淵でも、その加護は続く。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">死地に立つ</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>射程1以内にいる敵1体につき命中+5%。</p>
-  </div>
-  <div class="weapon-card__flavor">包囲されるほど、狙いが定まる。<br>狩人は、追い詰められることを恐れない。</div>
-</div>
-</div>
-<h3 class="subsection-title">呪術師</h3>
-<div class="weapon-grid seal-grid" data-category="呪術師">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">呪術の真髄</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、射程1の敵に攻撃魔術を使用する時に命中判定にBD+1をつけられる。この攻撃のダメージの半分(切り捨て)と特殊効果や属性効果を自分も受ける。命中判定にさらにBD+1をつける場合、半分ではなくすべて。</p>
-  </div>
-  <div class="weapon-card__flavor">呪いとは、かける者も受ける者も<br>同じ深淵の中に立つことだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">呪い返し</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、自分以外の誰かから状態異常を受けた時に宣言と魔術の命中判定(攻撃ではない)を行い、成功すれば射程2以内のキャラクター1人にも同じ状態異常を付与する。</p>
-  </div>
-  <div class="weapon-card__flavor">受けた呪いを、返すことができる者がいる。<br>深淵は、方向を選ばない。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">魂喰い</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、攻撃魔術でHPにダメージを与えた時、その半分(切り捨て、最小1)のMPを回復する。</p>
-  </div>
-  <div class="weapon-card__flavor">傷つけた者から、力を吸い取る。<br>深淵の流儀は、いつもそういうものだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">生き延びる術</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、自身を目標にして付与魔術を使用するならそのAP消費-1。</p>
-  </div>
-  <div class="weapon-card__flavor">呪術師が自分自身を呪うことを、誰も不思議に思わない。<br>それが最も確実な生存方法だからだ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">歪んだ触媒</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>魔術使用時、MPの代わりに同値のHPを消費して発動できる。<br>1回の消費でMPとHPに分けて消費することは出来ない。</p>
-  </div>
-  <div class="weapon-card__flavor">MPの代わりに血を使う術師がいた。<br>「魔力も血も、源は同じだ」と彼女は言った。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">悪魔の左腕</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>武器スロット1つには武器が装備できなくなる。代わりに魔術スロット1枠の触媒として扱う。その魔術は命中+10%、使用するたびHP1減少。</p>
-  </div>
-  <div class="weapon-card__flavor">武器を捨てた左腕が、触媒になった。<br>何を失い、何を得たかを、本人は語らない。</div>
-</div>
-</div>
-<h3 class="subsection-title">魔法使い</h3>
-<div class="weapon-grid seal-grid" data-category="魔法使い">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">元素の崩壊</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、属性のある攻撃魔術の目標に選ばれた時に、まだ攻撃回数が残っている攻撃魔術があるなら回避の代わりにその魔術の命中判定(攻撃ではない)を行い、回避と同様の達成度参照ルールで攻撃を無効化できる。(MP消費は必要)</p>
-  </div>
-  <div class="weapon-card__flavor">属性を属性で迎え撃つ。<br>帝国の魔術師はそれを、崩壊理論と呼んだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">元素の親和</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>取得時に炎、雷、冷気から属性を1つ選択する。選択した属性でダメージを与えた時にダメージ+1d4。選ばなかった属性のダメージを受けた時、被ダメージ+1d4。<br>それぞれ1ラウンドに1回ずつ発動される。</p>
-  </div>
-  <div class="weapon-card__flavor">一つの属性を愛した者は、その対極に弱くなる。<br>深さとは、そういうものだ。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">帝国の術式</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、魔術の命中判定にEX成功した時にMP+3、次に使用する魔術のAP消費-1。<br>魔術攻撃にEX成功しなかったラウンドの終了時にMP-5。</p>
-  </div>
-  <div class="weapon-card__flavor">セラフィット帝国の魔術学院に伝わる術式。<br>成功したラウンドだけが輝き、失敗したラウンドに代償を求める。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">知識の回廊</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>MPが最大値の1/2以上ある時、魔術の命中値+5%。MPが最大値の1/4以下の時、魔術のダメージ+1d3追加。</p>
-  </div>
-  <div class="weapon-card__flavor">魔力が満ちている時と、枯れかけている時とでは<br>同じ魔術師でも、別の顔を持つ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">魔力統括</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>手番に1APを消費して、射程3以内の自身を含めた好きな数の味方のMPを合計した後、均等に分配する。</p>
-  </div>
-  <div class="weapon-card__flavor">一人の魔力では足りない時、分かち合うことができる。<br>学院が教えた、最後の共有の術だ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">基礎魔術教養</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>APの消費が1の魔術の命中+15%。</p>
-  </div>
-  <div class="weapon-card__flavor">「基礎を侮るな」と学院長は言った。<br>基礎の先に、全ての応用がある。</div>
-</div>
-</div>
-<h3 class="subsection-title">聖職者</h3>
-<div class="weapon-grid seal-grid" data-category="聖職者">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">縫合の回路</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>ラウンド終了時、そのラウンドに奇跡を使用していたら射程3以内の味方1人のHPを回復する。回復量は奇跡の成功度を参照する。<br>(N/HD/EX/CR - 0/1d4/1d4+1/1d6)</p>
-  </div>
-  <div class="weapon-card__flavor">奇跡を使った後、信仰の回路が最も太くなる。<br>その瞬間に、縫合の神の手が届く。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">神との縫合</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>セッション中に1度だけMP3を消費して祈ることができるようになる。GMが1d100を振り、その出目が祈った対象のFTH以下ならセッションの間、全能力値+1される。</p>
-  </div>
-  <div class="weapon-card__flavor">祈りが届くかどうかは、神だけが知っている。<br>それでも、聖職者は祈ることをやめない。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">神の権能</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>セッション開始時に好きな金額を神に奉納する。セッション中、100Gにつき1度、判定に失敗した後にそれを通常成功に変更できる。</p>
-  </div>
-  <div class="weapon-card__flavor">神は運命さえ捻じ曲げる力を持つ。<br>存外、御しやすいな神もいる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">聖なる一撃</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>攻撃の前に装備している武器、使用する奇跡の属性は聖に変更される。<br>元々聖属性の武器での攻撃に命中+10%。</p>
-  </div>
-  <div class="weapon-card__flavor">武器が何であれ、この者の攻撃には聖が宿る。<br>信仰とは、刃の形をすることがある。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">迫害者の烙印</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>呪術師・深きものの末裔に対するダメージ+1d4。</p>
-  </div>
-  <div class="weapon-card__flavor">深淵と深きものへの憎しみが、力になった。<br>その炎がどこから来たのかを、聖職者は知らず、知ろうともしない。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">巡礼の果てに</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>CON+1、STR+2。FTH-2、POW-1。<br>セッション開始時にHP-5。</p>
-  </div>
-  <div class="weapon-card__flavor">過酷な巡礼の旅では祈る暇さえないという。</div>
-</div>
-</div>
-<h3 class="subsection-title">奇術師</h3>
-<div class="weapon-grid seal-grid" data-category="奇術師">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">運命のカード</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>「運命の輪」を使用する時にAPとMPを2倍消費することで特殊効果を「戦闘終了までダメージ算出以外の自分の振った1d6で1が出た時にそれを好きな数字に変更する。」にできる。<br>常時クリティカル率-1%。</p>
-  </div>
-  <div class="weapon-card__flavor">運命のカードは、引く前から決まっていると言う者がいる。<br>奇術師だけが、それを笑い飛ばせる。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">勝利のカード</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1回の戦闘中で6つの異なる奇跡を使用したならその戦闘の間、「世界の消滅」を触媒なし、命中+20%、AP0で使用できるようになる。</p>
-  </div>
-  <div class="weapon-card__flavor">意味不明のカード。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">タネも仕掛けも</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、特殊効果付きの近接武器で攻撃して特殊効果の発動条件を満たした場合に、DEXで判定を行う。成功すれば「1ラウンドに1回」の制限を無視して特殊効果を使用できる。このDEXの判定に失敗すると攻撃も失敗したものとして扱う。</p>
-  </div>
-  <div class="weapon-card__flavor">「信じさせることが、最大の魔術だ」<br>——メルクリアの奇術師、舞台上の口上より</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">イリュージョン</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>触媒に登録する時に魔術/奇跡のどちらでも選択できるようになる。<br>補正なしでの命中がすべて65%になる。</p>
-  </div>
-  <div class="weapon-card__flavor">奇跡と魔術の境界線は、どこにあるのか。<br>奇術師は、その問いを楽しんでいる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">道化の仮面</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>装甲+5、耐性+5。攻撃でダメージを受けるたびに装甲-2、耐性-2。<br>戦闘終了時にどちらかが0ならこの刻印は失われる。<br>刻印の効果で増加した分以外は戦闘終了後にもとに戻る。</p>
-  </div>
-  <div class="weapon-card__flavor">舞台の上では、何も本当のことを言わない。<br>それが奇術師の流儀だ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">切り札</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>セッション開始時に、魔術/奇跡の中から1つ選んで、命中+15%。<br>選んだ魔術/奇跡の名称を自由に決めること。<br>名称を既存のものにし、それに関連する効果があるならその対象にもなる。</p>
-  </div>
-  <div class="weapon-card__flavor">切り札は引くものではない。<br>あるものを切り札に変えろ。</div>
-</div>
-</div>
-<h3 class="subsection-title">深きもの</h3>
-<div class="weapon-grid seal-grid" data-category="深きもの">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">夢の通り道</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、障害物を無視して移動できる。<br>進入不可のマスで止まることはできないので続けての移動が必要になる。</p>
-  </div>
-  <div class="weapon-card__flavor">海の底には、人が知らない法則がある。<br>深きものは、それを生まれながらに知っている。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">異形の肌</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、HPが減少した時に射程1以内のキャラクターから選んで1人に冷気付与できる</p>
-  </div>
-  <div class="weapon-card__flavor">鱗は、海の記憶を纏っている。<br>触れた者は、深海の冷たさを感じると言う。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">純血</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>刻印スロット2枠。槍・ハルバード/魔術の命中+10%。<br>このキャラクターは味方から味方として認識されなくなる。</p>
-  </div>
-  <div class="weapon-card__flavor">インスマス海岸の夜明けに、何かが浜辺に上がってくる。<br>それが何かを、漁師たちは語らない。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">異端審問</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>深きものの末裔以外の素性に対するダメージ+1d4。</p>
-  </div>
-  <div class="weapon-card__flavor">陸の者は深きものを異形と呼ぶ。<br>深きものには、陸の者の方が異形に見える。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">軍勢</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、「スイッチ」でのAP消費が0になる。</p>
-  </div>
-  <div class="weapon-card__flavor">深きものは、群れで考え、群れで動く。<br>一人だと思っても、どこかに繋がっている。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">ふんぐるい、むぐるうなふ、くとぅるう、るるいえ、うがふなぐる、ふたぐん</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>詰み(どうしようもない状態や諦める判断)だと判断し、GMに認められた場合、キャラクターデータを『E-33：深海の番人』に変更する。その戦闘終了後ちょっとしたロールプレイの後、キャラクターロスト</p>
-  </div>
-  <div class="weapon-card__flavor">いあ！いあ！</div>
-</div>
-</div>
-<h3 class="subsection-title">刻み師</h3>
-<div class="weapon-grid seal-grid" data-category="刻み師">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">歴戦の傷跡</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>その戦闘で回避判定に失敗したことのある攻撃の回避判定をするときに+10%。</p>
-  </div>
-  <div class="weapon-card__flavor">刻み師は言った。「傷は記録だ」と。<br>体に刻まれた傷が、戦いの歴史を語る。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">彫刻の技法</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>「彫刻刀」の特殊効果を使用する時に「刻まれた根」ではなく、汎用の刻印から選んで取得させることが出来る。</p>
-  </div>
-  <div class="weapon-card__flavor">帝国の刻み師が解明した運命の経路は<br>今もどこかの遺跡に、文字として眠っている。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">７人の刻み師</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>セッション中に好きなタイミングで宣言する。自分以外の好きなキャラクター１人の素性を刻み師に変更し、自分の取得している刻印から１つを取得させる。<br>この効果を使用したキャラクターの刻印はすべて無効化され、今後のキャラクター作成時に刻み師を選べなくなる。</p>
-  </div>
-  <div class="weapon-card__flavor">その技法は受け継がれる。<br>それは望んだからなのか、意図せずなのか。</div>
-</div><div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">奇跡の対価</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>１ラウンドに１度、自身の取得している刻印１つを消費して判定にBD+1をつけられる。<br>刻印１つを消費するときHP最大値の1/4だけHPを減少させる。<br>消費した刻印は失われる。</p>
-  </div>
-  <div class="weapon-card__flavor">全ての刻印は、何かを失うことで成立する。<br>刻み師はそのことを、最もよく知っている。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">刻む傷跡</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>すべての近接攻撃に装甲貫通(1)<br>元々装甲貫通をもっているなら貫通の値は合算される。</p>
-  </div>
-  <div class="weapon-card__flavor">「刻むべき場所が分かる者が、真の刻み師だ」<br>——帝都の廃墟に残された文字より</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">無刀の神業</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>所持している、装備していない武器で攻撃することが出来る。<br>この攻撃でHP/MPの減少をすることはできないが特殊効果は使用できる。<br>※属性は無として扱う。</p>
-  </div>
-  <div class="weapon-card__flavor">刻み師の手は、武器を持たない時も<br>何かを刻み続けているように動く。</div>
-</div>
-</div>
-<h3 class="subsection-title">廃人</h3>
-<div class="weapon-grid seal-grid" data-category="廃人">
-<div class="weapon-card seal-card" data-type="発動">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">目撃者</span>
-    <span class="weapon-card__cats"><span class="badge badge--purple">発動</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>1ラウンドに1回、判定に+5%。</p>
-  </div>
-  <div class="weapon-card__flavor">廃掘人の間では、「廃人」とは敬称だ。<br>遺跡の深部まで辿り着いた者だけが、そう呼ばれる。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">灰の残滓</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>割り振らなかった追加ポイント×2%をすべての判定に加算する(最大+20%)</p>
-  </div>
-  <div class="weapon-card__flavor">失ったものを数えるより、まだ残っているものを数える。<br>それが廃人の生き方だ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">器用万能</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>追加ポイントを振り分けた能力値の種類数×2%を全命中値に加算する（最大+16%・8種の能力値すべてに1点以上振り分けた場合）。</p>
-  </div>
-  <div class="weapon-card__flavor">何もなくなった後に残るものが、本当の強さだ。<br>廃人はそのことを、廃墟の中で学んだ。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">過去の栄光</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>他素性の刻印を取得できるようになる</p>
-  </div>
-  <div class="weapon-card__flavor">全ての素性を捨てた者が、この道を選ぶ。<br>廃人に、失うものはもう何もない。</div>
-</div><div class="weapon-card seal-card" data-type="常時">
-  <div class="weapon-card__head">
-    <span class="weapon-card__name">何もなく</span>
-    <span class="weapon-card__cats"><span class="badge badge--gold">常時</span></span>
-  </div>
-  <div class="weapon-card__special">
-    <span class="weapon-card__special-label">Effect</span>
-    <p>このキャラクターはロストしない。</p>
-  </div>
-  <div class="weapon-card__flavor">何も持たないことが、最大の自由だと気づいた者がいた。<br>その者が、最初の廃人だった。</div>
-</div>
-</div>
-    </div>
-
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="origin-count"></p>
+    <div class="card-grid" id="origin-grid"></div>
   </div>
 
-  <!-- ページナビ -->
-  <div class="page-nav">
-    <div>
-      <div class="page-nav__label">← Prev</div>
-      <a href="data_magic.html" class="page-nav__link">魔術・奇跡</a>
-    </div>
-    <div style="text-align:right">
-      <div class="page-nav__label">Next →</div>
-      <a href="gm_enemies.html" class="page-nav__link">GMツール</a>
-    </div>
+  <!-- お気に入りタブ -->
+  <div id="tab-favorites" class="tab-content">
+    <p class="fav-notice">★ をつけた刻印がここに表示されます</p>
+    <div class="card-grid" id="fav-grid"><div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div></div>
   </div>
 
-</div><!-- /page-wrap -->
+  <!-- キャラ作成用タブ -->
+  <div id="tab-charcreate" class="tab-content">
+    <div id="cc-seal-content"></div>
+  </div>
 
+  <nav class="page-nav">
+    <div><p class="page-nav__label">← Previous</p><a href="data_magic.html" class="page-nav__link">魔術・奇跡</a></div>
+    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="gm_enemies.html" class="page-nav__link">GMツール</a></div>
+  </nav>
+</div>
+
+<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
 <script src="nav.js"></script>
 <script>
-// ── カテゴリタブ ──
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const cat = btn.dataset.cat;
-    document.querySelectorAll('.seal-panel').forEach(p => p.classList.remove('active'));
-    document.getElementById('panel-' + cat)?.classList.add('active');
-    applyFilter();
-  });
-});
+const GENERIC=[
+{id:'G01',name:'刻まれた技',en:'Weapon Mastery',cat:'命中強化',trigger:'常時',effect:'取得時に武器種を1種選択する。その武器種の命中値+5%（常時）。同じ武器種を対象に重複取得不可（別の武器種は別途取得可）。',fl:'技は肉体に刻まれる。\n頭が忘れても、手が覚えている。'},
+{id:'G02',name:'刻まれた根',en:'Carved Root',cat:'能力強化',trigger:'常時',effect:'取得時に能力値を1種選択する。その能力値+1。同じ能力値を対象に重複取得不可（別の能力値は別途取得可）。',fl:'能力とは、持って生まれるものではなく\n繰り返しの中で根を張るものだ。'},
+{id:'G03',name:'星読み',en:'Stargazer',cat:'HD/EX強化',trigger:'常時',effect:'クリティカル率+1%。LCK10以上のキャラクターのみ取得可。',fl:'星は人を選ばない。\nただ、読める者だけが星に選ばれたと思い込む。'},
+{id:'G04',name:'節制の賜物',en:'Gift of Restraint',cat:'その他',trigger:'常時',effect:'キャラクター作成時のゴールド+200G。',fl:'「贅沢は人を弱くする」とある商人は言った。\n彼の財布は、今も膨らんでいる。'},
+{id:'G05',name:'疾風の術式',en:'Windstep',cat:'AP・AGI',trigger:'常時',effect:'ラウンド開始時にAP+1。AGI12以上のキャラのみ取得可能。',fl:'セラフィット帝国の軍師が編み出した術式の断片。\n速さとは、余白を消すことだと彼らは言った。'},
+{id:'G06',name:'踏み込みの術式',en:'Press Forward',cat:'AP・AGI',trigger:'常時',effect:'ラウンド終了時にAPが1以上余っていれば次ラウンドのAP+1。AGI11以上のキャラのみ取得可能。',fl:'一歩の余韻が、次の一歩を生む。\n帝国の歩兵はそのようにして、戦場を渡り歩いた。'},
+{id:'G07',name:'残滓の循環',en:'Residual Flow',cat:'MP・触媒',trigger:'常時',effect:'HD/EX成功をしたラウンド終了時にMP1回復（最大1）。',fl:'魔力は消えない。\n形を変えて、使い手のもとへ戻ってくる。'},
+{id:'G08',name:'研ぎ澄まされた一手',en:'Honed Edge',cat:'ダメージ強化',trigger:'常時',effect:'通常成功の攻撃に、ダメージ+2。(ラウンド1回まで)',fl:'一番確かな一撃は、最も地味な瞬間に宿る。\nEXでもCRでもなく、ただ正確に。'},
+{id:'G09',name:'武芸百般',en:'All Weapons',cat:'その他',trigger:'常時',effect:'両手武器を片手で装備できるようになる。その場合は命中-10%。',fl:'「重い」「使いにくい」という言葉を\nこの者の辞書には見つけられない。'},
+{id:'G10',name:'試練の鋼',en:'Trial-Hardened',cat:'命中強化',trigger:'常時',effect:'同じ相手に対して2回以上攻撃している場合、その相手への命中値+5%。',fl:'同じ相手と戦い続けることで、剣は磨かれる。\n敵もまた、最良の教師だ。'},
+{id:'G11',name:'日々の鍛錬',en:'Daily Training',cat:'HP・生存',trigger:'常時',effect:'HP+5。',fl:'特別な才能など、最初からなかった。\nただ、続けることだけが残った。'},
+{id:'G12',name:'術式の残滓',en:'Arcane Vessel',cat:'MP・触媒',trigger:'常時',effect:'MP最大値+3。魔術/奇跡使用後、ラウンド終了時にMP1回復（最大1）。',fl:'使い終えた魔力が、静かに戻ってくる。\n深淵ですら、返すものは返す。'},
+{id:'G13',name:'まだ終わらない',en:'Tenacity',cat:'HP・生存',trigger:'常時',effect:'1戦闘に1回のみ、HP0になった時点でLCKロールを行い、成功すればHP1で踏み留まる（瀕死状態にならない）。',fl:'「まだだ」と呟いた者がいた。\n倒れながら、それでも立ち上がった者が。'},
+{id:'G14',name:'死の淵から',en:'Near Death',cat:'HP・生存',trigger:'常時',effect:'HP最大値の1/4以下の間、攻撃の命中判定にBD+1を得る。',fl:'死の縁に立った者だけが知る。\n恐怖の向こうに、奇妙な静けさがあることを。'},
+{id:'G15',name:'深淵の洞察',en:'Abyssal Insight',cat:'HD/EX強化',trigger:'発動',effect:'1ラウンドに1回、命中判定の前に宣言することで、その判定においてEX・クリティカルが発生しない代わりに、命中値+10%を得る。',fl:'深淵を覗いた者は、見え過ぎることを恐れるようになる。\n確実な一手だけが、深淵には通じる。'},
+{id:'G16',name:'過充填',en:'Overcharge',cat:'MP・触媒',trigger:'発動',effect:'1ラウンドに1回、魔術・奇跡使用の前に宣言とMP5を消費することで命中値+10%。',fl:'限界を超えた魔力は、術者を焼きながら正確に届く。\nそれでも使い続ける者が、この大陸にはいる。'},
+{id:'G17',name:'不沈の意志',en:'Unyielding Will',cat:'HP・生存',trigger:'発動',effect:'1ラウンドに1回、恐怖・発狂・封印のいずれかが付与される時、POWロールを行う。成功すればその状態異常を受けない。',fl:'恐怖は消えない。ただ、受け取らないことはできる。\n意志とは、拒絶の技術だ。'},
+{id:'G18',name:'生ける戦場',en:'Walking Battlefield',cat:'HP・生存',trigger:'発動',effect:'1ラウンドに1回、毒・冷気・出血のいずれかが付与される時、CONロールを行う。成功すればその状態異常を受けない。',fl:'戦場で何年も生き続けた者の体は、もはや外の毒を毒と思わない。\n慣れとは、静かな鎧だ。'},
+{id:'G19',name:'手段を選ばず',en:'By Any Means',cat:'ダメージ強化',trigger:'発動',effect:'1ラウンド1回、近接攻撃でダメージを与えた時に毒1付与。',fl:'「綺麗な戦い方など、死んでからすればいい」\n——廃掘人の格言より'},
+{id:'G20',name:'探索の極意',en:'Explorer\'s Mastery',cat:'その他',trigger:'常時',effect:'非戦闘時の戦闘に関与しないすべての判定にBD+1。',fl:'戦い以外のすべてに、この者の本当の才能がある。\nその事実を、本人は知らない。'}
+];
+const ORIGIN=[
+{id:'K01',origin:'騎士',name:'誓いの盾',en:'Oath Shield',trigger:'発動',effect:'ラウンド開始時に名乗りを挙げながら「盾」で判定する。成功すればそのラウンドの間、自身の左右1マスを含めた3マスを障害物として扱う(失敗すれば自身のマスのみ)。\n盾装備時のみ。装備変更、移動後は効果消失。2ラウンドに1回のみ。',fl:'盾とは、防ぐものではなく\n「ここまでだ」と宣言するものだ。'},
+{id:'K02',origin:'騎士',name:'名誉の一閃',en:'Honor\'s Edge',trigger:'発動',effect:'1ラウンドに1回、直剣・大剣・槍で通常成功した時、ダメージ+1d4。',fl:'騎士の一撃には、技術だけでなく\n誰かへの誓いが乗っている。'},
+{id:'K03',origin:'騎士',name:'剣に誓って',en:'Guardian\'s Vow',trigger:'発動',effect:'戦闘開始時に味方プレイヤーか戦闘に参加している味方NPCの中から「守護対象」を1名宣言する。その対象がHP0になる時、『守護対象を護ると剣に誓ったあの日』を思い出すロールプレイをする。その後守護対象が受けるはずだったダメージや効果を自分が代わりに受ける。この効果が発動された戦闘ではすべての判定に+10%。1セッションに1回。',fl:'「守る」と誓った日のことを、騎士は忘れない。\n剣が折れても、その誓いだけは残る。'},
+{id:'K04',origin:'騎士',name:'不死の肉体',en:'Ironhide',trigger:'常時',effect:'装甲+1。耐性+1。',fl:'傷ついても、また立つ。\n騎士の肉体は、意志によって鍛えられる。'},
+{id:'K05',origin:'騎士',name:'選ばれし聖剣',en:'Holy Blade',trigger:'常時',effect:'装備の入れ替えができなくなる。装備している近接武器の命中+5%。ダメージ+2。',fl:'「この剣だけが、私の剣だ」と決めた者の刃は\n他のどんな武器よりも深く、正確に届く。'},
+{id:'K06',origin:'騎士',name:'騎士団の連携',en:'Squad Tactics',trigger:'常時',effect:'1ラウンドに1回、「スイッチ」でのAP消費が0になる。',fl:'かつて帝国騎士団は、一人でなく一体として戦った。\nその記憶が、今も戦場に息づいている。'},
+{id:'G_01',origin:'守護者',name:'我が槍に集え',en:'Rally the Spear',trigger:'発動',effect:'ラウンド開始時に名乗りを挙げながら「槍」で判定する。成功すれば自身を中心とした3×3マスにいる味方(自分含む)はそのラウンドの間、命中+5%。射程+1。\n槍装備時のみ。3ラウンドに1回のみ。',fl:'名乗りとは、仲間への合図だ。\n声が届く限り、この槍の下に旗は立つ。'},
+{id:'G_02',origin:'守護者',name:'盾殴り',en:'Shield Bash',trigger:'発動',effect:'盾での攻撃成功時、目標とSTR対抗をして相手を上回る成功値なら1マス移動させる。移動先が壁や障害物なら移動させる代わりに1d4ダメージ。',fl:'盾は防ぐだけではない。\nそのことを、相手は殴られて初めて理解する。'},
+{id:'G_03',origin:'守護者',name:'魔槍の使い手',en:'Magic Lancer',trigger:'発動',effect:'自身の装備している「槍」を射程+2、装甲貫通(3)として攻撃できるようになる。\nその攻撃は命中-10%、2ラウンドに1回まで行える。',fl:'届かない距離など、ない。\n意志が十分ならば、槍はどこまでも伸びる。'},
+{id:'G_04',origin:'守護者',name:'清廉潔白',en:'Pure of Heart',trigger:'常時',effect:'状態異常の解除判定にBD+1。解除のAP消費-1。\nこの刻印は封印を付与されていても効果が発動される。',fl:'封印されても、呪われても、この者の信念は揺れない。\n魂に刻まれたものは、誰にも縛れない。'},
+{id:'G_05',origin:'守護者',name:'信仰の英雄',en:'Faith Hero',trigger:'常時',effect:'奇跡の命中+10%。CON-1。STR-1。',fl:'強さを削ってでも、信仰を選んだ。\nその選択を、守護者は後悔しない。'},
+{id:'G_06',origin:'守護者',name:'守護団',en:'Guardian\'s Bond',trigger:'常時',effect:'守護者or聖職者と隣接するマスにいるならば互いの装甲+2、耐性+2。',fl:'背中を預けることを知っている者は\n一人の時よりも、強くなれる。'},
+{id:'W01',origin:'戦士',name:'渾身の鉄槌',en:'Ironswing',trigger:'発動',effect:'大剣・斧・ハンマーによる攻撃にダメージ+2。',fl:'考えない。ただ、全力で叩く。\nそれが戦士の哲学だ。'},
+{id:'W02',origin:'戦士',name:'暴風の静けさ',en:'Eye of Storm',trigger:'発動',effect:'命中判定に失敗した時に次の命中判定にBD+1。\n効果発動後、次の自分の手番開始まで装甲-2、耐性-2。',fl:'外れた時、戦士は怒らない。\n次の一手を、静かに準備しているだけだ。'},
+{id:'W03',origin:'戦士',name:'鉄山靠',en:'Iron Mountain',trigger:'発動',effect:'手番に1AP消費して射程1以内のキャラクターを1マス移動させる。\n移動先が壁や障害物なら移動させる代わりに1d4ダメージ。',fl:'体ごとぶつかることを、恥と思わない者がいる。\n壁も、敵も、同じだ。'},
+{id:'W04',origin:'戦士',name:'脳まで筋肉ゆえに',en:'Pure Muscle',trigger:'常時',effect:'魔術の命中+15%。INT-1。POW-1。',fl:'「頭より体で覚えた」と戦士は言った。\n魔術ですら、その体が引き寄せる。'},
+{id:'W05',origin:'戦士',name:'戦士の肉体',en:'Warrior\'s Body',trigger:'常時',effect:'毒、燃焼、出血の効果でダメージを受ける時、上限を3にする。\n探索時の些細なダメージを無効化する。',fl:'毒も炎も出血も、この体には上限がある。\n傷つくことを、この体は知り尽くした。'},
+{id:'W06',origin:'戦士',name:'北方の闘士',en:'Northern Fighter',trigger:'常時',effect:'防具を装備できなくなる。冷気の状態異常にならなくなる。POWロールにBD+1。',fl:'防具を脱いだのは、重いからではない。\n鎧より、自分の体を信じることにしたのだ。'},
+{id:'S01',origin:'侍',name:'不壊活性',en:'Void Activation',trigger:'発動',effect:'1ラウンドに1回、命中判定の前に攻撃に使用する武器の属性を無にする。\n変更前の属性の効果を自身に与える。その攻撃の命中+10%、ダメージ+2。\n無属性武器には使用できない。',fl:'属性とは、武器に宿るものではなく\n使い手の意志が決めるものだと、侍は知っている。'},
+{id:'S02',origin:'侍',name:'居合',en:'Iaijutsu',trigger:'発動',effect:'1ラウンドに1回、攻撃回数が残っている武器を装備しているなら防御/回避の代わりに居合を宣言し、その武器で命中判定を行い、DB参照なしのダメージを目標に与える。\n武器の特殊効果は発動できない。自分の受けるダメージは回避失敗と同様。',fl:'抜くか、抜かぬか。\nその一瞬に、侍の全てがある。'},
+{id:'S03',origin:'侍',name:'二刀の極意',en:'Twin Blade Mastery',trigger:'発動',effect:'1ラウンドに1回、左右それぞれに武器を装備しているなら命中判定をどちらかの武器に統合して行う。攻撃回数はそれぞれ減らし、与えるダメージは2つの合計となる。\nDB参照が異なる場合は高い方を参照し、1回分のみ適用。',fl:'左右の刃が一つの意志で動く時、\nそれはもはや二本ではない。'},
+{id:'S04',origin:'侍',name:'命知らず',en:'Death Wish',trigger:'発動',effect:'1ラウンドに1回、回避判定の前に宣言し、直後に行う回避判定にPD+2をつける。\n自身が行う次の命中判定にBD+2をつける。(重複しない。)',fl:'「受けた上で斬り返す」\nそれを技術と呼ぶ者と、無謀と呼ぶ者がいる。'},
+{id:'S05',origin:'侍',name:'異国の文化',en:'Foreign Culture',trigger:'常時',effect:'空いている刻印スロットの分だけ命中+10%、攻撃のダメージ+2。\n非戦闘時の戦闘に関与しないすべての判定にPD+1。',fl:'この大陸の常識を、侍は持っていない。\nそれが、最大の強みになることがある。'},
+{id:'S06',origin:'侍',name:'殺しの技巧',en:'Art of Killing',trigger:'常時',effect:'攻撃に装甲貫通(3)。攻撃のダメージ-3。',fl:'確実に傷つける技術がある。\n華やかさを捨てた先に、それはある。'},
+{id:'T01',origin:'盗賊',name:'影の足音',en:'Silent Step',trigger:'発動',effect:'まだ手番が来ていない目標への攻撃に命中+5%。\n手番に1APを消費して「潜伏*」状態になれる。',fl:'気づかれる前に終わらせる。\n盗賊の仕事とは、常にそういうものだ。'},
+{id:'T02',origin:'盗賊',name:'逃げ足の哲学',en:'Run First',trigger:'発動',effect:'ラウンド開始時に宣言することで、そのラウンドの自分の手番を最後にする。そのラウンドの間、命中+5%と、1回目の移動をAP0で行えるようになる。',fl:'「最後に動く者が、最後まで生き残る」\n——路地裏で育った者の格言より'},
+{id:'T03',origin:'盗賊',name:'牽制投擲',en:'Suppression Throw',trigger:'発動',effect:'自身の装備している「短剣」を射程+2、装甲貫通(1)として攻撃できるようになる。\nその攻撃は命中-10%、1ラウンドに2回まで行える。',fl:'短剣は、刺すためだけにあるのではない。\n飛ばして、距離を作ることもできる。'},
+{id:'T04',origin:'盗賊',name:'毒手',en:'Venomhand',trigger:'常時',effect:'攻撃の前に装備している武器の属性は毒に変更される。\n元々毒属性の武器なら装甲貫通(1)を付与。',fl:'触れるだけで終わらせる。\n武器の属性より、手が毒を知っている。'},
+{id:'T05',origin:'盗賊',name:'計略と暴力',en:'Scheme and Force',trigger:'常時',effect:'取得時にSTRかINTのどちらかを選択し、能力値+2。\n1ラウンドに1回、選択した判定にBD+1。',fl:'知恵で騙すか、力で押すか。\nどちらを選ぶかより、両方持っていることが重要だ。'},
+{id:'T06',origin:'盗賊',name:'窮鼠猫を噛む',en:'Cornered Rat',trigger:'常時',effect:'HP最大値の1/4以下の間、回避判定にBD+1を得る。',fl:'追い詰められた者は、恐ろしい。\n盗賊はそのことを、何度も証明してきた。'},
+{id:'Hu01',origin:'狩人',name:'天運の矢',en:'Lucky Shot',trigger:'発動',effect:'1戦闘に1回、攻撃前に賭けを宣言する。1d100で奇数が出たなら次の攻撃で与えるダメージが2倍になる。偶数なら攻撃は自動失敗になる。',fl:'運に全てを賭ける瞬間がある。\n狩人はその瞬間を、静かに選ぶ。'},
+{id:'Hu02',origin:'狩人',name:'狩人の目',en:'Hunter\'s Eye',trigger:'発動',effect:'1ラウンドに1回、障害物や他キャラクターを無視して命中+10%で攻撃できる。\nこの効果で攻撃するラウンドには移動できない。',fl:'障害物も、仲間の背も、狩人の視線は貫く。\n獲物だけが、その目に映っている。'},
+{id:'Hu03',origin:'狩人',name:'追跡の本能',en:'Hunter\'s Mark',trigger:'発動',effect:'攻撃した敵を「標的」にする。標的への命中判定+5%、ダメージ+2。\n別の敵を攻撃すると標的は変更される。',fl:'一度狙った獲物を、狩人は忘れない。\n標的を変えるのは、次の狩りが始まった時だ。'},
+{id:'Hu04',origin:'狩人',name:'死の気配',en:'Scent of Death',trigger:'常時',effect:'HP半分以下の敵を目標にしての攻撃に命中+5%、射程+1。',fl:'半分死んでいる者から、死の匂いがする。\n狩人の鼻は、それを嗅ぎ分ける。'},
+{id:'Hu05',origin:'狩人',name:'星に愛された者',en:'Favored by Stars',trigger:'常時',effect:'クリティカル率+1%。さらに瀕死状態でのLCKロールにBD+1を得る。',fl:'星は、この者を気に入っている。\n死の淵でも、その加護は続く。'},
+{id:'Hu06',origin:'狩人',name:'死地に立つ',en:'Stand in Peril',trigger:'常時',effect:'射程1以内にいる敵1体につき命中+5%。',fl:'包囲されるほど、狙いが定まる。\n狩人は、追い詰められることを恐れない。'},
+{id:'H01',origin:'呪術師',name:'呪術の真髄',en:'Curse Mastery',trigger:'発動',effect:'1ラウンドに1回、射程1の敵に攻撃魔術を使用する時に命中判定にBD+1をつけられる。この攻撃のダメージの半分(切り捨て)と特殊効果や属性効果を自分も受ける。命中判定にさらにBD+1をつける場合、半分ではなくすべて。',fl:'呪いとは、かける者も受ける者も\n同じ深淵の中に立つことだ。'},
+{id:'H02',origin:'呪術師',name:'呪い返し',en:'Curse Reflect',trigger:'発動',effect:'1ラウンドに1回、自分以外の誰かから状態異常を受けた時に宣言と魔術の命中判定(攻撃ではない)を行い、成功すれば射程2以内のキャラクター1人にも同じ状態異常を付与する。',fl:'受けた呪いを、返すことができる者がいる。\n深淵は、方向を選ばない。'},
+{id:'H03',origin:'呪術師',name:'魂喰い',en:'Soul Leech',trigger:'発動',effect:'1ラウンドに1回、攻撃魔術でHPにダメージを与えた時、その半分(切り捨て、最小1)のMPを回復する。',fl:'傷つけた者から、力を吸い取る。\n深淵の流儀は、いつもそういうものだ。'},
+{id:'H04',origin:'呪術師',name:'生き延びる術',en:'Survival Art',trigger:'発動',effect:'1ラウンドに1回、自身を目標にして付与魔術を使用するならそのAP消費-1。',fl:'呪術師が自分自身を呪うことを、誰も不思議に思わない。\nそれが最も確実な生存方法だからだ。'},
+{id:'H05',origin:'呪術師',name:'歪んだ触媒',en:'Corrupted Focus',trigger:'常時',effect:'魔術使用時、MPの代わりに同値のHPを消費して発動できる。\n1回の消費でMPとHPに分けて消費することは出来ない。',fl:'MPの代わりに血を使う術師がいた。\n「魔力も血も、源は同じだ」と彼女は言った。'},
+{id:'H06',origin:'呪術師',name:'悪魔の左腕',en:'Devil\'s Arm',trigger:'常時',effect:'武器スロット1つには武器が装備できなくなる。代わりに魔術スロット1枠の触媒として扱う。その魔術は命中+10%、使用するたびHP1減少。',fl:'武器を捨てた左腕が、触媒になった。\n何を失い、何を得たかを、本人は語らない。'},
+{id:'Ma01',origin:'魔法使い',name:'元素の崩壊',en:'Elemental Collapse',trigger:'発動',effect:'1ラウンドに1回、属性のある攻撃魔術の目標に選ばれた時に、まだ攻撃回数が残っている攻撃魔術があるなら回避の代わりにその魔術の命中判定(攻撃ではない)を行い、回避と同様の達成度参照ルールで攻撃を無効化できる。(MP消費は必要)',fl:'属性を属性で迎え撃つ。\n帝国の魔術師はそれを、崩壊理論と呼んだ。'},
+{id:'Ma02',origin:'魔法使い',name:'元素の親和',en:'Elemental Affinity',trigger:'発動',effect:'取得時に炎、雷、冷気から属性を1つ選択する。選択した属性でダメージを与えた時にダメージ+1d4。選ばなかった属性のダメージを受けた時、被ダメージ+1d4。\nそれぞれ1ラウンドに1回ずつ発動される。',fl:'一つの属性を愛した者は、その対極に弱くなる。\n深さとは、そういうものだ。'},
+{id:'Ma03',origin:'魔法使い',name:'帝国の術式',en:'Imperial Protocol',trigger:'発動',effect:'1ラウンドに1回、魔術の命中判定にEX成功した時にMP+3、次に使用する魔術のAP消費-1。\n魔術攻撃にEX成功しなかったラウンドの終了時にMP-5。',fl:'セラフィット帝国の魔術学院に伝わる術式。\n成功したラウンドだけが輝き、失敗したラウンドに代償を求める。'},
+{id:'Ma04',origin:'魔法使い',name:'知識の回廊',en:'Hall of Knowledge',trigger:'常時',effect:'MPが最大値の1/2以上ある時、魔術の命中値+5%。MPが最大値の1/4以下の時、魔術のダメージ+1d3追加。',fl:'魔力が満ちている時と、枯れかけている時とでは\n同じ魔術師でも、別の顔を持つ。'},
+{id:'Ma05',origin:'魔法使い',name:'魔力統括',en:'Equal Distribution',trigger:'常時',effect:'手番に1APを消費して、射程3以内の自身を含めた好きな数の味方のMPを合計した後、均等に分配する。',fl:'一人の魔力では足りない時、分かち合うことができる。\n学院が教えた、最後の共有の術だ。'},
+{id:'Ma06',origin:'魔法使い',name:'基礎魔術教養',en:'Basic Arcana',trigger:'常時',effect:'APの消費が1の魔術の命中+15%。',fl:'「基礎を侮るな」と学院長は言った。\n基礎の先に、全ての応用がある。'},
+{id:'C01',origin:'聖職者',name:'縫合の回路',en:'Faith Circuit',trigger:'発動',effect:'ラウンド終了時、そのラウンドに奇跡を使用していたら射程3以内の味方1人のHPを回復する。回復量は奇跡の成功度を参照する。\n(N/HD/EX/CR - 0/1d4/1d4+1/1d6)',fl:'奇跡を使った後、信仰の回路が最も太くなる。\nその瞬間に、縫合の神の手が届く。'},
+{id:'C02',origin:'聖職者',name:'神との縫合',en:'Suturing',trigger:'発動',effect:'セッション中に1度だけMP3を消費して祈ることができるようになる。GMが1d100を振り、その出目が祈った対象のFTH以下ならセッションの間、全能力値+1される。',fl:'祈りが届くかどうかは、神だけが知っている。\nそれでも、聖職者は祈ることをやめない。'},
+{id:'??',origin:'聖職者',name:'神の権能',en:'',trigger:'発動',effect:'セッション開始時に好きな金額を神に奉納する。セッション中、100Gにつき1度、判定に失敗した後にそれを通常成功に変更できる。',fl:'神は運命さえ捻じ曲げる力を持つ。\n存外、御しやすいな神もいる。'},
+{id:'C03',origin:'聖職者',name:'聖なる一撃',en:'Holy Smite',trigger:'常時',effect:'攻撃の前に装備している武器、使用する奇跡の属性は聖に変更される。\n元々聖属性の武器での攻撃に命中+10%。',fl:'武器が何であれ、この者の攻撃には聖が宿る。\n信仰とは、刃の形をすることがある。'},
+{id:'C04',origin:'聖職者',name:'迫害者の烙印',en:'Heretic\'s Brand',trigger:'常時',effect:'呪術師・深きものの末裔に対するダメージ+1d4。',fl:'深淵と深きものへの憎しみが、力になった。\nその炎がどこから来たのかを、聖職者は知らず、知ろうともしない。'},
+{id:'??',origin:'聖職者',name:'巡礼の果てに',en:'',trigger:'常時',effect:'CON+1、STR+2。FTH-2、POW-1。\nセッション開始時にHP-5。',fl:'過酷な巡礼の旅では祈る暇さえないという。'},
+{id:'Ar01',origin:'奇術師',name:'運命のカード',en:'Fate Card',trigger:'発動',effect:'「運命の輪」を使用する時にAPとMPを2倍消費することで特殊効果を「戦闘終了までダメージ算出以外の自分の振った1d6で1が出た時にそれを好きな数字に変更する。」にできる。\n常時クリティカル率-1%。',fl:'運命のカードは、引く前から決まっていると言う者がいる。\n奇術師だけが、それを笑い飛ばせる。'},
+{id:'Ar02',origin:'奇術師',name:'勝利のカード',en:'Victory Card',trigger:'発動',effect:'1回の戦闘中で6つの異なる奇跡を使用したならその戦闘の間、「世界の消滅」を触媒なし、命中+20%、AP0で使用できるようになる。',fl:'意味不明のカード。'},
+{id:'??',origin:'奇術師',name:'タネも仕掛けも',en:'',trigger:'発動',effect:'1ラウンドに1回、特殊効果付きの近接武器で攻撃して特殊効果の発動条件を満たした場合に、DEXで判定を行う。成功すれば「1ラウンドに1回」の制限を無視して特殊効果を使用できる。このDEXの判定に失敗すると攻撃も失敗したものとして扱う。',fl:'「信じさせることが、最大の魔術だ」\n——メルクリアの奇術師、舞台上の口上より'},
+{id:'??',origin:'奇術師',name:'イリュージョン',en:'',trigger:'常時',effect:'触媒に登録する時に魔術/奇跡のどちらでも選択できるようになる。\n補正なしでの命中がすべて65%になる。',fl:'奇跡と魔術の境界線は、どこにあるのか。\n奇術師は、その問いを楽しんでいる。'},
+{id:'??',origin:'奇術師',name:'道化の仮面',en:'',trigger:'常時',effect:'装甲+5、耐性+5。攻撃でダメージを受けるたびに装甲-2、耐性-2。\n戦闘終了時にどちらかが0ならこの刻印は失われる。\n刻印の効果で増加した分以外は戦闘終了後にもとに戻る。',fl:'舞台の上では、何も本当のことを言わない。\nそれが奇術師の流儀だ。'},
+{id:'??',origin:'奇術師',name:'切り札',en:'',trigger:'常時',effect:'セッション開始時に、魔術/奇跡の中から1つ選んで、命中+15%。\n選んだ魔術/奇跡の名称を自由に決めること。\n名称を既存のものにし、それに関連する効果があるならその対象にもなる。',fl:'切り札は引くものではない。\nあるものを切り札に変えろ。'},
+{id:'D01',origin:'深きもの',name:'夢の通り道',en:'Dream Path',trigger:'発動',effect:'1ラウンドに1回、障害物を無視して移動できる。\n進入不可のマスで止まることはできないので続けての移動が必要になる。',fl:'海の底には、人が知らない法則がある。\n深きものは、それを生まれながらに知っている。'},
+{id:'D02',origin:'深きもの',name:'異形の肌',en:'Aberrant Hide',trigger:'発動',effect:'1ラウンドに1回、HPが減少した時に射程1以内のキャラクターから選んで1人に冷気付与できる',fl:'鱗は、海の記憶を纏っている。\n触れた者は、深海の冷たさを感じると言う。'},
+{id:'??',origin:'深きもの',name:'純血',en:'',trigger:'常時',effect:'刻印スロット2枠。槍・ハルバード/魔術の命中+10%。\nこのキャラクターは味方から味方として認識されなくなる。',fl:'インスマス海岸の夜明けに、何かが浜辺に上がってくる。\nそれが何かを、漁師たちは語らない。'},
+{id:'??',origin:'深きもの',name:'異端審問',en:'',trigger:'常時',effect:'深きものの末裔以外の素性に対するダメージ+1d4。',fl:'陸の者は深きものを異形と呼ぶ。\n深きものには、陸の者の方が異形に見える。'},
+{id:'??',origin:'深きもの',name:'軍勢',en:'',trigger:'常時',effect:'1ラウンドに1回、「スイッチ」でのAP消費が0になる。',fl:'深きものは、群れで考え、群れで動く。\n一人だと思っても、どこかに繋がっている。'},
+{id:'??',origin:'深きもの',name:'ふんぐるい、むぐるうなふ、くとぅるう、るるいえ、うがふなぐる、ふたぐん',en:'',trigger:'発動',effect:'詰み(どうしようもない状態や諦める判断)だと判断し、GMに認められた場合、キャラクターデータを『E-33：深海の番人』に変更する。その戦闘終了後ちょっとしたロールプレイの後、キャラクターロスト',fl:'いあ！いあ！'},
+{id:'Sc01',origin:'刻み師',name:'歴戦の傷跡',en:'Battle Scars',trigger:'発動',effect:'その戦闘で回避判定に失敗したことのある攻撃の回避判定をするときに+10%。',fl:'刻み師は言った。「傷は記録だ」と。\n体に刻まれた傷が、戦いの歴史を語る。'},
+{id:'Sc02',origin:'刻み師',name:'彫刻の技法',en:'Carving Technique',trigger:'発動',effect:'「彫刻刀」の特殊効果を使用する時に「刻まれた根」ではなく、汎用の刻印から選んで取得させることが出来る。',fl:'帝国の刻み師が解明した運命の経路は\n今もどこかの遺跡に、文字として眠っている。'},
+{id:'??',origin:'刻み師',name:'７人の刻み師',en:'',trigger:'発動',effect:'セッション中に好きなタイミングで宣言する。自分以外の好きなキャラクター１人の素性を刻み師に変更し、自分の取得している刻印から１つを取得させる。\nこの効果を使用したキャラクターの刻印はすべて無効化され、今後のキャラクター作成時に刻み師を選べなくなる。',fl:'その技法は受け継がれる。\nそれは望んだからなのか、意図せずなのか。'},
+{id:'??',origin:'刻み師',name:'奇跡の対価',en:'',trigger:'発動',effect:'１ラウンドに１度、自身の取得している刻印１つを消費して判定にBD+1をつけられる。\n刻印１つを消費するときHP最大値の1/4だけHPを減少させる。\n消費した刻印は失われる。',fl:'全ての刻印は、何かを失うことで成立する。\n刻み師はそのことを、最もよく知っている。'},
+{id:'??',origin:'刻み師',name:'刻む傷跡',en:'',trigger:'常時',effect:'すべての近接攻撃に装甲貫通(1)\n元々装甲貫通をもっているなら貫通の値は合算される。',fl:'「刻むべき場所が分かる者が、真の刻み師だ」\n——帝都の廃墟に残された文字より'},
+{id:'??',origin:'刻み師',name:'無刀の神業',en:'',trigger:'常時',effect:'所持している、装備していない武器で攻撃することが出来る。\nこの攻撃でHP/MPの減少をすることはできないが特殊効果は使用できる。\n※属性は無として扱う。',fl:'刻み師の手は、武器を持たない時も\n何かを刻み続けているように動く。'},
+{id:'De01',origin:'廃人',name:'目撃者',en:'Witness',trigger:'発動',effect:'1ラウンドに1回、判定に+5%。',fl:'廃掘人の間では、「廃人」とは敬称だ。\n遺跡の深部まで辿り着いた者だけが、そう呼ばれる。'},
+{id:'De02',origin:'廃人',name:'灰の残滓',en:'Ash Remnant',trigger:'常時',effect:'割り振らなかった追加ポイント×2%をすべての判定に加算する(最大+20%)',fl:'失ったものを数えるより、まだ残っているものを数える。\nそれが廃人の生き方だ。'},
+{id:'??',origin:'廃人',name:'器用万能',en:'',trigger:'常時',effect:'追加ポイントを振り分けた能力値の種類数×2%を全命中値に加算する（最大+16%・8種の能力値すべてに1点以上振り分けた場合）。',fl:'何もなくなった後に残るものが、本当の強さだ。\n廃人はそのことを、廃墟の中で学んだ。'},
+{id:'??',origin:'廃人',name:'過去の栄光',en:'',trigger:'常時',effect:'他素性の刻印を取得できるようになる',fl:'全ての素性を捨てた者が、この道を選ぶ。\n廃人に、失うものはもう何もない。'},
+{id:'??',origin:'廃人',name:'何もなく',en:'',trigger:'常時',effect:'このキャラクターはロストしない。',fl:'何も持たないことが、最大の自由だと気づいた者がいた。\nその者が、最初の廃人だった。'}
+];
 
-// ── 種別フィルター ──
-let currentFilter = 'all';
-document.querySelectorAll('.filter-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    currentFilter = btn.dataset.filter;
-    applyFilter();
-  });
-});
 
-function applyFilter() {
-  const panel = document.querySelector('.seal-panel.active');
-  if (!panel) return;
-  panel.querySelectorAll('.seal-card').forEach(card => {
-    const match = currentFilter === 'all' || card.dataset.type === currentFilter;
-    card.classList.toggle('hidden', !match);
-  });
+const CT={'AP・AGI':'tag-ap','命中強化':'tag-hit','ダメージ強化':'tag-dmg','HD/EX強化':'tag-hdex','HP・生存':'tag-hp','MP・触媒':'tag-mp','能力強化':'tag-hit','その他':'tag-other'};
+const favs=new Set(JSON.parse(localStorage.getItem('sfav')||'[]'));
+function saveFavs(){try{localStorage.setItem('sfav',JSON.stringify([...favs]));}catch(e){}}
+const st={generic:{cat:'all',search:''},origin:{origin:'all',search:''}};
+
+function buildCard(d,isO){
+  const uid=(isO?'O':'G')+d.id;const isFav=favs.has(uid);
+  const cat=isO?d.origin:d.cat;
+  const searchText=[d.id,d.name,d.en,d.effect,d.trigger,cat].join(' ').toLowerCase();
+  return `<div class="data-card${isFav?' favorited':''}" data-id="${uid}" data-cat="${cat}" data-origin="${d.origin||''}" data-search="${searchText}">
+<div class="card-head"><span class="card-id">${d.id}</span><div style="flex:1"><span class="card-name">${d.name}</span><span class="card-name-en">${d.en}</span></div><button class="fav-btn${isFav?' active':''}" onclick="toggleFav('${uid}',this)">★</button></div>
+<div class="card-badges">${isO?`<span class="tag tag-origin">${d.origin}</span>`:'<span class="tag tag-generic">汎用</span>'}<span class="tag ${CT[d.cat||d.origin]||'tag-other'}">${d.cat||d.origin}</span></div>
+<div class="card-trigger">${d.trigger}</div>
+<div class="card-effect">${d.effect}</div>
+${d.fl?`<div class="card-flavor">${d.fl}</div>`:''}
+</div>`;
 }
+
+function renderGrid(gid,data,isO){document.getElementById(gid).innerHTML=data.map(d=>buildCard(d,isO)).join('');updateCount(isO?'origin':'generic');}
+function updateCount(type){const gid=type+'-grid',cid=type+'-count';const t=document.querySelectorAll(`#${gid} .data-card`).length,v=document.querySelectorAll(`#${gid} .data-card:not(.hidden)`).length;document.getElementById(cid).textContent=v<t?`${v} / ${t} 件表示`:`全${t}件`;}
+function filterSeals(type,q){st[type].search=q.toLowerCase();applyFilter(type);}
+function setCF(type,cat,btn){st[type].cat=cat;document.querySelectorAll(`#${type}-cat-filters .filter-btn`).forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter(type);}
+function setOF(origin,btn){st.origin.origin=origin;document.querySelectorAll('#origin-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');applyFilter('origin');}
+function applyFilter(type){
+  const{search}=st[type];const gid=type+'-grid';
+  document.querySelectorAll(`#${gid} .data-card`).forEach(c=>{
+    let m=!search||c.dataset.search.includes(search);
+    if(type==='generic'){const cat=st.generic.cat;if(cat!=='all')m=m&&(c.dataset.cat===cat||cat==='命中強化'&&c.dataset.cat==='ダメージ強化');}
+    else{const o=st.origin.origin;if(o!=='all')m=m&&c.dataset.origin===o;}
+    c.classList.toggle('hidden',!m);
+  });
+  updateCount(type);
+}
+function toggleFav(id,btn){if(favs.has(id)){favs.delete(id);btn.classList.remove('active');btn.closest('.data-card').classList.remove('favorited');}else{favs.add(id);btn.classList.add('active');btn.closest('.data-card').classList.add('favorited');}saveFavs();renderFav();}
+function renderFav(){
+  const all=[...GENERIC.map(d=>{return{...d,_o:false}}),...ORIGIN.map(d=>{return{...d,_o:true}})];
+  const fd=all.filter(d=>favs.has((d._o?'O':'G')+d.id));
+  document.getElementById('fav-grid').innerHTML=fd.length?fd.map(d=>buildCard(d,d._o)).join(''):'<div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div>';
+}
+function switchTab(n){['generic','origin','favorites','charcreate'].forEach((nm,i)=>{document.querySelectorAll('.tab-btn')[i].classList.toggle('active',nm===n);document.getElementById('tab-'+nm).classList.toggle('active',nm===n);});}
+
+function renderCCSeal(){
+  let html='';
+  html+=`<div class="cc-section"><p class="cc-section-title">汎用刻印（全素性使用可）</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>No</th><th>名前</th><th>カテゴリ</th><th>発動条件</th><th>効果（簡略）</th></tr></thead><tbody>`;
+  GENERIC.forEach(d=>{
+    const eff=d.effect.length>90?d.effect.slice(0,88)+'…':d.effect;
+    html+=`<tr><td style="color:var(--text3);font-size:10px">${d.id}</td><td><span class="cc-name">${d.name}</span><span class="cc-badge cc-generic">汎用</span></td><td style="font-size:10px;white-space:nowrap">${d.cat}</td><td style="font-size:10px;max-width:140px">${d.trigger}</td><td style="font-size:10px;max-width:240px">${eff}</td></tr>`;
+  });
+  html+='</tbody></table></div></div>';
+
+  const ORIGINS=['騎士','守護者','戦士','侍','盗賊','狩人','呪術師','魔法使い','聖職者','奇術師','深きもの','刻み師','廃人'];
+  html+=`<div class="cc-section"><p class="cc-section-title">素性専用刻印</p><div class="cc-table-wrap"><table class="cc-table">
+<thead><tr><th>No</th><th>名前</th><th>素性</th><th>発動条件</th><th>効果（簡略）</th></tr></thead><tbody>`;
+  ORIGINS.forEach(origin=>{
+    ORIGIN.filter(d=>d.origin===origin).forEach(d=>{
+      const eff=d.effect.length>90?d.effect.slice(0,88)+'…':d.effect;
+      html+=`<tr><td style="color:var(--text3);font-size:10px">${d.id}</td><td><span class="cc-name">${d.name}</span></td><td><span class="cc-badge cc-origin">${d.origin}</span></td><td style="font-size:10px;max-width:140px">${d.trigger}</td><td style="font-size:10px;max-width:240px">${eff}</td></tr>`;
+    });
+  });
+  html+='</tbody></table></div></div>';
+  document.getElementById('cc-seal-content').innerHTML=html;
+}
+
+renderGrid('generic-grid',GENERIC,false);
+renderGrid('origin-grid',ORIGIN,true);
+renderFav();
+renderCCSeal();
 </script>
 </body>
 </html>
