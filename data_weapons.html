@@ -1,301 +1,73 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>データ一覧：武器・防具・触媒 — 忘却の淵にて</title>
+
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <style>
-/* ── 武器カードグリッド（シグネチャー要素） ── */
-.weapon-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin: 1rem 0 0.5rem;
-}
-
-.weapon-card {
-  background: var(--bg2);
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.weapon-card__head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.weapon-card__name {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--gold2);
-  letter-spacing: 0.03em;
-  line-height: 1.4;
-}
-
-.weapon-card__type {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.1em;
-  color: var(--text3);
-  white-space: nowrap;
-  flex-shrink: 0;
-  padding-top: 2px;
-}
-
-.weapon-card__cats {
-  display: flex;
-  gap: 4px;
-  flex-shrink: 0;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-.weapon-card__stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.55rem 0.85rem;
-  margin-bottom: 0.9rem;
-}
-
-.weapon-card__stats--catalyst { grid-template-columns: 1fr 1fr; }
-
-.wstat {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.wstat__label {
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 9px;
-  letter-spacing: 0.08em;
-  color: var(--text3);
-}
-
-.wstat__val {
-  font-size: 12.5px;
-  color: var(--text);
-  font-weight: 500;
-}
-
-.attr-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 7px;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: 500;
-  border: 1px solid var(--border2);
-}
-.attr--fire       { color: var(--red2);    border-color: var(--red); }
-.attr--cold       { color: var(--blue2);   border-color: var(--blue); }
-.attr--lightning  { color: var(--purple2); border-color: var(--purple); }
-.attr--poison     { color: var(--teal2);   border-color: var(--teal); }
-.attr--blood      { color: var(--red2);    border-color: var(--red2); }
-.attr--dark       { color: var(--purple2); border-color: var(--purple2); }
-.attr--holy       { color: var(--gold2);   border-color: var(--gold-dim); }
-.attr--none       { color: var(--text3);   border-color: var(--border2); }
-
-.cat-pill {
-  display: inline-flex;
-  align-items: center;
-  padding: 1px 7px;
-  border-radius: 9px;
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.05em;
-  border: 1px solid var(--border2);
-  white-space: nowrap;
-}
-.cat--attack { color: var(--red2);    border-color: var(--red); }
-.cat--heal   { color: var(--teal2);   border-color: var(--teal); }
-.cat--field  { color: var(--purple2); border-color: var(--purple); }
-.cat--buff   { color: var(--blue2);   border-color: var(--blue); }
-.cat--ward   { color: var(--gold2);   border-color: var(--gold-dim); }
-.cat--tarot  { color: var(--text2);   border-color: var(--border2); }
-.cat--other  { color: var(--text3);   border-color: var(--border2); }
-
-.weapon-card__special {
-  font-size: 12px;
-  color: var(--text2);
-  line-height: 1.75;
-  margin-bottom: 0.9rem;
-  flex: 1;
-}
-.weapon-card__special-label {
-  display: block;
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.25em;
-  color: var(--gold-dim);
-  text-transform: uppercase;
-  margin-bottom: 0.4rem;
-}
-.weapon-card__special p { margin: 0; }
-
-.weapon-card__flavor {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 11.5px;
-  line-height: 1.85;
-  padding: 0.7rem 0.85rem;
-  border-left: 2px solid var(--gold-dim);
-  background: rgba(255,255,255,0.012);
-  margin-top: auto;
-  color: var(--text2);
-  font-style: italic;
-}
-.weapon-card__flavor--empty {
-  color: var(--text3);
-  border-left: none;
-  border: 1px dashed var(--border2);
-  border-radius: 4px;
-}
-
-.subsection-title {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gold-dim);
-  letter-spacing: 0.05em;
-  margin: 1.75rem 0 0.75rem;
-  padding-bottom: 0.4rem;
-  border-bottom: 1px solid var(--border);
-}
-.subsection-title:first-of-type { margin-top: 0.5rem; }
-
-/* ── 素性カード ── */
-.origin-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin: 1rem 0 0.5rem;
-}
-.origin-card {
-  background: var(--bg2);
-  padding: 1.5rem 1.25rem;
-  display: flex;
-  flex-direction: column;
-  min-height: 200px;
-}
-.origin-card__head {
-  display: flex;
-  align-items: baseline;
-  gap: 0.75rem;
-  margin-bottom: 0.85rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--border);
-}
-.origin-card__num {
-  font-family: 'Cinzel', serif;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--gold-dim);
-}
-.origin-card__name {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 17px;
-  font-weight: 500;
-  color: var(--gold2);
-  letter-spacing: 0.05em;
-}
-.origin-card__favored {
-  font-size: 12px;
-  color: var(--text2);
-  margin-bottom: 1rem;
-}
-.origin-card__favored-label {
-  display: inline-block;
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
-  letter-spacing: 0.15em;
-  color: var(--text3);
-  margin-right: 0.6rem;
-  text-transform: uppercase;
-}
-.origin-card__flavor {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 11.5px;
-  font-style: italic;
-  color: var(--text3);
-  line-height: 1.8;
-  padding: 0.75rem 0.9rem;
-  border: 1px dashed var(--border2);
-  border-radius: 4px;
-  background: rgba(255,255,255,0.012);
-  margin-top: auto;
-  min-height: 64px;
-}
-
-@media (max-width: 640px) {
-  .weapon-grid, .origin-grid { grid-template-columns: 1fr; }
-  .weapon-card__stats { grid-template-columns: 1fr 1fr; }
-}
+.data-controls{display:flex;flex-wrap:wrap;gap:.75rem;margin-bottom:1.5rem;align-items:center}
+.search-box{flex:1;min-width:180px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:.55rem 1rem;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+.search-box:focus{border-color:var(--gold-dim)}.search-box::placeholder{color:var(--text3)}
+.filter-group{display:flex;flex-wrap:wrap;gap:.4rem}
+.filter-btn{font-family:'Noto Sans JP',sans-serif;font-size:10px;letter-spacing:.1em;padding:3px 11px;border:1px solid var(--border);background:var(--bg2);color:var(--text3);border-radius:2px;cursor:pointer;transition:all .15s}
+.filter-btn:hover{color:var(--gold);border-color:var(--gold-dim)}.filter-btn.active{background:var(--gold-dim);color:var(--gold2);border-color:var(--gold)}
+.result-count{font-size:11px;font-family:'Noto Sans JP',sans-serif;color:var(--text3);margin-bottom:.75rem}
+.fav-notice{font-size:11px;font-family:'Noto Sans JP',sans-serif;color:var(--gold-dim);margin-bottom:1.25rem}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:2.5rem}
+.data-card{background:var(--bg2);padding:1.25rem;display:flex;flex-direction:column;position:relative;transition:background .15s}
+.data-card:hover{background:var(--bg3)}.data-card.hidden{display:none}.data-card.favorited{background:rgba(200,164,90,.06)}
+.card-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.75rem;gap:.5rem;padding-bottom:.65rem;border-bottom:1px solid var(--border)}
+.card-sub{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.12em;color:var(--text3)}
+.card-name{font-family:'Noto Serif JP',serif;font-size:15px;font-weight:500;color:var(--gold2);line-height:1.3}
+.fav-btn{background:none;border:none;cursor:pointer;font-size:13px;color:var(--text3);padding:2px 0 0 4px;flex-shrink:0;transition:color .15s,transform .15s;line-height:1}
+.fav-btn:hover{color:var(--gold);transform:scale(1.2)}.fav-btn.active{color:var(--gold2)}
+.card-stats{display:grid;grid-template-columns:1fr 1fr;gap:.45rem .75rem;margin-bottom:.75rem}
+.wstat{display:flex;flex-direction:column;gap:2px}
+.wstat__label{font-family:'Noto Sans JP',sans-serif;font-size:9px;letter-spacing:.08em;color:var(--text3)}
+.wstat__val{font-size:12.5px;color:var(--text);font-weight:500;line-height:1.3}
+.attr-pill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:9px;font-size:11px;font-weight:500;border:1px solid var(--border2)}
+.attr--fire{color:var(--red2);border-color:var(--red)}.attr--cold{color:var(--blue2);border-color:var(--blue)}
+.attr--lightning{color:var(--purple2);border-color:var(--purple)}.attr--poison{color:var(--teal2);border-color:var(--teal)}
+.attr--blood{color:var(--red2);border-color:var(--red2)}.attr--dark{color:var(--purple2);border-color:var(--purple2)}
+.attr--holy{color:var(--gold2);border-color:var(--gold-dim)}.attr--none{color:var(--text3);border-color:var(--border2)}
+.cat-pill{display:inline-flex;align-items:center;padding:1px 7px;border-radius:9px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:.05em;border:1px solid var(--border2);white-space:nowrap}
+.cat--attack{color:var(--red2);border-color:var(--red)}.cat--heal{color:var(--teal2);border-color:var(--teal)}
+.cat--field{color:var(--purple2);border-color:var(--purple)}.cat--buff{color:var(--blue2);border-color:var(--blue)}
+.cat--ward{color:var(--gold2);border-color:var(--gold-dim)}.cat--tarot{color:var(--text2);border-color:var(--border2)}
+.cat--other{color:var(--text3);border-color:var(--border2)}
+.card-spec-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.25em;color:var(--gold-dim);display:block;margin-bottom:.3rem}
+.card-spec{font-size:12px;color:var(--text2);line-height:1.75;flex:1;margin-bottom:.6rem}
+.card-flavor{font-family:'Noto Serif JP',serif;font-size:11.5px;line-height:1.85;padding:.65rem .85rem;border-left:2px solid var(--gold-dim);background:rgba(255,255,255,.012);margin-top:auto;color:var(--text2);font-style:italic}
+.tab-group{display:flex;flex-wrap:wrap;gap:0;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tab-btn{font-family:'Noto Sans JP',sans-serif;font-size:11px;letter-spacing:.08em;padding:.6rem 1rem;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all .2s;margin-bottom:-1px;white-space:nowrap}
+.tab-btn:hover{color:var(--gold)}.tab-btn.active{color:var(--gold);border-bottom-color:var(--gold-dim)}
+.tab-content{display:none}.tab-content.active{display:block}
+.cc-table-wrap{border:1px solid var(--border);border-radius:var(--radius);overflow-x:auto;margin-bottom:1.5rem}
+.cc-table{width:100%;border-collapse:collapse;font-size:11px;min-width:600px}
+.cc-table th{font-family:'Noto Sans JP',sans-serif;font-size:9px;font-weight:500;letter-spacing:.12em;color:var(--gold-dim);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border2);background:var(--bg2);white-space:nowrap}
+.cc-table td{padding:5px 8px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.5}
+.cc-table tr:last-child td{border-bottom:none}.cc-table tr:hover td{background:var(--bg3)}
+.cc-name{color:var(--text);font-size:12px}
+.sec-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:.2em;color:var(--text3);margin:1.5rem 0 .6rem;padding-bottom:.3rem;border-bottom:1px solid var(--border)}
+@media(max-width:640px){.card-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
-<!-- ナビゲーション -->
-<nav class="site-nav" role="navigation" aria-label="メインナビゲーション">
-  <div class="site-nav__inner">
-    <a href="index.html" class="site-nav__logo">Oblivion</a>
-    <ul class="site-nav__links">
-      <li><a href="index.html">Top</a></li>
-      <li class="site-nav__item">
-        <a href="world.html">世界観</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="world.html">概要</a></li>
-          <li><a href="world_detail.html">詳細設定</a></li>
-        </ul>
-      </li>
-      <li class="site-nav__item">
-        <a href="system_combat.html">システム</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="system_combat.html">戦闘</a></li>
-          <li><a href="system_explore.html">探索</a></li>
-        </ul>
-      </li>
-      <li><a href="charcreate.html">キャラクター作成</a></li>
-      <li><a href="origins.html">素性・能力値</a></li>
-      <li class="site-nav__item">
-        <a href="data_weapons.html">データ一覧</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="data_weapons.html">武器・防具</a></li>
-          <li><a href="data_magic.html">魔術・奇跡</a></li>
-          <li><a href="data_seals.html">刻印</a></li>
-        </ul>
-      </li>
-      <li class="site-nav__item">
-        <a href="gm_enemies.html">GMツール</a>
-        <ul class="site-nav__dropdown">
-          <li><a href="gm_enemies.html">エネミーリスト</a></li>
-          <li><a href="gm_artifacts.html">アーティファクト</a></li>
-          <li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li>
-        </ul>
-      </li>
-    </ul>
-  </div>
-</nav>
-
+<nav class="site-nav" role="navigation"><div class="site-nav__inner">
+  <a href="index.html" class="site-nav__logo">Oblivion</a>
+  <ul class="site-nav__links">
+    <li><a href="index.html">Top</a></li>
+    <li class="site-nav__item"><a href="world.html">世界観</a><ul class="site-nav__dropdown"><li><a href="world.html">概要</a></li><li><a href="world_detail.html">詳細設定</a></li></ul></li>
+    <li class="site-nav__item"><a href="system_combat.html">システム</a><ul class="site-nav__dropdown"><li><a href="system_combat.html">戦闘</a></li><li><a href="system_explore.html">探索</a></li></ul></li>
+    <li><a href="charcreate.html">キャラクター作成</a></li>
+    <li><a href="origins.html">素性・能力値</a></li>
+    <li class="site-nav__item"><a href="data_weapons.html">データ一覧</a><ul class="site-nav__dropdown"><li><a href="data_weapons.html">武器・防具</a></li><li><a href="data_magic.html">魔術・奇跡</a></li><li><a href="data_seals.html">刻印</a></li></ul></li>
+    <li class="site-nav__item"><a href="gm_enemies.html">GMツール</a><ul class="site-nav__dropdown"><li><a href="gm_enemies.html">エネミーリスト</a></li><li><a href="gm_artifacts.html">アーティファクト</a></li><li><a href="gm_scenario.html">シナリオ作成のすすめ</a></li></ul></li>
+  </ul>
+</div></nav>
 <div class="page-wrap">
-
   <div class="page-header">
     <p class="page-eyebrow">Chapter V</p>
     <h1 class="page-title">Data — Weapons &amp; Catalysts</h1>
@@ -303,2000 +75,269 @@
     <div class="page-divider"></div>
   </div>
 
-  <!-- 目次 -->
-  <div class="toc">
-    <p class="toc__title">Contents</p>
-    <ul class="toc__list">
-      <li><span>I</span><a href="#dagger">短剣</a></li>
-      <li><span>II</span><a href="#sword">直剣</a></li>
-      <li><span>III</span><a href="#greatsword">大剣</a></li>
-      <li><span>IV</span><a href="#axe">斧・ハンマー</a></li>
-      <li><span>V</span><a href="#spear">槍・ハルバード</a></li>
-      <li><span>VI</span><a href="#bow">弓</a></li>
-      <li><span>VII</span><a href="#shield">盾</a></li>
-      <li><span>VIII</span><a href="#catalyst">触媒</a></li>
-      <li><span>IX</span><a href="#armor">防具</a></li>
-    </ul>
+  <div class="tab-group">
+    <button class="tab-btn active" onclick="switchTab('weapon')">武器（83種）</button>
+    <button class="tab-btn" onclick="switchTab('armor')">防具（22種）</button>
+    <button class="tab-btn" onclick="switchTab('catalyst')">触媒（18種）</button>
+    <button class="tab-btn" onclick="switchTab('favorites')">★ お気に入り</button>
+    <button class="tab-btn" onclick="switchTab('charcreate')">📋 キャラクター作成用</button>
   </div>
 
-  <p style="font-size:13px; color:var(--text2); line-height:2; max-width:680px; margin: 0 auto 3rem; text-align:center;">
-    武器は片手持ちが基本で、「両手」と記載のある武器種は両手で持つ必要がある。ダメージ・属性・射程・AP・最大攻撃回数・DB（ダメージボーナス）参照能力値、および固有の特殊効果を掲載する。
-  </p>
+  <div id="tab-weapon" class="tab-content active">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・属性・特殊効果で検索…" oninput="filterGrid('weapon-grid',this.value)">
+      <div class="filter-group" id="wcat-filters">
+        <button class="filter-btn active" onclick="setWCat('all',this)">すべて</button>
+<button class="filter-btn" onclick="setWCat('短剣',this)">短剣</button>
+<button class="filter-btn" onclick="setWCat('直剣',this)">直剣</button>
+<button class="filter-btn" onclick="setWCat('大剣',this)">大剣</button>
+<button class="filter-btn" onclick="setWCat('斧・ハンマー',this)">斧・ハンマー</button>
+<button class="filter-btn" onclick="setWCat('槍・ハルバード',this)">槍・ハルバード</button>
+<button class="filter-btn" onclick="setWCat('弓',this)">弓</button>
+<button class="filter-btn" onclick="setWCat('盾',this)">盾</button>
 
-
-  <section class="section" id="dagger">
-    <div class="section-header">
-      <span class="section-num">I</span>
-      <h2 class="section-title">短剣</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">盗人の短刀</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 急所掠り(発)：命中対象の次の回避判定にPD+1 MP1</p></div>
-          <div class="weapon-card__flavor">路地裏で生まれ、路地裏で磨かれた刃。<br>名前を持たない者たちが、それでも生き延びるために選んだ形。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">脇差</h3>
-            <span class="weapon-card__type">短剣/直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>二対の刃(常)：同じラウンドに「直剣」で攻撃しているなら命中+5%</p></div>
-          <div class="weapon-card__flavor">対をなすことで初めて完成する剣がある。<br>片方が欠けても、もう一方がその重さを覚えている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ダガー</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 生死の一線(発)：命中対象のHP5以下なら死の宣告付与 （POWロール） MP2</p></div>
-          <div class="weapon-card__flavor">「最後の一手は、静かであるべきだ」<br>——メルクリア、名も知れぬ刺客の遺言より</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">毒の刃</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d3</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--poison">毒</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 毒の蓄積(発)：毒1付与 MP1</p></div>
-          <div class="weapon-card__flavor">ヴェイルホロウの毒師は言った。<br>「傷口を狙うな。血そのものに語りかけろ」と。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">巡礼のナイフ</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d3</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖(血)</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX/FTH</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>巡礼の終わり(発)：手番にHP1d3+1を消費してこの武器の属性を「血」に変化させる</p></div>
-          <div class="weapon-card__flavor">テオフィリアへの巡礼路で生まれた小刀。<br>信仰と血は、時として同じ色をしている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">水銀刀</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">4</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 水銀の連鎖(発)：AP1回復 MP1</p></div>
-          <div class="weapon-card__flavor">残像が剣であり、剣が残像である。<br>疾さとは、記憶される前に終わることだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">彫刻刀</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d3+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>刻むモノ(発)：手番に1APを消費して射程内の目標に対して以下の効果を発揮する(各1回まで)<br>・味方(自分含む)：戦闘の間「刻まれし根」を取得させる(重複不可。上書きされる。)<br>・敵(味方も可能)：命中判定を行いHD以上なら封印付与</p></div>
-          <div class="weapon-card__flavor">帝国の刻み師が用いた道具。<br>人の運命を彫るものが、なぜ刃の形をしているのか。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">爪牙</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX/AGI</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>飢餓(常)：HD以上での成功で装甲貫通(3)</p></div>
-          <div class="weapon-card__flavor">爪は、生きることへの執念の形だ。<br>深きものの末裔は、そのことをずっと前から知っていた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">星鉄の短刀</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--lightning">雷</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 帯電の傷(発)：対象を攻撃するたびに1ダメージ受ける状態にする MP1<br>EX 隕石の落下(発)：帯電の傷状態の対象に1d8＋隣接するマスの敵に1d4 MP2 </p></div>
-          <div class="weapon-card__flavor">夜空から落ちてきた欠片で鍛えられた刃。<br>どこかの星が死んだ夜に、この刃は生まれた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">儚月</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>月の夜(常)：通常成功をEXとして扱う。HDは失敗として扱う</p></div>
-          <div class="weapon-card__flavor">月はいつも、最も暗い場所に光を落とす。<br>この刃もまた、そういう場所のために作られた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">深淵の舌</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>深淵を覗くモノ(常)：命中後に使用者も与えたものと同じ状態異常を受ける<br>EX 深淵の共鳴(発)：自身の受けている状態異常の種類×3ダメージ追加 MP2</p></div>
-          <div class="weapon-card__flavor">深淵は言葉を持たない。<br>だがこの刃は、深淵の代わりに何かを語ろうとしている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">フェルドランスの牙</h3>
-            <span class="weapon-card__type">短剣/直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4/1d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--poison">毒</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>蛇毒の牙(常)：ダメージを受けた時、射程1の目標1体に毒1付与<br>HD 冒涜の邪毒(発)：装甲無視(付与されている毒スタック分) MP1</p></div>
-          <div class="weapon-card__flavor">毒蛇の名を冠した双剣。<br>じっくりと、しかし確実に。それが蛇の流儀だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">新月</h3>
-            <span class="weapon-card__type">短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">0</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">4</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 月の刃(発)：この武器の残っている攻撃回数を消費してこの攻撃にダメージを合算する(DBの合算)。消費した攻撃回数×1ダメージ追加 MP2</p></div>
-          <div class="weapon-card__flavor">刃が見えない夜がある。<br>その夜に何が起きたかは、生き残った者だけが知っている。</div>
-        </article>
       </div>
     </div>
-  </section>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="weapon-count"></p>
+    <div class="card-grid" id="weapon-grid"></div>
+  </div>
 
-  <hr class="divider">
-
-  <section class="section" id="sword">
-    <div class="section-header">
-      <span class="section-num">II</span>
-      <h2 class="section-title">直剣</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ショートソード</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 確かな一撃(発)：対象HP半分以下なら追加ダメージ+1d4 MP1</p></div>
-          <div class="weapon-card__flavor">「迷いは刃を鈍らせる」<br>——メルクリア傭兵団、古い訓練書の冒頭より</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ロングソード</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 万能の一手(発)：移動直後の攻撃なら追加ダメージ+1d4 MP1</p></div>
-          <div class="weapon-card__flavor">帝国騎士団が広めた剣術は、動くことへの信仰だった。<br>国が滅んだ今も、その哲学だけが各地を流れ続けている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">KATANA</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 居合(発)： 発動したラウンド中、回避に成功すると1d4の装甲無視(全)ダメージを与える状態になる MP1</p></div>
-          <div class="weapon-card__flavor">アルゴス大陸の外から来た剣。<br>その居合の間合いは、この大陸のどの剣術とも交わらない。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">バスタードソード</h3>
-            <span class="weapon-card__type">直剣/大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>両手持ち時 ダメージ+1d4<br>HD 不規則な剣(発)：装甲貫通(3) MP1</p></div>
-          <div class="weapon-card__flavor">「使いにくい」と笑った者は、次の瞬間に黙った。<br>この剣は、規格外であることを誇りにしている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">炎の剣</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 炎の波及(発)：命中対象が燃焼中なら隣接の別の敵にも燃焼付与 MP1</p></div>
-          <div class="weapon-card__flavor">縫合の神の炎は、消えることを知らない。<br>そう信じた聖職者が、信仰を刃の形に鋳込んだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">奇術師のタクト</h3>
-            <span class="weapon-card__type">直剣/触媒</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX/FTH</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>触媒：魔術/奇跡1枠</p></div>
-          <div class="weapon-card__flavor">指揮棒のように見えるが、確かな刃を持つ。<br>奇術師の手は、いつも複数のものを同時に操っている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">銀のレイピア</h3>
-            <span class="weapon-card__type">直剣/短剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d3+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX/AGI</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>先手必勝(常)：自分よりAGIが低い目標に攻撃する時命中+5%、固定+1ダメージ追加</p></div>
-          <div class="weapon-card__flavor">速さという残酷さに磨きをかけた剣。<br>この刃の前では、遅さは罪に等しい。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">黒き剣</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1(3)</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR(POW)</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>月の牙(常)：射程3で使用する場合、MP3消費。DBはPOW参照。</p></div>
-          <div class="weapon-card__flavor">届かないはずの距離を、意志が埋める。<br>遠くを斬ることは、何かを手放すことと同義だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">七星剣</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--blood">血</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>呪われし聖剣(常)：装備すると装備入れ替えが出来なくなる。戦闘開始時に自身に狂喜付与<br>HD 妖火斬(発)：ダメージ+1d4 燃焼付与 MP1</p></div>
-          <div class="weapon-card__flavor">一度抜けば、手放すことができない。<br>100年に1度訪れる赤い満月の夜に妖刀は真の力を解放する。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">贖罪の剣</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>贖罪の刻(常)：自身のHP半分以下のとき ダメージ+2<br>HD 痛みの反射(発)：命中対象を1マス後退 MP1</p></div>
-          <div class="weapon-card__flavor">傷ついた者が傷ついた者のために振るう剣。<br>これは武器ではなく、諦めない意志の形だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">黄金の陽光</h3>
-            <span class="weapon-card__type">直剣/大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>両手持ち時 ダメージ+1d4<br>HD 太陽は堕ちず(発)：燃焼付与(この効果で与える燃焼は累積する) MP1</p></div>
-          <div class="weapon-card__flavor">帝国の太陽は沈んだ。<br>それでもこの剣は燃え続ける、大地が滅びるその時まで。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">骸の王</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1(3)</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">INT</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>開け(常)：この武器のダメージは装甲ではなく耐性で軽減され、HPではなくMPにダメージを与え、MPが0ならHPを減少する。<br>死の門よ(常)：射程3で使用する場合、MP３消費。命中-5%。</p></div>
-          <div class="weapon-card__flavor">「開け、死の門よ」<br>——廃帝都の廃墟に残された、意味不明な落書きより</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">霧の刃</h3>
-            <span class="weapon-card__type">直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--cold">冷気</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>見えざる刃(常)：この武器の回避にはPD+1。<br>EX 帝国の剣技(発)：ダメージ+1d4 この攻撃で冷気スタックが5になったなら与えるダメージ+2 MP2</p></div>
-          <div class="weapon-card__flavor">帝都アルカーナの霧の中で鍛えられたとされる。<br>かつて帝国があったことだけを、今も静かに覚えている。</div>
-        </article>
+  <div id="tab-armor" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果で検索…" oninput="filterGrid('armor-grid',this.value)">
+      <div class="filter-group" id="acat-filters">
+        <button class="filter-btn active" onclick="setACat('all',this)">すべて</button>
+        <button class="filter-btn" onclick="setACat('頭防具',this)">頭防具</button>
+        <button class="filter-btn" onclick="setACat('胴防具',this)">胴防具</button>
       </div>
     </div>
-  </section>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="armor-count"></p>
+    <div class="card-grid" id="armor-grid"></div>
+  </div>
 
-  <hr class="divider">
-
-  <section class="section" id="greatsword">
-    <div class="section-header">
-      <span class="section-num">III</span>
-      <h2 class="section-title">大剣</h2>
-      <div class="section-rule"></div>
+  <div id="tab-catalyst" class="tab-content">
+    <div class="data-controls">
+      <input class="search-box" type="text" placeholder="名前・効果で検索…" oninput="filterGrid('catalyst-grid',this.value)">
     </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">グレートソード</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 大地の震動(発)：命中対象その両隣の敵全員は次ラウンド終了まで移動にかかるAP+1。 MP1</p></div>
-          <div class="weapon-card__flavor">重さは、説得の最も原始的な形だ。<br>言葉が通じない場所で、この剣は代わりに語りかける。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">クレイモア</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 古の一撃(発)：この武器で行う次の攻撃に装甲貫通(3)がつく MP1</p></div>
-          <div class="weapon-card__flavor">古い戦場の記憶が宿る大剣。<br>幾度も振るわれるたびに、次の一撃が静かに研ぎ澄まされていく。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">断罪剣</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 首狩り(発)：ダメージ+1d6 MP1</p></div>
-          <div class="weapon-card__flavor">罪人を断ずる処刑の剣。<br>最後の瞬間、この刃は何も語らない。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">白夜</h3>
-            <span class="weapon-card__type">大剣/直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>片手持ち時ダメージ-2。</p></div>
-          <div class="weapon-card__flavor">夜を白く照らす聖光の大剣。<br>両手で握って初めて、その意味が完成する。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">腐食剣</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--poison">毒</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>万物喰らい(常)：対象の毒スタック分だけ装甲無視する</p></div>
-          <div class="weapon-card__flavor">毒は、刃よりも忍耐強い。<br>この剣はそのことを、使い手に静かに教え続けている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">訓練用の丸太</h3>
-            <span class="weapon-card__type">大剣/槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>さぁ、特訓だ(常)：手番に1APを消費して射程内1マスに障害物を設置する(進入不可。通過不可。)</p></div>
-          <div class="weapon-card__flavor">「これで十分だ」と笑う戦士がいた。<br>誰もそれを、笑い返せなかった。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">石英の大剣</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">CON</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">純粋な力を信じる者だけが、この剣を選ぶ。<br>技術より重量で場を支配することを、恥だと思わない者の武器だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">鯨骨の大剣</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--cold">冷気</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 深海の断裂(発)：冷気スタック×1ダメージ追加 MP2</p></div>
-          <div class="weapon-card__flavor">インスマス海岸の深海から引き上げられた骨で作られた。<br>海の底の静寂が、今も剣の中で眠っている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">嘆き</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>精神汚染(常)：与えたダメージの半分だけ対象のMP減少<br>号哭(常)：対象のMPが0のとき装甲貫通(全)。</p></div>
-          <div class="weapon-card__flavor">嘆きとは、静かに、長く、続くものだ。<br>この剣もまた、そのように戦場に残り続ける。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">大刀</h3>
-            <span class="weapon-card__type">大剣/直剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>歪む三日月(常)：ラウンド開始時に1APを消費して宣言をする。<br>そのラウンドの間だけ自身に移動不可と狂喜を付与する。</p></div>
-          <div class="weapon-card__flavor">剣士が最も輝く瞬間がある。<br>彼らの顔には三日月があったという。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">暴風の大剣</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">5</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">AGI</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>黄衣の王(常)：攻撃後、ラウンドの間自身の命中判定に-20%(累積する)</p></div>
-          <div class="weapon-card__flavor">嵐は常に、自分自身も消耗させていく。<br>それでも嵐を選ぶ者が、この大陸にはいる。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">業炎の大剣</h3>
-            <span class="weapon-card__type">大剣</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>生きる炎(常)：自身が燃焼状態ならダメージ+1d6</p></div>
-          <div class="weapon-card__flavor">痛みを力に変えてきた者だけが、この矛盾を理解する。<br>燃えながら戦うことを、選んだ者たちがいた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">星喰い</h3>
-            <span class="weapon-card__type">大剣/斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d8+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>引力(常)：手番に1APを消費して射程2以内の目標を1マス移動させる<br>EX 星の崩壊(発)：対象を１マス後退＋後退できないなら1d8ダメージ MP2</p></div>
-          <div class="weapon-card__flavor">星をも喰らう、と言った者がいた。<br>誰もその言葉の意味を問わなかった。</div>
-        </article>
-      </div>
-    </div>
-  </section>
+    <p class="fav-notice">★ ボタンでお気に入りに追加できます</p>
+    <p class="result-count" id="catalyst-count"></p>
+    <div class="card-grid" id="catalyst-grid"></div>
+  </div>
 
-  <hr class="divider">
+  <div id="tab-favorites" class="tab-content">
+    <p class="fav-notice">★ をつけた武器・防具・触媒がここに表示されます</p>
+    <div class="card-grid" id="fav-grid-w"><div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div></div>
+  </div>
 
-  <section class="section" id="axe">
-    <div class="section-header">
-      <span class="section-num">IV</span>
-      <h2 class="section-title">斧・ハンマー</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">木こりの斧</h3>
-            <span class="weapon-card__type">斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 鎧割り(発)：命中対象の物理装甲を1点永続的に減少 MP1</p></div>
-          <div class="weapon-card__flavor">森を切り、獣を斬り、鎧をも割る。<br>使い込まれた刃は、いつも正直だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">戦斧</h3>
-            <span class="weapon-card__type">斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d12</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 競技場の咆哮(発)：攻撃の処理終了後、互いにお互いのみ攻撃の目標に選べるようになる(どちらかのHPが0で解除) MP1</p></div>
-          <div class="weapon-card__flavor">メルクリアの競技場で生まれた武器。<br>振るった瞬間、世界が二人だけになる。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">投擲斧</h3>
-            <span class="weapon-card__type">斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 正確な投擲(発)：射程2〜3への攻撃ならダメージ+1d4（射程2〜3） MP2</p></div>
-          <div class="weapon-card__flavor">遠くから終わらせることを、恥だと思わない者の武器。<br>狩人はそれを、技術と呼んだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ツルハシ</h3>
-            <span class="weapon-card__type">ハンマー</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>探鉱(常)：手番に1AP消費すると戦闘MAPの障害物を破壊できる(穴や毒沼は不可)</p></div>
-          <div class="weapon-card__flavor">廃掘人が遺跡で愛用する工具。<br>道を切り開いてきた者の手に、よく馴染む。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">雷槌</h3>
-            <span class="weapon-card__type">ハンマー</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--lightning">雷</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 落雷(発)：命中後、射程2内の別の敵1体に1d6ダメージ MP1</p></div>
-          <div class="weapon-card__flavor">外なる神々の電磁的なエネルギーを封じたハンマー。<br>その力が何者のものだったか、使い手は考えないことにしている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">スワンプマン</h3>
-            <span class="weapon-card__type">斧・ハンマー</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val"> 1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>顔無(発)：手番に1AP消費して、その戦闘中、この武器のダメージと特殊能力を射程１以内の味方が装備している近接武器ものに変更する</p></div>
-          <div class="weapon-card__flavor">沼地の怪物が武器として使っていた斧。<br>どんな記憶でも、形さえ残れば引き継がれる。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">儀式の斧</h3>
-            <span class="weapon-card__type">斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/FTH</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 最後の審判(発)：死の宣告付与（ロール不要）。使用者HP-1d6 MP2</p></div>
-          <div class="weapon-card__flavor">白衣教団の秘儀で使われる斧。<br>神への捧げ物が何であるかを、教団は明言しない。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">疫病斧</h3>
-            <span class="weapon-card__type">斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--poison">毒</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>腐敗毒(常)：毒状態の対象に命中時、隣接するキャラクターに毒1付与</p></div>
-          <div class="weapon-card__flavor">腐敗の力は、刃よりも遠くまで届く。<br>ヴェイルホロウではそれを、技術と呼んだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">台風の目</h3>
-            <span class="weapon-card__type">斧</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>台風の目(常)：射程1の目標には攻撃できない。<br>HD 雷纏い(発)：ダメージ+1d6、次の攻撃からこの武器の属性は「雷」になる(戦闘終了まで持続) MP1</p></div>
-          <div class="weapon-card__flavor">台風の中心は、静かだと言う。<br>しかし、誰もそこへは辿り着けない。台風だけが真実を知っている</div>
-        </article>
-      </div>
-    </div>
-  </section>
+  <div id="tab-charcreate" class="tab-content">
+    <div id="cc-weapon-content"></div>
+  </div>
 
-  <hr class="divider">
-
-  <section class="section" id="spear">
-    <div class="section-header">
-      <span class="section-num">V</span>
-      <h2 class="section-title">槍・ハルバード</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ショートスピア</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>片手持ち時 ダメージ-1<br>HD 牽制(発)：命中対象は次の1回の移動APコスト+1(累積しない) MP1</p></div>
-          <div class="weapon-card__flavor">帝国の歩兵が広間で学んだのは、剣ではなく槍だった。<br>その理由を、今も理解している者がいる。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ロングスピア</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD カウンター(発)：AGIが自分より高い相手が目標ならダメージ+1d6 MP1</p></div>
-          <div class="weapon-card__flavor">遠くから静かに待つことを、この槍は知っている。<br>素早い者ほど、その間合いに気づかない。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ハルバード</h3>
-            <span class="weapon-card__type">ハルバード</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 大薙ぎ(発)：命中した対象と隣接する別の敵1体にも同ダメージ(回避判定は発生する。) MP1</p></div>
-          <div class="weapon-card__flavor">一人を薙ぎ倒せば、隣の者も巻き込む。<br>帝国の歩兵はそのように戦場を制圧した。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">腐れ槍</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--poison">毒</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 発芽(発)：毒状態の対象への命中時、その毒スタックと同じだけ自分のHPを回復する MP5</p></div>
-          <div class="weapon-card__flavor">与えたものが、いつか戻ってくる。<br>ヴェイルホロウの呪術師は、それを法則と呼んだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">聖歌隊の槍</h3>
-            <span class="weapon-card__type">槍/触媒</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/FTH</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>触媒：奇跡1枠<br>HD 浄化の穿ち(発)：命中したアンデッド、邪悪の状態異常1種を解除し追加ダメージ+1d4 MP1</p></div>
-          <div class="weapon-card__flavor">白衣教団の聖歌隊は、戦場でも歌い続けたという。<br>この槍は、その声の形をしている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">凍てつく山嶺の頂</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--cold">冷気</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 氷晶の穿孔(発)：冷気1付与 MP1</p></div>
-          <div class="weapon-card__flavor">テオフィリア北部の高山には、人が踏み入らない場所がある。<br>この槍は、その場所から来た。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">波紋の槍</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>螺旋の渦(常)：直線上の射程2内の全員に命中する<br>HD 波紋伝達(発)：2体命中時、それぞれ追加ダメージ1d4 MP1</p></div>
-          <div class="weapon-card__flavor">水面に石を投じた時、波紋は誰かを選ばない。<br>この槍もまた、同じように広がる。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">魂喰らいの槍</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/INT</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>血喰らい(常)：命中時 MPを4まで消費して固定値を同じだけ増加<br>HD 魂の共鳴(発)：命中後の装甲計算時に装甲/耐性の好きな方で計算させるMP1</p></div>
-          <div class="weapon-card__flavor">「肉体か精神か、どちらを狙うかが問いだ」<br>——廃掘人の戦闘記録、判読困難な余白より</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">死神の大鎌</h3>
-            <span class="weapon-card__type">槍・ハルバード</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>死神の笛(発)：手番に1AP消費して射程内すべての死の宣告カウントを1減少させる<br>EX 命を刈り取る(発)：死の宣告付与 MP2</p></div>
-          <div class="weapon-card__flavor">死神は急かされることを、嫌がらない。<br>ただ、それが来る順番を変えることがある。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">嵐の矛</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d10</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 豪風(発)：装甲貫通(3) MP1<br>EX 嵐の解放(発)：この武器を「炎」「雷」の属性にする(戦闘終了まで持続) MP5</p></div>
-          <div class="weapon-card__flavor">嵐は選ばない。<br>燃やすか、砕くか、それを決めるのは嵐ではなく使い手だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">海神の三叉槍</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">3d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--blood">血</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/CON</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>血の刃(常)：命中判定前にHP1d4+1減少すると命中+10%<br>EX 呼び声(発)：発狂付与 MP3</p></div>
-          <div class="weapon-card__flavor">インスマス海岸の沖合いに、古い構造物があるという。<br>この槍は、その深さから引き上げられた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">星の槍</h3>
-            <span class="weapon-card__type">槍</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">LUK</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>星運(常)：命中判定のクリティカル率+5%<br>CR 愛された者(発)：クリティカル率+1%(戦闘終了まで持続、累積する) MP3</p></div>
-          <div class="weapon-card__flavor">幸運とは、引き寄せるものか、持って生まれるものか。<br>この槍を手にした者だけが、その答えを知っている。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">半月のハルバード</h3>
-            <span class="weapon-card__type">ハルバード</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>月の加護(常)：装甲+1、耐性+1<br>EX 月の癒し(発)：攻撃後自分のHP+1d3+1 MP2</p></div>
-          <div class="weapon-card__flavor">月は欠けながら満ちようとしている。<br>それは足りないものを追い続ける乙女のように</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <section class="section" id="bow">
-    <div class="section-header">
-      <span class="section-num">VI</span>
-      <h2 class="section-title">弓</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ショートボウ</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>片手持ち時 ダメージ-2<br>HD 至近の刻み(発)：射程2以内の対象への命中時、ダメージ+2 MP1</p></div>
-          <div class="weapon-card__flavor">近づくほど、この弓の意味が変わる。<br>狩人はそのことを、幼い頃から知っていた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">ロングボウ</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">6m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 狙い定め(発)：射程5以上の対象への攻撃成功時、自分の行う同一対象への命中+5%(戦闘の間。10%まで累積) MP1</p></div>
-          <div class="weapon-card__flavor">遠ければ遠いほど狙いが定まる弓。<br>距離は、この弓にとって障害ではなく対話だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">狩猟弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--blood">血</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>狩猟本能(常)：HPが最大値の半分以下の目標を射程10として攻撃できる<br>致命の一撃(発)：出血スタック4の相手に攻撃するなら命中判定で41が出たことにできる</p></div>
-          <div class="weapon-card__flavor">追い詰めた獲物は、どこへも逃げない。<br>狩人はそのことを、静かに待ちながら学んだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">蛇の弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--poison">毒</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5(3)</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR(DEX)</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 毒の爆発(発)：毒スタック5の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視） MP2</p></div>
-          <div class="weapon-card__flavor">毒蛇は急がない。<br>じっくりと、しかし確実に。それが蛇の流儀だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">赤い彗星</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5(3)</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR(DEX)</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 延焼(発)：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与 MP2</p></div>
-          <div class="weapon-card__flavor">一度燃えたものは、次のものに燃え移る。<br>彗星はそのようにして、夜空を横切った。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">狙撃弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d6+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">10m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>一撃必殺(常)：攻撃したラウンド移動不可。移動したラウンド攻撃不可<br>HD 雷の一矢(発)：この攻撃を「雷」属性にする MP2</p></div>
-          <div class="weapon-card__flavor">動かず、息を整え、一矢に全てを込める。<br>静止した者の、宿命の一撃。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">連射弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">0</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">2m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">4</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">AGI</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>軽量装備(常)：片手持ち可能 射程1での命中判定+10% 装甲貫通(1)<br>HD 乱れ矢(発)：3回目の攻撃時のみ使用可能、この攻撃では攻撃回数を消費しない MP1</p></div>
-          <div class="weapon-card__flavor">矢を番えることと、放つことの間に、思考はない。<br>手が覚えていることが、全てだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">百鬼夜行</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">2d4+2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">DEX</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>幽世(常)：使用者は常に恐怖状態になる<br>EX 魑魅魍魎(発)：毒、出血、冷気から好きな状態異常を2つ付与(同じものを選んで良い) MP2</p></div>
-          <div class="weapon-card__flavor">百の鬼が夜を行く。<br>使い手が何を見ているのか、他の者には分からない。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">魂狩り弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR/INT</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>開け(常)：この武器のダメージは装甲ではなく耐性で軽減され、HPではなくMPにダメージを与え、MPが0ならHPを減少する。<br>EX 魂の断絶(発)：冷気1付与 MP2</p></div>
-          <div class="weapon-card__flavor">「死を讃えよ」<br>——精神病患者の記録</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">冬の弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d6</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--cold">冷気</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5(3)</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR(DEX)</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>終わらない冬(常)：この攻撃で冷気スタックが5になった場合、ダメージを与えた後に冷気は全解除ではなく2つ解除される<br> HD 冬の訪れ(発)：冷気1付与 MP3</p></div>
-          <div class="weapon-card__flavor">冬は、いつもゆっくりとやってくる。<br>そして来た時には、もう手遅れだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">和弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d10</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">8m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>溜め撃ち(発)：手番に1AP消費して、この武器の次の命中判定に+10%、ダメージ+1d10、そのラウンド攻撃不可(2回まで累積)</p></div>
-          <div class="weapon-card__flavor">一呼吸の間に、全てがある。<br>異国から来たこの弓は、そのことだけを教えてくれる。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">星読みの弓</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d8+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">5m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">LUK</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>星の路(常)：常時クリティカル率+5%</p></div>
-          <div class="weapon-card__flavor">星の軌道を読む者が作った弓。<br>運命は変えられないが、読むことはできると彼らは言った。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">帝国の遺産</h3>
-            <span class="weapon-card__type">弓</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">1d4+1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">3m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">自由</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>汎用装備(常)：この武器の命中値は固定で80%になる<br>立体起動(発)：命中後、目標に隣接するマスへ移動できる</p></div>
-          <div class="weapon-card__flavor">帝国が残したものは廃墟だけではない。<br>この弓は、それを静かに証明している。</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <section class="section" id="shield">
-    <div class="section-header">
-      <span class="section-num">VII</span>
-      <h2 class="section-title">盾</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <div class="note">(発)...1ラウンドに1回効果を発動できる。</div>
-      <div class="note">(常)...常に効果が発動される。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">木の盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 必死の防御(発)：HP10以下のとき防御で+2(1戦闘1回) MP1</p></div>
-          <div class="weapon-card__flavor">最後の壁は、いつも最も素朴な形をしている。<br>廃掘人はそのことを、死の淵で学んだ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">丸盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 盾払い(発)：、対象の次の命中判定にPD+1 MP1</p></div>
-          <div class="weapon-card__flavor">守ることが、攻めることの始まりになる。<br>この盾はその哲学を、金属の形に変えた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">タワーシールド</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>挑発(発)：ラウンド開始時に宣言して、射程2以内から敵は自分に攻撃するようになる</p></div>
-          <div class="weapon-card__flavor">「私が盾となる」という言葉は、宣言であり、覚悟だ。<br>その重さを知る者だけが、この盾を持つ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">棘付き盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">1d4</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--blood">血</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>HD 差し替えし(発)：防御の処理後にダメージ1d4(装甲貫通(全)) MP1</p></div>
-          <div class="weapon-card__flavor">攻撃者は防がれるたびに、何かを失う。<br>この盾はそのことを、静かに教え続ける。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">炎の紋章盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--fire">炎</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>朽ちぬ火種(常)：防御時、攻撃者と自身に燃焼付与<br>灰被りて(常)：装備中、燃焼で受けるダメージ-2</p></div>
-          <div class="weapon-card__flavor">縫合の神の炎が刻まれた盾。<br>防いだ時、炎は双方を包む。それが神の流儀だ。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">聖印盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--holy">聖</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>祈りの刻(発)：防御時、次に使用する奇跡の命中判定+10%(累積しない)</p></div>
-          <div class="weapon-card__flavor">防御の直後、信仰の回路が最も太くなる瞬間がある。<br>白衣教団の聖職者は、そのことを知っていた。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">反射盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>共鳴(常)：装備中に敵からの効果で状態異常を受けたなら相手にも同じ状態異常を付与<br>EX 反射(発)：魔術防御時、その効果を無効にして、自身が使用したものとして攻撃してきた相手に攻撃する。 MP3</p></div>
-          <div class="weapon-card__flavor">鏡は、向けられたものを返すだけだ。<br>この盾もまた、そのように存在している。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">深淵の盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--dark">闇</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>闇の残響(常)：防御時にこの装備属性の効果が攻撃扱いで攻撃してきた相手に適用される<br>EX 深淵の侵食(発)：防御時、攻撃者に発狂付与、使用者に発喜付与 MP2</p></div>
-          <div class="weapon-card__flavor">深淵の残滓で鍛えられた盾。<br>何を守るために、誰がこれを作ったのか。</div>
-        </article>
-        <article class="weapon-card">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">受難者の盾</h3>
-            <span class="weapon-card__type">盾</span>
-          </div>
-          <div class="weapon-card__stats">
-            <div class="wstat"><span class="wstat__label">防御値/ダメージ</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill attr--none">無</span></span></div>
-            <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">1m</span></div>
-            <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">STR</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>EX 最後の加護(発)：HP半分以下で防御成功時、射程1の味方全員HP+1d6＋次の命中BD+1(累積しない) MP4</p></div>
-          <div class="weapon-card__flavor">苦難を受け入れた者が持つ盾。<br>瀕死でなければ、本当の加護は現れない。</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <section class="section" id="catalyst">
-    <div class="section-header">
-      <span class="section-num">VIII</span>
-      <h2 class="section-title">触媒</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <p>触媒は魔術・奇跡を行使するための器具。武器スロットに装備し、技能値や特殊効果で魔術・奇跡を補強する。</p>
-      <div class="note">※杖は魔術2枠、聖印は奇跡2枠の魔術/奇跡スロットを持つ。</div>
-      <div class="weapon-grid">
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">木の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">±0</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">-</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">魔術の道への、最初の入り口。<br>素朴なほど、始まりに相応しい。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">学院の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">±0</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">メルクリアの魔術学院で配られる標準的な杖。<br>標準とは、多くの者が生き延びた形だ。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">儀式の錫杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">HD+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>儀式(常)：付与魔術の命中+10%</p></div>
-          <div class="weapon-card__flavor">白衣教団の儀式で用いられる錫杖。<br>儀式の数だけ、この杖は何かを見てきた。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">炎術の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>炎の使い手(常)：炎属性魔術のダメージ+1d4</p></div>
-          <div class="weapon-card__flavor">縫合の神の炎の属性を宿した杖。<br>その炎が神のものか、使い手のものか、もう誰にも分からない。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">雷術の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>雷の使い手(常)：雷属性魔術のダメージ+1d4</p></div>
-          <div class="weapon-card__flavor">外なる神々の電磁エネルギーを封じた杖。<br>誰かがそれを封じたという事実だけが、この杖に残っている。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">霜術の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>冷気の使い手(常)：魔術の射程+1。</p></div>
-          <div class="weapon-card__flavor">名無しの者の冷気を吸収した杖。<br>吸収したものを、今も手放していない。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">禁呪の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+10%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">-</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>呪印(常)：攻撃魔術の命中+10%。魔術のMP消費-1（最低1）</p></div>
-          <div class="weapon-card__flavor">セラフィット帝国が禁じた術式から生まれた杖。<br>禁断には理由がある。それでも手に取る者がいる。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">深淵の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+15%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+5</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>堕落(常)：魔術を使用するたびに自身に盲目、沈黙、封印から選んで付与する(すでに受けている状態異常は選べない)</p></div>
-          <div class="weapon-card__flavor">深淵の残滓が結晶化した杖。<br>使うたびに何かが削られていく。それでも手を止めない者がいる。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">叡智の杖</h3>
-            <span class="weapon-card__type">杖</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+40%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">HD+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>汎用装備(常)：魔術に設定されている特殊効果は発動されない</p></div>
-          <div class="weapon-card__flavor">帝国時代の大魔術師の遺品とされる。<br>叡智とは何かを、この杖は問い続けている。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">合掌</h3>
-            <span class="weapon-card__type">その他</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">-10%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>施し(常)：この装備は武器スロットに含めない<br>触媒：奇跡1枠</p></div>
-          <div class="weapon-card__flavor">両手を合わせる祈りの形そのものが触媒となる。<br>道具を持たない者にも、神へ届く道がある。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">白衣教団の聖印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">白衣教団が正式に授与する聖印。<br>これを受け取った日のことを、聖職者たちは覚えている。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">浄化の聖印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>浄化(常)：呪術師、深きものの末裔、「邪悪」への攻撃奇跡ダメージ+1d4<br>浄化(常)：回復系奇跡の命中+5%</p></div>
-          <div class="weapon-card__flavor">邪悪を祓う浄化の力が宿った聖印。<br>浄化される側が何を感じるかを、教団は問わない。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">守護の聖印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+3</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>結界(常)：加護系奇跡の命中+10% </p></div>
-          <div class="weapon-card__flavor">仲間を守ることに特化した聖印。<br>自分以外のために力を使う者が、この聖印を手にする。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">刻印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">±0</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">HD+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>刻む(常)：奇跡の命中判定の失敗すると同一奇跡の次の命中判定に通常成功したものとしてあつかう。</p></div>
-          <div class="weapon-card__flavor">帝国の刻み師が聖印の形に転用した技法。<br>失敗が次の成功への道を開く。刻み師はそう言った。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">殉教者の聖印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">±0</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+3</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>殉教(常)：HP半分以下の場合、全奇跡の命中+10%、ダメージ+2、回復奇跡で回復しなくなる</p></div>
-          <div class="weapon-card__flavor">殉教者の血で清められた聖印。<br>瀕死でなければ、その真価は現れない。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">タロットカード</h3>
-            <span class="weapon-card__type">その他</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">±0</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>触媒：魔術/奇跡6枠<br>ドロー(常)：ラウンド開始時に1d6を振る。この触媒では出た目に対応した魔術/奇跡のみ使用できる。<br>(※同一魔術/奇跡の登録不可)</p></div>
-          <div class="weapon-card__flavor">運命を読む奇術師の道具。<br>どのカードが出るかは、運命だけが知っている。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">冒涜の聖印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+5%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">EX+2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>冒涜(常)：攻撃系奇跡の命中+10%、攻撃奇跡のMP消費-1（最低1）。</p></div>
-          <div class="weapon-card__flavor">白衣教団が禁じた聖印。<br>戦う聖職者が秘かに持ち歩く。それが禁忌である理由を、誰も声に出さない。</div>
-        </article>
-        <article class="weapon-card weapon-card--catalyst">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">審判の聖印</h3>
-            <span class="weapon-card__type">聖印</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">技能値補正</span><span class="wstat__val">+10%</span></div>
-            <div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">HD+1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>裁判(常)：「審判」とついた奇跡のダメージ+1d6</p></div>
-          <div class="weapon-card__flavor">「審判」とは、下す側も裁かれている。<br>この聖印を持つ者は、そのことを知っている。</div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <hr class="divider">
-
-  <section class="section" id="armor">
-    <div class="section-header">
-      <span class="section-num">IX</span>
-      <h2 class="section-title">防具</h2>
-      <div class="section-rule"></div>
-    </div>
-    <div class="section-body">
-      <p>防具は頭部・胴体の2部位。物理装甲値・魔術耐性値を加算し、固有の特殊効果を持つものもある。</p>
-      <div class="note">装備している間、特殊効果は発動する</div>
-
-      <h3 class="subsection-title">頭防具</h3>
-      <div class="weapon-grid">
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">布の頭巾</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">0</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">素朴なほど、始まりに相応しい。<br>旅の最初の夜、これで頭を包んだ者は多い。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">革兜</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">0</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">生き延びることが、最初の誇りだ。<br>廃掘人の多くは、これをそう呼ばなかったが、そう思っていた。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">騎士兜</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">0</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">国は滅んでも、金属はまだその形を覚えている。<br>失われた帝国の誇りが、今も静かに宿っている。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">白衣の頭巾</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">0</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>回復/加護奇跡の命中+5%</p></div>
-          <div class="weapon-card__flavor">白衣教団の修道士が被る頭巾。<br>信仰の回路は、頭から始まると教団は説く。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">魔術師の帽子</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">0</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>ラウンド終了時MP1回復</p></div>
-          <div class="weapon-card__flavor">セラフィット帝国の学者が愛用した帽子の型を継ぐ。<br>帝国が滅んだ今も、この形だけが学院に残っている。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">深淵の仮面</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>POWロールにBD+1</p></div>
-          <div class="weapon-card__flavor">深淵を覗いた者が被る仮面。<br>何が見えたかを、この仮面は語らない。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">狩人の帽子</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">0</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>弓の命中+5%</p></div>
-          <div class="weapon-card__flavor">野生の中で研ぎ澄まされた感覚が染み込んでいる。<br>長く被るほど、目が遠くを見るようになると言われる。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">角兜</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>STRロールにBD+1</p></div>
-          <div class="weapon-card__flavor">角を模した兜を被ると、何かが変わる。<br>戦士たちはそれを、迷信だとは呼ばなかった。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">呪術師の仮面</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">0</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>攻撃魔術の命中+1</p></div>
-          <div class="weapon-card__flavor">ヴェイルホロウの呪術師が纏う仮面。<br>外から見えない顔が、深淵と向き合う時に必要なのだという。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">帝国の兜</h3>
-            <span class="weapon-card__type">頭</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>CONロールにBD+1</p></div>
-          <div class="weapon-card__flavor">セラフィット帝国の正規軍が着用した兜。<br>帝国の誇りとは、最後まで顔を守ることだったのかもしれない。</div>
-        </article>
-      </div>
-
-      <h3 class="subsection-title">胴体防具</h3>
-      <div class="weapon-grid">
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">布の服</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">それだけで、十分な時がある。<br>大陸を旅した者の多くが、最初にこれを着ていた。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">革鎧</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">軽量と防護のバランスが、今日も誰かの命を支えている。<br>廃掘人の鎧に、華やかさは必要ない。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">鎖帷子</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">鉄の輪を編んだ鎧。<br>この構造を最初に考えた者は、どんな夜を生き延びたのだろう。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">板金鎧</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">4</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>回避PD+1</p></div>
-          <div class="weapon-card__flavor">帝国騎士団の重鎧。<br>その重さに慣れた者は、別の軽さを手に入れると言われる。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">白衣の法衣</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">3</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">白衣教団の聖職者が纏う衣。<br>白は汚れを隠さない。それが教団の選んだ色だ。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">奇術師のマント</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>AGIに関係なく行動順が一番最初になる</p></div>
-          <div class="weapon-card__flavor">奇術師の手は、いつも複数のものを同時に操っている。<br>このマントもまた、その一つだ。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">呪術師の外套</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>MP+3</p></div>
-          <div class="weapon-card__flavor">ヴェイルホロウで代々受け継がれる外套。<br>何人の呪術師がこれを纏い、深淵と向き合ったか。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">鱗鎧</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>なし</p></div>
-          <div class="weapon-card__flavor">深きものの末裔の鱗を参考に作られた鎧。<br>海の者の知恵が、陸の者を守っている。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">毒染めの外套</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">1</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">2</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>ダメージを受けた時、相手に毒1付与</p></div>
-          <div class="weapon-card__flavor">ヴェイルホロウの毒師が薬液に漬け込んだ外套。<br>触れた者がそれに気づく頃には、もう遅い。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">影走りの外套</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">2</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">1</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>各ラウンドに1回、回避備えのAP消費を0にする</p></div>
-          <div class="weapon-card__flavor">廃掘人が遺跡探索で編み出した外套。<br>先に見つけた者が生きる。それがこの外套の哲学だ。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">帝国の重鎧</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">4</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">3</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>ラウンド終了時HP1回復。回避PD+1</p></div>
-          <div class="weapon-card__flavor">セラフィット帝国の精鋭部隊が纏った最高の重鎧。<br>帝国は滅んだが、この鎧はまだ戦い続けている。</div>
-        </article>
-        <article class="weapon-card weapon-card--armor">
-          <div class="weapon-card__head">
-            <h3 class="weapon-card__name">深淵の鱗甲</h3>
-            <span class="weapon-card__type">胴体</span>
-          </div>
-          <div class="weapon-card__stats weapon-card__stats--catalyst">
-            <div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">3</span></div>
-            <div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">4</span></div>
-          </div>
-          <div class="weapon-card__special"><span class="weapon-card__special-label">特殊効果</span><p>冷気、出血の効果でダメージを受ける時3点軽減する。回避PD+1</p></div>
-          <div class="weapon-card__flavor">深淵の残滓と深きものの鱗を融合させた鎧。<br>誰がこれを作り、誰がこれを最初に着たのか、記録はない。</div>
-        </article>
-      </div>
-    </div>
-  </section>
-  <!-- ページナビ -->
   <nav class="page-nav">
-    <div>
-      <p class="page-nav__label">← Previous</p>
-      <a href="origins.html" class="page-nav__link">素性・能力値</a>
-    </div>
-    <div style="text-align:right;">
-      <p class="page-nav__label">Next →</p>
-      <a href="data_magic.html" class="page-nav__link">データ一覧 魔術・奇跡</a>
-    </div>
+    <div><p class="page-nav__label">← Previous</p><a href="origins.html" class="page-nav__link">素性・能力値</a></div>
+    <div style="text-align:right"><p class="page-nav__label">Next →</p><a href="data_magic.html" class="page-nav__link">魔術・奇跡</a></div>
   </nav>
-
 </div>
-
-<footer class="site-footer">
-  <p>忘却の淵にて — At the Edge of Oblivion</p>
-</footer>
-
+<footer class="site-footer"><p>忘却の淵にて — At the Edge of Oblivion</p></footer>
 <script src="nav.js"></script>
-</body>
-</html>
+<script>
+const WEAPONS=[
+{id:'短01',cat:'短剣',kind:'weapon',name:'盗人の短刀',sub:'短剣',dmg:'1d4',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'HD急所掠り：命中対象の次の回避判定にPD+1 MP1',fl:'路地裏で生まれ、路地裏で磨かれた刃。\n名前を持たない者たちが、それでも生き延びるために選んだ形。'},
+{id:'短02',cat:'短剣',kind:'weapon',name:'脇差',sub:'短剣/直剣',dmg:'1d4',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'同じラウンドに「直剣」で攻撃しているなら命中+5%',fl:'対をなすことで初めて完成する剣がある。\n片方が欠けても、もう一方がその重さを覚えている。'},
+{id:'短03',cat:'短剣',kind:'weapon',name:'ダガー',sub:'短剣',dmg:'1d4+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'EX生死の一線：命中対象のHP5以下なら死の宣告付与（POWロール） MP2',fl:'「最後の一手は、静かであるべきだ」\n——メルクリア、名も知れぬ刺客の遺言より'},
+{id:'短04',cat:'短剣',kind:'weapon',name:'毒の刃',sub:'短剣',dmg:'1d3',attr:'毒',attrCls:'attr--poison',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'HD 毒の蓄積：毒1付与 MP1',fl:'ヴェイルホロウの毒師は言った。\n「傷口を狙うな。血そのものに語りかけろ」と。'},
+{id:'短05',cat:'短剣',kind:'weapon',name:'巡礼のナイフ',sub:'短剣',dmg:'1d3',attr:'聖(血)',attrCls:'attr--holy',rng:'1m',ap:'1',maxAtk:'2',db:'DEX/FTH',spec:'手番にHP1d3+1を消費してこの武器の属性を「血」に変化させる',fl:'テオフィリアへの巡礼路で生まれた小刀。\n信仰と血は、時として同じ色をしている。'},
+{id:'短06',cat:'短剣',kind:'weapon',name:'水銀刀',sub:'短剣',dmg:'1d4+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'4',db:'DEX',spec:'HD 水銀の連鎖：AP1回復 MP1',fl:'残像が剣であり、剣が残像である。\n疾さとは、記憶される前に終わることだ。'},
+{id:'短07',cat:'短剣',kind:'weapon',name:'彫刻刀',sub:'短剣',dmg:'1d3+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'手番に1APを消費して射程内の目標に対して以下の効果を発揮する\n・味方(自分含む)：戦闘の間「刻まれし根」を取得させる(重複不可。上書きされる。)\n・敵(味方も可能)：命中判定を行いHD以上なら封印付与',fl:'帝国の刻み師が用いた道具。\n人の運命を彫るものが、なぜ刃の形をしているのか。'},
+{id:'短08',cat:'短剣',kind:'weapon',name:'爪牙',sub:'短剣',dmg:'1d4',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'3',db:'DEX/AGI',spec:'HD以上での成功で装甲貫通(3)',fl:'爪は、生きることへの執念の形だ。\n深きものの末裔は、そのことをずっと前から知っていた。'},
+{id:'短09',cat:'短剣',kind:'weapon',name:'星鉄の短刀',sub:'短剣',dmg:'1d4+1',attr:'雷',attrCls:'attr--lightning',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'HD 帯電の傷：対象を攻撃するたびに1ダメージ受ける状態にする MP1\nEX 隕石の落下：帯電の傷状態の対象に1d8＋隣接するマスの敵に1d4 MP2',fl:'夜空から落ちてきた欠片で鍛えられた刃。\nどこかの星が死んだ夜に、この刃は生まれた。'},
+{id:'短10',cat:'短剣',kind:'weapon',name:'儚月',sub:'短剣',dmg:'1d6+2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'通常成功をEXとして扱う。HDは失敗として扱う',fl:'月はいつも、最も暗い場所に光を落とす。\nこの刃もまた、そういう場所のために作られた。'},
+{id:'短11',cat:'短剣',kind:'weapon',name:'深淵の舌',sub:'短剣',dmg:'1d6',attr:'闇',attrCls:'attr--dark',rng:'1m',ap:'1',maxAtk:'2',db:'INT',spec:'命中後に使用者も与えたものと同じ状態異常を受ける\nEX 深淵の共鳴：自身の受けている状態異常の種類×3ダメージ追加 MP2',fl:'深淵は言葉を持たない。\nだがこの刃は、深淵の代わりに何かを語ろうとしている。'},
+{id:'短12',cat:'短剣',kind:'weapon',name:'フェルドランスの牙',sub:'短剣/直剣',dmg:'1d4/1d6+1',attr:'毒',attrCls:'attr--poison',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'ダメージを受けた時、射程1の目標1体に毒1付与\nHD 冒涜の邪毒：装甲無視(付与されている毒スタック分) MP1',fl:'毒蛇の名を冠した双剣。\nじっくりと、しかし確実に。それが蛇の流儀だ。'},
+{id:'短13',cat:'短剣',kind:'weapon',name:'新月',sub:'短剣',dmg:'0',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'4',db:'DEX',spec:'HD 月の刃：この武器の残っている攻撃回数を消費してこの攻撃にダメージを合算する。消費した攻撃回数×1ダメージ追加 MP2',fl:'刃が見えない夜がある。\nその夜に何が起きたかは、生き残った者だけが知っている。'},
+{id:'直14',cat:'直剣',kind:'weapon',name:'ショートソード',sub:'直剣',dmg:'1d4+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 確かな一撃：対象HP半分以下なら追加ダメージ+1d4 MP1',fl:'「迷いは刃を鈍らせる」\n——メルクリア傭兵団、古い訓練書の冒頭より'},
+{id:'直15',cat:'直剣',kind:'weapon',name:'ロングソード',sub:'直剣',dmg:'1d6+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 万能の一手：移動直後の攻撃なら追加ダメージ+1d4 MP1',fl:'帝国騎士団が広めた剣術は、動くことへの信仰だった。\n国が滅んだ今も、その哲学だけが各地を流れ続けている。'},
+{id:'直16',cat:'直剣',kind:'weapon',name:'KATANA',sub:'直剣',dmg:'2d4',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 居合：ラウンド中、次の回避に成功すると1d4ダメージの反撃(装甲無視) MP1',fl:'アルゴス大陸の外から来た剣。\nその居合の間合いは、この大陸のどの剣術とも交わらない。'},
+{id:'直17',cat:'直剣',kind:'weapon',name:'バスタードソード',sub:'直剣/大剣',dmg:'1d4+2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'STR',spec:'両手持ち時 ダメージ+1d4\nHD 不規則な剣：装甲貫通(3) MP1',fl:'「使いにくい」と笑った者は、次の瞬間に黙った。\nこの剣は、規格外であることを誇りにしている。'},
+{id:'直18',cat:'直剣',kind:'weapon',name:'炎の剣',sub:'直剣',dmg:'1d6',attr:'炎',attrCls:'attr--fire',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 炎の波及：命中対象が燃焼中なら隣接の別の敵にも燃焼付与 MP1',fl:'縫合の神の炎は、消えることを知らない。\nそう信じた聖職者が、信仰を刃の形に鋳込んだ。'},
+{id:'直19',cat:'直剣',kind:'weapon',name:'奇術師のタクト',sub:'直剣/触媒',dmg:'1d4',attr:'聖',attrCls:'attr--holy',rng:'1m',ap:'1',maxAtk:'2',db:'DEX/FTH',spec:'触媒：魔術/奇跡1枠',fl:'指揮棒のように見えるが、確かな刃を持つ。\n奇術師の手は、いつも複数のものを同時に操っている。'},
+{id:'直20',cat:'直剣',kind:'weapon',name:'銀のレイピア',sub:'直剣/短剣',dmg:'1d3+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'3',db:'DEX/AGI',spec:'自分よりAGIが低い目標に攻撃する時命中+5%、固定+1ダメージ追加',fl:'速さという残酷さに磨きをかけた剣。\nこの刃の前では、遅さは罪に等しい。'},
+{id:'直21',cat:'直剣',kind:'weapon',name:'黒き剣',sub:'直剣',dmg:'1d6',attr:'無',attrCls:'attr--none',rng:'1(3)',ap:'1',maxAtk:'2',db:'STR(POW)',spec:'射程3で使用する場合、MP3消費。DBはPOW参照。',fl:'届かないはずの距離を、意志が埋める。\n遠くを斬ることは、何かを手放すことと同義だ。'},
+{id:'直22',cat:'直剣',kind:'weapon',name:'白闇刀',sub:'直剣',dmg:'1d6+2',attr:'血',attrCls:'attr--blood',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'装備すると装備入れ替えが出来なくなる。戦闘開始時に自身に狂喜付与\nHD 白き闇：ダメージ+1d4 MP1',fl:'一度抜けば、手放すことができない。\nこの剣を選んだ者が何を求めていたのか、誰も知らない。'},
+{id:'直23',cat:'直剣',kind:'weapon',name:'贖罪の剣',sub:'直剣',dmg:'1d6+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'自身のHP半分以下のとき ダメージ+2\nHD 痛みの反射：HP半分以下のとき命中対象を1マス後退 MP1',fl:'傷ついた者が傷ついた者のために振るう剣。\nこれは武器ではなく、諦めない意志の形だ。'},
+{id:'直24',cat:'直剣',kind:'weapon',name:'黄金の陽光',sub:'直剣/大剣',dmg:'2d6',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'2',db:'STR',spec:'両手持ち時 ダメージ+1d4\nHD 太陽は堕ちず：燃焼付与(この効果で与える燃焼は累積する) MP1',fl:'帝国の太陽は沈んだ。\nそれでもこの剣は燃え続ける、大地が滅びるその時まで。'},
+{id:'直25',cat:'直剣',kind:'weapon',name:'骸の王',sub:'直剣',dmg:'1d8',attr:'無',attrCls:'attr--none',rng:'1(3)',ap:'1',maxAtk:'2',db:'INT',spec:'この武器のダメージは装甲ではなく耐性で軽減される。\nHPではなくMPにダメージを与え、MPが0ならHPを減少する。\n射程3で使用する場合、MP3消費。命中-5%。',fl:'「肉体を斬っても、人は死なないことがある」\n——廃帝都の廃墟に残された、意味不明な落書きより'},
+{id:'直26',cat:'直剣',kind:'weapon',name:'霧の刃',sub:'直剣',dmg:'1d6+2',attr:'冷気',attrCls:'attr--cold',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'この武器の回避にはPD+1。\nEX 帝国の剣技：ダメージ+1d4 この攻撃で冷気スタックが5になったなら与えるダメージ+2 MP2',fl:'帝都アルカーナの霧の中で鍛えられたとされる。\nかつて帝国があったことだけを、今も静かに覚えている。'},
+{id:'大27',cat:'大剣',kind:'weapon',name:'グレートソード',sub:'大剣',dmg:'2d6',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 大地の震動：命中対象その両隣の敵全員は次ラウンド終了まで移動にかかるAP+1 MP1',fl:'重さは、説得の最も原始的な形だ。\n言葉が通じない場所で、この剣は代わりに語りかける。'},
+{id:'大28',cat:'大剣',kind:'weapon',name:'クレイモア',sub:'大剣',dmg:'2d6+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 古の一撃：この武器で行う次の攻撃に装甲貫通(3)がつく MP1',fl:'古い戦場の記憶が宿る大剣。\n幾度も振るわれるたびに、次の一撃が静かに研ぎ澄まされていく。'},
+{id:'大29',cat:'大剣',kind:'weapon',name:'断罪剣',sub:'大剣',dmg:'2d6+2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'EX 首狩り：ダメージ+1d6 MP1',fl:'罪人を断ずる処刑の剣。\n最後の瞬間、この刃は何も語らない。'},
+{id:'大30',cat:'大剣',kind:'weapon',name:'白夜',sub:'大剣/直剣',dmg:'1d6+2',attr:'聖',attrCls:'attr--holy',rng:'1m',ap:'2',maxAtk:'2',db:'STR',spec:'片手持ち時ダメージ-2。',fl:'夜を白く照らす聖光の大剣。\n両手で握って初めて、その意味が完成する。'},
+{id:'大31',cat:'大剣',kind:'weapon',name:'腐食剣',sub:'大剣',dmg:'2d4',attr:'毒',attrCls:'attr--poison',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'対象の毒スタック分だけ装甲無視する',fl:'毒は、刃よりも忍耐強い。\nこの剣はそのことを、使い手に静かに教え続けている。'},
+{id:'大32',cat:'大剣',kind:'weapon',name:'訓練用の丸太',sub:'大剣/槍',dmg:'2d6',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1APを消費して射程内1マスに障害物を設置する(進入不可。通過不可。)',fl:'「これで十分だ」と笑う戦士がいた。\n誰もそれを、笑い返せなかった。'},
+{id:'大33',cat:'大剣',kind:'weapon',name:'石英の大剣',sub:'大剣',dmg:'2d6+2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'3',maxAtk:'1',db:'CON',spec:'なし',fl:'純粋な力を信じる者だけが、この剣を選ぶ。\n技術より重量で場を支配することを、恥だと思わない者の武器だ。'},
+{id:'大34',cat:'大剣',kind:'weapon',name:'鯨骨の大剣',sub:'大剣',dmg:'2d4',attr:'冷気',attrCls:'attr--cold',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'EX 深海の断裂：冷気スタック×1ダメージ追加 MP2',fl:'インスマス海岸の深海から引き上げられた骨で作られた。\n海の底の静寂が、今も剣の中で眠っている。'},
+{id:'大35',cat:'大剣',kind:'weapon',name:'嘆き',sub:'大剣',dmg:'1d8+1',attr:'闇',attrCls:'attr--dark',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'与えたダメージの半分だけ対象のMP減少。(HPの減少は無し)\n対象のMPが0のとき装甲貫通(全)。',fl:'嘆きとは、静かに、長く、続くものだ。\nこの剣もまた、そのように戦場に残り続ける。'},
+{id:'大36',cat:'大剣',kind:'weapon',name:'大刀',sub:'大剣/直剣',dmg:'2d6',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'ラウンド開始時に1APを消費して宣言をする。\nそのラウンドの間だけ自身に移動不可と狂喜を付与する。',fl:'我を忘れた剣士が最も輝く瞬間がある。\nこの剣はその瞬間のために、ずっと待っている。'},
+{id:'大37',cat:'大剣',kind:'weapon',name:'暴風の大剣',sub:'大剣',dmg:'1d6+2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'5',db:'AGI',spec:'攻撃後、ラウンドの間自身の命中判定に-20%(累積する)',fl:'嵐は常に、自分自身も消耗させていく。\nそれでも嵐を選ぶ者が、この大陸にはいる。'},
+{id:'大38',cat:'大剣',kind:'weapon',name:'業炎の大剣',sub:'大剣',dmg:'1d6+2',attr:'炎',attrCls:'attr--fire',rng:'1m',ap:'1',maxAtk:'2',db:'STR',spec:'自身が燃焼状態ならダメージ+1d6',fl:'痛みを力に変えてきた者だけが、この矛盾を理解する。\n燃えながら戦うことを、選んだ者たちがいた。'},
+{id:'大39',cat:'大剣',kind:'weapon',name:'星喰い',sub:'大剣/斧',dmg:'2d8+2',attr:'闇',attrCls:'attr--dark',rng:'2m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1APを消費して射程2以内の目標を1マス移動させる\nEX 星の崩壊：対象を１マス後退＋後退できないなら1d8ダメージ MP2',fl:'星をも喰らう、と言った者がいた。\n誰もその言葉の意味を問わなかった。'},
+{id:'斧40',cat:'斧・ハンマー',kind:'weapon',name:'木こりの斧',sub:'斧',dmg:'1d8+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 鎧割り：命中対象の物理装甲を1点永続的に減少 MP1',fl:'森を切り、獣を斬り、鎧をも割る。\n使い込まれた刃は、いつも正直だ。'},
+{id:'斧41',cat:'斧・ハンマー',kind:'weapon',name:'戦斧',sub:'斧',dmg:'1d12',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 競技場の咆哮：攻撃の処理終了後、互いにお互いのみ攻撃の目標に選べるようになる(どちらかのHPが0で解除) MP1',fl:'メルクリアの競技場で生まれた武器。\n振るった瞬間、世界が二人だけになる。'},
+{id:'斧42',cat:'斧・ハンマー',kind:'weapon',name:'投擲斧',sub:'斧',dmg:'1d6',attr:'無',attrCls:'attr--none',rng:'3m',ap:'1',maxAtk:'2',db:'DEX',spec:'EX 正確な投擲：投擲使用時ならダメージ+1d4（射程2〜3） MP2',fl:'遠くから終わらせることを、恥だと思わない者の武器。\n狩人はそれを、技術と呼んだ。'},
+{id:'斧43',cat:'斧・ハンマー',kind:'weapon',name:'ツルハシ',sub:'ハンマー',dmg:'1d8+2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費すると戦闘MAPの障害物を破壊できる(穴や毒沼は不可)',fl:'廃掘人が遺跡で愛用する工具。\n道を切り開いてきた者の手に、よく馴染む。'},
+{id:'斧44',cat:'斧・ハンマー',kind:'weapon',name:'雷槌',sub:'ハンマー',dmg:'1d8',attr:'雷',attrCls:'attr--lightning',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 落雷：命中後、射程2内の別の敵1体に1d6ダメージ MP1',fl:'外なる神々の電磁的なエネルギーを封じたハンマー。\nその力が何者のものだったか、使い手は考えないことにしている。'},
+{id:'斧45',cat:'斧・ハンマー',kind:'weapon',name:'スワンプマン',sub:'斧・ハンマー',dmg:'1d6',attr:'無',attrCls:'attr--none',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費して、その戦闘中、射程１以内の味方が装備している近接武器のダメージ/特殊能力をこの武器のものとして扱うようになる。',fl:'沼地の怪物が武器として使っていた斧。\nどんな記憶でも、形さえ残れば引き継がれる。'},
+{id:'斧46',cat:'斧・ハンマー',kind:'weapon',name:'儀式の斧',sub:'斧',dmg:'1d6',attr:'聖',attrCls:'attr--holy',rng:'1m',ap:'2',maxAtk:'1',db:'STR/FTH',spec:'EX 最後の審判：死の宣告付与（ロール不要）。使用者HP-1d6 MP2',fl:'白衣教団の秘儀で使われる斧。\n神への捧げ物が何であるかを、教団は明言しない。'},
+{id:'斧47',cat:'斧・ハンマー',kind:'weapon',name:'疫病斧',sub:'斧',dmg:'1d8',attr:'毒',attrCls:'attr--poison',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'毒状態の対象に命中時、隣接するキャラクターに毒1付与',fl:'腐敗の力は、刃よりも遠くまで届く。\nヴェイルホロウではそれを、技術と呼んだ。'},
+{id:'斧48',cat:'斧・ハンマー',kind:'weapon',name:'台風の目',sub:'斧',dmg:'2d6',attr:'無',attrCls:'attr--none',rng:'2m',ap:'2',maxAtk:'1',db:'STR',spec:'射程1の目標には攻撃できない。\nHD 雷纏い：ダメージ+1d6、次の攻撃からこの武器の属性は「雷」になる MP1',fl:'台風の中心は、いつも静かだ。\nしかしその外縁がどうなっているかは、近づいた者だけが知っている。'},
+{id:'槍49',cat:'槍・ハルバード',kind:'weapon',name:'ショートスピア',sub:'槍',dmg:'1d6+1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'2',db:'STR',spec:'片手持ち可能\nHD 牽制：命中対象は次のターン終了時まで、移動APコスト+1 MP1',fl:'帝国の歩兵が広間で学んだのは、剣ではなく槍だった。\nその理由を、今も理解している者がいる。'},
+{id:'槍50',cat:'槍・ハルバード',kind:'weapon',name:'ロングスピア',sub:'槍',dmg:'1d6+2',attr:'無',attrCls:'attr--none',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'HD カウンター：AGIが自分より高い相手が目標ならダメージ+1d4 MP1',fl:'遠くから静かに待つことを、この槍は知っている。\n素早い者ほど、その間合いに気づかない。'},
+{id:'槍51',cat:'槍・ハルバード',kind:'weapon',name:'ハルバード',sub:'ハルバード',dmg:'1d8+1',attr:'無',attrCls:'attr--none',rng:'2m',ap:'2',maxAtk:'2',db:'STR',spec:'HD 大薙ぎ：命中した対象と隣接する別の敵1体にも同ダメージ MP1',fl:'一人を薙ぎ倒せば、隣の者も巻き込む。\n帝国の歩兵はそのように戦場を制圧した。'},
+{id:'槍52',cat:'槍・ハルバード',kind:'weapon',name:'腐れ槍',sub:'槍',dmg:'1d6',attr:'毒',attrCls:'attr--poison',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'EX 発芽：毒状態の対象への命中時、その毒スタックと同じだけ自分のHPを回復する MP5',fl:'与えたものが、いつか戻ってくる。\nヴェイルホロウの呪術師は、それを法則と呼んだ。'},
+{id:'槍53',cat:'槍・ハルバード',kind:'weapon',name:'聖歌隊の槍',sub:'槍/触媒',dmg:'1d4+1',attr:'聖',attrCls:'attr--holy',rng:'2m',ap:'1',maxAtk:'3',db:'STR/FTH',spec:'奇跡触媒1枠\nHD 浄化の穿ち：命中したアンデッドの状態異常1種を解除し追加ダメージ+1d4 MP1',fl:'白衣教団の聖歌隊は、戦場でも歌い続けたという。\nこの槍は、その声の形をしている。'},
+{id:'槍54',cat:'槍・ハルバード',kind:'weapon',name:'凍てつく山嶺の頂',sub:'槍',dmg:'1d6',attr:'冷気',attrCls:'attr--cold',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'HD 氷晶の穿孔：冷気1付与 MP1',fl:'テオフィリア北部の高山には、人が踏み入らない場所がある。\nこの槍は、その場所から来た。'},
+{id:'槍55',cat:'槍・ハルバード',kind:'weapon',name:'波紋の槍',sub:'槍',dmg:'1d6',attr:'無',attrCls:'attr--none',rng:'2m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'直線上の射程2内の全員に命中する\nHD 波紋伝達：2体命中時、それぞれ追加ダメージ1d4 MP1',fl:'水面に石を投じた時、波紋は誰かを選ばない。\nこの槍もまた、同じように広がる。'},
+{id:'槍56',cat:'槍・ハルバード',kind:'weapon',name:'魂喰らいの槍',sub:'槍',dmg:'1d8',attr:'無',attrCls:'attr--none',rng:'2m',ap:'1',maxAtk:'2',db:'STR/INT',spec:'命中時 MPを4まで消費して固定値を同じだけ増加\nHD 魂の共鳴：命中後の装甲計算時に装甲/耐性の好きな方で計算させる MP1',fl:'「肉体か精神か、どちらを狙うかが問いだ」\n——廃掘人の戦闘記録、判読困難な余白より'},
+{id:'槍57',cat:'槍・ハルバード',kind:'weapon',name:'死神の大鎌',sub:'槍・ハルバード',dmg:'2d6',attr:'闇',attrCls:'attr--dark',rng:'3m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費して射程内すべての死の宣告カウントを1減少させる\nEX 命を刈り取る：死の宣告付与 MP2',fl:'死神は急かされることを、嫌がらない。\nただ、それが来る順番を変えることがある。'},
+{id:'槍58',cat:'槍・ハルバード',kind:'weapon',name:'嵐の矛',sub:'槍',dmg:'1d10',attr:'無',attrCls:'attr--none',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'HD 豪風：装甲貫通(3) MP1\nEX 嵐の解放：戦闘中、この武器を「炎」「雷」の属性にする',fl:'嵐は選ばない。\n燃やすか、砕くか、それを決めるのは嵐ではなく使い手だ。'},
+{id:'槍59',cat:'槍・ハルバード',kind:'weapon',name:'海神の三叉槍',sub:'槍',dmg:'3d4',attr:'血',attrCls:'attr--blood',rng:'2m',ap:'2',maxAtk:'2',db:'STR/CON',spec:'命中判定前にHP1d4減少すると命中+10%\nEX 呼び声：発狂付与 MP3',fl:'インスマス海岸の沖合いに、古い構造物があるという。\nこの槍は、その深さから引き上げられた。'},
+{id:'槍60',cat:'槍・ハルバード',kind:'weapon',name:'星の槍',sub:'槍',dmg:'1d8',attr:'無',attrCls:'attr--none',rng:'2m',ap:'1',maxAtk:'2',db:'LUK',spec:'命中判定のクリティカル率+5%\nCR 愛された者：戦闘中のあらゆるクリティカル率+1% MP3',fl:'幸運とは、引き寄せるものか、持って生まれるものか。\nこの槍を手にした者だけが、その答えを知っている。'},
+{id:'槍61',cat:'槍・ハルバード',kind:'weapon',name:'半月のハルバード',sub:'ハルバード',dmg:'2d6+1',attr:'無',attrCls:'attr--none',rng:'2m',ap:'2',maxAtk:'1',db:'STR',spec:'装甲+1、耐性+1\nEX 月の癒し：攻撃後自分のHP+1d3 MP2',fl:'月は欠けながら満ちようとしている。\nこの槍もまた、そのように戦場に存在し続ける。'},
+{id:'弓62',cat:'弓',kind:'weapon',name:'ショートボウ',sub:'弓',dmg:'1d4+1',attr:'無',attrCls:'attr--none',rng:'3m',ap:'1',maxAtk:'2',db:'DEX',spec:'片手持ち時ダメージ-1\nHD 至近の刻み：射程2以内の対象への命中時、ダメージ+2 MP1',fl:'近づくほど、この弓の意味が変わる。\n狩人はそのことを、幼い頃から知っていた。'},
+{id:'弓63',cat:'弓',kind:'weapon',name:'ロングボウ',sub:'弓',dmg:'1d6+1',attr:'無',attrCls:'attr--none',rng:'6m',ap:'1',maxAtk:'2',db:'DEX',spec:'HD 狙い定め：射程5以上の対象への攻撃成功時、自分の行う同一対象への命中+5%(戦闘の間。10%まで累積) MP1',fl:'遠ければ遠いほど狙いが定まる弓。\n距離は、この弓にとって障害ではなく対話だ。'},
+{id:'弓64',cat:'弓',kind:'weapon',name:'狩猟弓',sub:'弓',dmg:'2d4',attr:'血',attrCls:'attr--blood',rng:'5m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HPが最大値の半分以下の目標を射程10として攻撃できる\n出血スタック4の相手に攻撃するなら命中判定で41が出たことにできる',fl:'追い詰めた獲物は、どこへも逃げない。\n狩人はそのことを、静かに待ちながら学んだ。'},
+{id:'弓65',cat:'弓',kind:'weapon',name:'蛇の弓',sub:'弓',dmg:'1d4',attr:'毒',attrCls:'attr--poison',rng:'5(3)',ap:'1',maxAtk:'2',db:'STR(DEX)',spec:'EX 毒の爆発：毒スタック5の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視） MP2',fl:'毒蛇は急がない。\nじっくりと、しかし確実に。それが蛇の流儀だ。'},
+{id:'弓66',cat:'弓',kind:'weapon',name:'赤い彗星',sub:'弓',dmg:'1d4+1',attr:'炎',attrCls:'attr--fire',rng:'5(3)',ap:'1',maxAtk:'2',db:'STR(DEX)',spec:'EX 延焼：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与 MP2',fl:'一度燃えたものは、次のものに燃え移る。\n彗星はそのようにして、夜空を横切った。'},
+{id:'弓67',cat:'弓',kind:'weapon',name:'狙撃弓',sub:'弓',dmg:'2d6+1',attr:'無',attrCls:'attr--none',rng:'10m',ap:'2',maxAtk:'1',db:'STR',spec:'攻撃したラウンド移動不可。移動したラウンド攻撃不可\nHD 雷の一矢：この攻撃に「雷」属性付与 MP2',fl:'動かず、息を整え、一矢に全てを込める。\n静止した者の、宿命の一撃。'},
+{id:'弓68',cat:'弓',kind:'weapon',name:'連射弓',sub:'弓',dmg:'0',attr:'無',attrCls:'attr--none',rng:'2m',ap:'1',maxAtk:'4',db:'AGI',spec:'片手持ち可能。射程1での命中判定+10% 装甲貫通(1)\nHD 乱れ矢：3回目の攻撃命中時、追加で1回無料攻撃 MP1',fl:'矢を番えることと、放つことの間に、思考はない。\n手が覚えていることが、全てだ。'},
+{id:'弓69',cat:'弓',kind:'weapon',name:'百鬼夜行',sub:'弓',dmg:'2d4+2',attr:'無',attrCls:'attr--none',rng:'3m',ap:'2',maxAtk:'2',db:'DEX',spec:'使用者は常に恐怖状態になる\nEX 魑魅魍魎：毒、出血、冷気から好きな状態異常を2つ付与 MP2',fl:'百の鬼が夜を行く。\n使い手が何を見ているのか、他の者には分からない。'},
+{id:'弓70',cat:'弓',kind:'weapon',name:'魂狩り弓',sub:'弓',dmg:'1d8',attr:'闇',attrCls:'attr--dark',rng:'5m',ap:'1',maxAtk:'2',db:'STR/INT',spec:'命中時 対象のMP-1d6。MP0の場合HP直接ダメージ\nEX 魂の断絶：冷気1付与 MP2',fl:'「肉体を射ることと、魂を射ることは、まったく違う」\n——廃掘人の記録、断片より'},
+{id:'弓71',cat:'弓',kind:'weapon',name:'冬の弓',sub:'弓',dmg:'1d6',attr:'冷気',attrCls:'attr--cold',rng:'5(3)',ap:'1',maxAtk:'2',db:'STR(DEX)',spec:'この攻撃で冷気スタックが5になった場合、冷気は全解除ではなく2つ解除される\nHD 冬の訪れ：冷気1付与 MP3',fl:'冬は、いつもゆっくりとやってくる。\nそして来た時には、もう手遅れだ。'},
+{id:'弓72',cat:'弓',kind:'weapon',name:'和弓',sub:'弓',dmg:'1d10',attr:'無',attrCls:'attr--none',rng:'8m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費して、この武器の次の命中判定に+10%、ダメージ+1d10、そのラウンド攻撃不可。',fl:'一呼吸の間に、全てがある。\n異国から来たこの弓は、そのことだけを教えてくれる。'},
+{id:'弓73',cat:'弓',kind:'weapon',name:'星読みの弓',sub:'弓',dmg:'1d8+1',attr:'無',attrCls:'attr--none',rng:'5m',ap:'1',maxAtk:'2',db:'LUK',spec:'常時クリティカル率+5%',fl:'星の軌道を読む者が作った弓。\n運命は変えられないが、読むことはできると彼らは言った。'},
+{id:'弓74',cat:'弓',kind:'weapon',name:'帝国の遺産',sub:'弓',dmg:'1d4+1',attr:'無',attrCls:'attr--none',rng:'3m',ap:'2',maxAtk:'2',db:'自由',spec:'この武器の命中値は固定で80%になる\n命中後、目標に隣接するマスへ移動できる',fl:'帝国が残したものは廃墟だけではない。\nこの弓は、それを静かに証明している。'},
+{id:'盾75',cat:'盾',kind:'weapon',name:'木の盾',sub:'盾',dmg:'1',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'HD 必死の防御：HP10以下のとき防御で+2(1戦闘1回) MP1',fl:'最後の壁は、いつも最も素朴な形をしている。\n廃掘人はそのことを、死の淵で学んだ。'},
+{id:'盾76',cat:'盾',kind:'weapon',name:'丸盾',sub:'盾',dmg:'2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'HD 盾払い：対象の次の命中判定にPD+1 MP1',fl:'守ることが、攻めることの始まりになる。\nこの盾はその哲学を、金属の形に変えた。'},
+{id:'盾77',cat:'盾',kind:'weapon',name:'タワーシールド',sub:'盾',dmg:'2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'ラウンド開始時に宣言して、射程2以内から敵は自分に攻撃するようになる',fl:'「私が盾となる」という言葉は、宣言であり、覚悟だ。\nその重さを知る者だけが、この盾を持つ。'},
+{id:'盾78',cat:'盾',kind:'weapon',name:'棘付き盾',sub:'盾',dmg:'1d4',attr:'血',attrCls:'attr--blood',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'HD 差し替えし：防御の処理後にダメージ1d4(装甲貫通(全)) MP1',fl:'攻撃者は防がれるたびに、何かを失う。\nこの盾はそのことを、静かに教え続ける。'},
+{id:'盾79',cat:'盾',kind:'weapon',name:'炎の紋章盾',sub:'盾',dmg:'2',attr:'炎',attrCls:'attr--fire',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'防御時、攻撃者と自身に燃焼付与\n装備中、燃焼で受けるダメージ-2',fl:'縫合の神の炎が刻まれた盾。\n防いだ時、炎は双方を包む。それが神の流儀だ。'},
+{id:'盾80',cat:'盾',kind:'weapon',name:'聖印盾',sub:'盾',dmg:'2',attr:'聖',attrCls:'attr--holy',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'防御時、次に使用する奇跡の命中判定+10%',fl:'防御の直後、信仰の回路が最も太くなる瞬間がある。\n白衣教団の聖職者は、そのことを知っていた。'},
+{id:'盾81',cat:'盾',kind:'weapon',name:'反射盾',sub:'盾',dmg:'2',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'装備中に敵からの効果で状態異常を受けたなら相手にも同じ状態異常を付与\nEX 反射：魔術防御時、その効果を無効にして、自身が使用したものとして攻撃してきた相手に攻撃する MP3',fl:'鏡は、向けられたものを返すだけだ。\nこの盾もまた、そのように存在している。'},
+{id:'盾82',cat:'盾',kind:'weapon',name:'深淵の盾',sub:'盾',dmg:'3',attr:'闇',attrCls:'attr--dark',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'防御時に属性の効果が攻撃扱いで適用される\nEX 深淵の侵食：防御時、攻撃者に発狂付与、使用者に発喜付与 MP2',fl:'深淵の残滓で鍛えられた盾。\n何を守るために、誰がこれを作ったのか。'},
+{id:'盾83',cat:'盾',kind:'weapon',name:'受難者の盾',sub:'盾',dmg:'3',attr:'無',attrCls:'attr--none',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'EX 最後の加護：HP半分以下で防御成功時、射程1の味方全員HP+1d6＋次ターン命中BD+1(ラウンド1回のみ) MP4',fl:'苦難を受け入れた者が持つ盾。\n瀕死でなければ、本当の加護は現れない。'}
+];
+const ARMORS=[
+{id:'頭102',cat:'頭防具',kind:'armor',name:'布の頭巾',sub:'頭',dmg:'物理0',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'素朴なほど、始まりに相応しい。\n旅の最初の夜、これで頭を包んだ者は多い。'},
+{id:'頭103',cat:'頭防具',kind:'armor',name:'革兜',sub:'頭',dmg:'物理1',attr:'魔術耐性0',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'生き延びることが、最初の誇りだ。\n廃掘人の多くは、これをそう呼ばなかったが、そう思っていた。'},
+{id:'頭104',cat:'頭防具',kind:'armor',name:'騎士兜',sub:'頭',dmg:'物理2',attr:'魔術耐性0',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'国は滅んでも、金属はまだその形を覚えている。\n失われた帝国の誇りが、今も静かに宿っている。'},
+{id:'頭105',cat:'頭防具',kind:'armor',name:'白衣の頭巾',sub:'頭',dmg:'物理0',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'回復/加護奇跡の命中+5%',fl:'白衣教団の修道士が被る頭巾。\n信仰の回路は、頭から始まると教団は説く。'},
+{id:'頭106',cat:'頭防具',kind:'armor',name:'魔術師の帽子',sub:'頭',dmg:'物理0',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'ラウンド終了時MP1回復',fl:'セラフィット帝国の学者が愛用した帽子の型を継ぐ。\n帝国が滅んだ今も、この形だけが学院に残っている。'},
+{id:'頭107',cat:'頭防具',kind:'armor',name:'深淵の仮面',sub:'頭',dmg:'物理1',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'POWロールにBD+1',fl:'深淵を覗いた者が被る仮面。\n何が見えたかを、この仮面は語らない。'},
+{id:'頭108',cat:'頭防具',kind:'armor',name:'狩人の帽子',sub:'頭',dmg:'物理1',attr:'魔術耐性0',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'弓の命中+5%',fl:'野生の中で研ぎ澄まされた感覚が染み込んでいる。\n長く被るほど、目が遠くを見るようになると言われる。'},
+{id:'頭109',cat:'頭防具',kind:'armor',name:'角兜',sub:'頭',dmg:'物理2',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'STRロールにBD+1',fl:'角を模した兜を被ると、何かが変わる。\n戦士たちはそれを、迷信だとは呼ばなかった。'},
+{id:'頭110',cat:'頭防具',kind:'armor',name:'呪術師の仮面',sub:'頭',dmg:'物理0',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'攻撃魔術の命中+1',fl:'ヴェイルホロウの呪術師が纏う仮面。\n外から見えない顔が、深淵と向き合う時に必要なのだという。'},
+{id:'頭111',cat:'頭防具',kind:'armor',name:'帝国の兜',sub:'頭',dmg:'物理3',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'CONロールにBD+1',fl:'セラフィット帝国の正規軍が着用した兜。\n帝国の誇りとは、最後まで顔を守ることだったのかもしれない。'},
+{id:'胴112',cat:'胴防具',kind:'armor',name:'布の服',sub:'胴体',dmg:'物理1',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'それだけで、十分な時がある。\n大陸を旅した者の多くが、最初にこれを着ていた。'},
+{id:'胴113',cat:'胴防具',kind:'armor',name:'革鎧',sub:'胴体',dmg:'物理2',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'軽量と防護のバランスが、今日も誰かの命を支えている。\n廃掘人の鎧に、華やかさは必要ない。'},
+{id:'胴114',cat:'胴防具',kind:'armor',name:'鎖帷子',sub:'胴体',dmg:'物理3',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'鉄の輪を編んだ鎧。\nこの構造を最初に考えた者は、どんな夜を生き延びたのだろう。'},
+{id:'胴115',cat:'胴防具',kind:'armor',name:'板金鎧',sub:'胴体',dmg:'物理4',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'回避PD+1',fl:'帝国騎士団の重鎧。\nその重さに慣れた者は、別の軽さを手に入れると言われる。'},
+{id:'胴116',cat:'胴防具',kind:'armor',name:'白衣の法衣',sub:'胴体',dmg:'物理1',attr:'魔術耐性3',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'白衣教団の聖職者が纏う衣。\n白は汚れを隠さない。それが教団の選んだ色だ。'},
+{id:'胴117',cat:'胴防具',kind:'armor',name:'奇術師のマント',sub:'胴体',dmg:'物理2',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'AGIに関係なく行動順が一番最初になる',fl:'奇術師の手は、いつも複数のものを同時に操っている。\nこのマントもまた、その一つだ。'},
+{id:'胴118',cat:'胴防具',kind:'armor',name:'呪術師の外套',sub:'胴体',dmg:'物理1',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'MP+3',fl:'ヴェイルホロウで代々受け継がれる外套。\n何人の呪術師がこれを纏い、深淵と向き合ったか。'},
+{id:'胴119',cat:'胴防具',kind:'armor',name:'鱗鎧',sub:'胴体',dmg:'物理3',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'深きものの末裔の鱗を参考に作られた鎧。\n海の者の知恵が、陸の者を守っている。'},
+{id:'胴120',cat:'胴防具',kind:'armor',name:'毒染めの外套',sub:'胴体',dmg:'物理1',attr:'魔術耐性2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'ダメージを受けた時、相手に毒1付与',fl:'ヴェイルホロウの毒師が薬液に漬け込んだ外套。\n触れた者がそれに気づく頃には、もう遅い。'},
+{id:'胴121',cat:'胴防具',kind:'armor',name:'影走りの外套',sub:'胴体',dmg:'物理2',attr:'魔術耐性1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'各ラウンドに1回、回避備えのAP消費を0にする',fl:'廃掘人が遺跡探索で編み出した外套。\n先に見つけた者が生きる。それがこの外套の哲学だ。'},
+{id:'胴122',cat:'胴防具',kind:'armor',name:'帝国の重鎧',sub:'胴体',dmg:'物理4',attr:'魔術耐性3',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'ラウンド終了時HP1回復。回避PD+1',fl:'セラフィット帝国の精鋭部隊が纏った最高の重鎧。\n帝国は滅んだが、この鎧はまだ戦い続けている。'},
+{id:'胴123',cat:'胴防具',kind:'armor',name:'深淵の鱗甲',sub:'胴体',dmg:'物理3',attr:'魔術耐性4',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'冷気、出血の効果でダメージを受ける時3点軽減する。回避PD+1',fl:'深淵の残滓と深きものの鱗を融合させた鎧。\n誰がこれを作り、誰がこれを最初に着たのか、記録はない。'}
+];
+const CATALYSTS=[
+{id:'触84',cat:'触媒',kind:'catalyst',name:'木の杖',sub:'杖',dmg:'技能+0',attr:'MP返還-',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'魔術の道への、最初の入り口。\n素朴なほど、始まりに相応しい。'},
+{id:'触85',cat:'触媒',kind:'catalyst',name:'学院の杖',sub:'杖',dmg:'技能+0',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'メルクリアの魔術学院で配られる標準的な杖。\n標準とは、多くの者が生き延びた形だ。'},
+{id:'触86',cat:'触媒',kind:'catalyst',name:'儀式の錫杖',sub:'杖',dmg:'技能+5%',attr:'HD+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'付与魔術の命中+10%',fl:'白衣教団の儀式で用いられる錫杖。\n儀式の数だけ、この杖は何かを見てきた。'},
+{id:'触87',cat:'触媒',kind:'catalyst',name:'炎術の杖',sub:'杖',dmg:'技能+5%',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'炎属性魔術のダメージ+1d4',fl:'縫合の神の炎の属性を宿した杖。\nその炎が神のものか、使い手のものか、もう誰にも分からない。'},
+{id:'触88',cat:'触媒',kind:'catalyst',name:'雷術の杖',sub:'杖',dmg:'技能+5%',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'雷属性魔術のダメージ+1d4',fl:'外なる神々の電磁エネルギーを封じた杖。\n誰かがそれを封じたという事実だけが、この杖に残っている。'},
+{id:'触89',cat:'触媒',kind:'catalyst',name:'霜術の杖',sub:'杖',dmg:'技能+5%',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'魔術の射程+1。',fl:'名無しの者の冷気を吸収した杖。\n吸収したものを、今も手放していない。'},
+{id:'触90',cat:'触媒',kind:'catalyst',name:'禁呪の杖',sub:'杖',dmg:'技能+10%',attr:'MP返還-',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'攻撃魔術の命中+10%。魔術のMP消費-1（最低1）',fl:'セラフィット帝国が禁じた術式から生まれた杖。\n禁断には理由がある。それでも手に取る者がいる。'},
+{id:'触91',cat:'触媒',kind:'catalyst',name:'深淵の杖',sub:'杖',dmg:'技能+15%',attr:'EX+5',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'魔術を使用するたびに自身に盲目、沈黙、封印から選んで付与する(すでに受けている状態異常は選べない)',fl:'深淵の残滓が結晶化した杖。\n使うたびに何かが削られていく。それでも手を止めない者がいる。'},
+{id:'触92',cat:'触媒',kind:'catalyst',name:'叡智の杖',sub:'杖',dmg:'技能+40%',attr:'HD+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'魔術に設定されている特殊効果は発動されない',fl:'帝国時代の大魔術師の遺品とされる。\n叡智とは何かを、この杖は問い続けている。'},
+{id:'触93',cat:'触媒',kind:'catalyst',name:'合掌',sub:'その他',dmg:'技能-10%',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'この装備は武器スロットに含めない\n触媒：奇跡1枠',fl:'両手を合わせる祈りの形そのものが触媒となる。\n道具を持たない者にも、神へ届く道がある。'},
+{id:'触94',cat:'触媒',kind:'catalyst',name:'白衣教団の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',fl:'白衣教団が正式に授与する聖印。\nこれを受け取った日のことを、聖職者たちは覚えている。'},
+{id:'触95',cat:'触媒',kind:'catalyst',name:'浄化の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'呪術師、深きものの末裔、「邪悪」への攻撃奇跡ダメージ+1d4\n回復系奇跡の命中+5%',fl:'邪悪を祓う浄化の力が宿った聖印。\n浄化される側が何を感じるかを、教団は問わない。'},
+{id:'触96',cat:'触媒',kind:'catalyst',name:'守護の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+3',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'加護系奇跡の命中+10%',fl:'仲間を守ることに特化した聖印。\n自分以外のために力を使う者が、この聖印を手にする。'},
+{id:'触97',cat:'触媒',kind:'catalyst',name:'刻印',sub:'聖印',dmg:'技能±0',attr:'HD+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'奇跡の命中判定の失敗すると同一奇跡の次の命中判定に通常成功したものとしてあつかう。',fl:'帝国の刻み師が聖印の形に転用した技法。\n失敗が次の成功への道を開く。刻み師はそう言った。'},
+{id:'触98',cat:'触媒',kind:'catalyst',name:'殉教者の聖印',sub:'聖印',dmg:'技能±0',attr:'EX+3',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'HP半分以下の場合、全奇跡の命中+10%、ダメージ+2、回復奇跡で回復しなくなる',fl:'殉教者の血で清められた聖印。\n瀕死でなければ、その真価は現れない。'},
+{id:'触99',cat:'触媒',kind:'catalyst',name:'タロットカード',sub:'その他',dmg:'技能±0',attr:'EX+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'触媒：魔術/奇跡6枠\nラウンド開始時に1d6を振る。出た目に対応した魔術/奇跡のみ使用できる。\n(※同一魔術/奇跡の登録不可)',fl:'運命を読む奇術師の道具。\nどのカードが出るかは、運命だけが知っている。'},
+{id:'触100',cat:'触媒',kind:'catalyst',name:'冒涜の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+2',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'攻撃系奇跡の命中+10%、攻撃奇跡のMP消費-1（最低1）。',fl:'白衣教団が禁じた聖印。\n戦う聖職者が秘かに持ち歩く。それが禁忌である理由を、誰も声に出さない。'},
+{id:'触101',cat:'触媒',kind:'catalyst',name:'審判の聖印',sub:'聖印',dmg:'技能+10%',attr:'HD+1',attrCls:'attr--none',rng:'',ap:'',maxAtk:'',db:'',spec:'「審判」とついた奇跡のダメージ+1d6',fl:'「審判」とは、下す側も裁かれている。\nこの聖印を持つ者は、そのことを知っている。'}
+];
+
+
+const wfavs=new Set(JSON.parse(localStorage.getItem('wfav')||'[]'));
+function saveWFavs(){try{localStorage.setItem('wfav',JSON.stringify([...wfavs]));}catch(e){}}
+const wst={weapon:{cat:'all',search:''},armor:{cat:'all',search:''},catalyst:{search:''}};
+
+function buildWeaponCard(d){
+  const uid='W'+d.id; const isFav=wfavs.has(uid);
+  const isCat=d.kind==='catalyst'; const isArmor=d.kind==='armor';
+  const searchText=[d.name,d.sub,d.attr,d.dmg,d.spec,d.cat].join(' ').toLowerCase();
+  let statsHtml='';
+  if(isCat){
+    statsHtml=`<div class="card-stats"><div class="wstat"><span class="wstat__label">種別</span><span class="wstat__val">${d.sub}</span></div><div class="wstat"><span class="wstat__label">技能補正</span><span class="wstat__val">${d.dmg}</span></div><div class="wstat"><span class="wstat__label">MP返還</span><span class="wstat__val">${d.attr}</span></div></div>`;
+  } else if(isArmor){
+    statsHtml=`<div class="card-stats"><div class="wstat"><span class="wstat__label">部位</span><span class="wstat__val">${d.sub}</span></div><div class="wstat"><span class="wstat__label">物理装甲</span><span class="wstat__val">${d.dmg}</span></div><div class="wstat"><span class="wstat__label">魔術耐性</span><span class="wstat__val">${d.attr}</span></div></div>`;
+  } else {
+    statsHtml=`<div class="card-stats">
+      <div class="wstat"><span class="wstat__label">ダメージ</span><span class="wstat__val">${d.dmg}</span></div>
+      <div class="wstat"><span class="wstat__label">属性</span><span class="wstat__val"><span class="attr-pill ${d.attrCls}">${d.attr}</span></span></div>
+      <div class="wstat"><span class="wstat__label">射程</span><span class="wstat__val">${d.rng}</span></div>
+      <div class="wstat"><span class="wstat__label">AP</span><span class="wstat__val">${d.ap}</span></div>
+      <div class="wstat"><span class="wstat__label">最大攻撃回数</span><span class="wstat__val">${d.maxAtk}</span></div>
+      <div class="wstat"><span class="wstat__label">DB参照</span><span class="wstat__val">${d.db}</span></div>
+    </div>`;
+  }
+  return `<div class="data-card${isFav?' favorited':''}" data-uid="${uid}" data-cat="${d.cat}" data-kind="${d.kind}" data-search="${searchText}">
+<div class="card-head"><div><span class="card-sub">${d.sub||d.cat}</span><div class="card-name">${d.name}</div></div><button class="fav-btn${isFav?' active':''}" onclick="toggleWFav('${uid}',this)">★</button></div>
+${statsHtml}
+<div class="card-spec"><span class="card-spec-label">特殊効果</span>${d.spec.replace(/\n/g,'<br>')}</div>
+<div class="card-flavor">${d.fl.replace(/\n/g,'<br>')}</div>
+</div>`;
+}
+
+function renderGrid(gid,data,countId){document.getElementById(gid).innerHTML=data.map(buildWeaponCard).join('');if(countId)updateCount(gid,countId);}
+function updateCount(gid,cid){const t=document.querySelectorAll('#'+gid+' .data-card').length,v=document.querySelectorAll('#'+gid+' .data-card:not(.hidden)').length;document.getElementById(cid).textContent=v<t?v+' / '+t+' 件表示':'全'+t+'件';}
+function filterGrid(gid,q){const lq=q.toLowerCase();document.querySelectorAll('#'+gid+' .data-card').forEach(c=>c.classList.toggle('hidden',!!lq&&!c.dataset.search.includes(lq)));const cid=gid.replace('-grid','-count');if(document.getElementById(cid))updateCount(gid,cid);}
+function setWCat(cat,btn){wst.weapon.cat=cat;document.querySelectorAll('#wcat-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#weapon-grid .data-card').forEach(c=>c.classList.toggle('hidden',cat!=='all'&&c.dataset.cat!==cat));updateCount('weapon-grid','weapon-count');}
+function setACat(cat,btn){document.querySelectorAll('#acat-filters .filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.querySelectorAll('#armor-grid .data-card').forEach(c=>c.classList.toggle('hidden',cat!=='all'&&c.dataset.cat!==cat));updateCount('armor-grid','armor-count');}
+function toggleWFav(uid,btn){if(wfavs.has(uid)){wfavs.delete(uid);btn.classList.remove('active');btn.closest('.data-card').classList.remove('favorited');}else{wfavs.add(uid);btn.classList.add('active');btn.closest('.data-card').classList.add('favorited');}saveWFavs();renderWFav();}
+function renderWFav(){const all=[...WEAPONS,...ARMORS,...CATALYSTS];const fd=all.filter(d=>wfavs.has('W'+d.id));document.getElementById('fav-grid-w').innerHTML=fd.length?fd.map(buildWeaponCard).join(''):'<div style="padding:2rem;color:var(--text3);font-size:13px;grid-column:1/-1;text-align:center;">まだお気に入りがありません</div>';}
+function switchTab(n){['weapon','armor','catalyst','favorites','charcreate'].forEach((nm,i)=>{document.querySelectorAll('.tab-btn')[i].classList.toggle('active',nm===n);document.getElementById('tab-'+nm).classList.toggle('active',nm===n);});}
+function renderCCWeapon(){
+  const cats=['短剣','直剣','大剣','斧・ハンマー','槍・ハルバード','弓','盾'];
+  let html='';
+  cats.forEach(cat=>{
+    const items=WEAPONS.filter(d=>d.cat===cat);
+    if(!items.length)return;
+    html+=`<p class="sec-label">${cat}</p><div class="cc-table-wrap"><table class="cc-table"><thead><tr><th>名前</th><th>武器種</th><th>ダメージ</th><th>属性</th><th>射程</th><th>AP</th><th>最大</th><th>DB</th><th>特殊効果</th></tr></thead><tbody>`;
+    items.forEach(d=>{
+      const spec=d.spec.length>60?d.spec.slice(0,58)+'…':d.spec;
+      html+=`<tr><td><span class="cc-name">${d.name}</span></td><td style="font-size:10px;white-space:nowrap">${d.sub}</td><td>${d.dmg}</td><td><span class="attr-pill ${d.attrCls}" style="font-size:9px;padding:0 5px">${d.attr}</span></td><td>${d.rng}</td><td>${d.ap}</td><td>${d.maxAtk}</td><td>${d.db}</td><td style="font-size:10px">${spec}</td></tr>`;
+    });
+    html+='</tbody></table></div>';
+  });
+  html+='<p class="sec-label">防具</p><div class="cc-table-wrap"><table class="cc-table"><thead><tr><th>名前</th><th>部位</th><th>物理装甲</th><th>魔術耐性</th><th>特殊効果</th></tr></thead><tbody>';
+  ARMORS.forEach(d=>{const spec=d.spec.length>70?d.spec.slice(0,68)+'…':d.spec;html+=`<tr><td><span class="cc-name">${d.name}</span></td><td>${d.sub}</td><td>${d.dmg}</td><td>${d.attr}</td><td style="font-size:10px">${spec}</td></tr>`;});
+  html+='</tbody></table></div>';
+  html+='<p class="sec-label">触媒</p><div class="cc-table-wrap"><table class="cc-table"><thead><tr><th>名前</th><th>種別</th><th>技能補正</th><th>MP返還</th><th>特殊効果</th></tr></thead><tbody>';
+  CATALYSTS.forEach(d=>{const spec=d.spec.length>70?d.spec.slice(0,68)+'…':d.spec;html+=`<tr><td><span class="cc-name">${d.name}</span></td><td>${d.sub}</td><td>${d.dmg}</td><td>${d.attr}</td><td style="font-size:10px">${spec}</td></tr>`;});
+  html+='</tbody></table></div>';
+  document.getElementById('cc-weapon-content').innerHTML=html;
+}
+
+renderGrid('weapon-grid',WEAPONS,'weapon-count');
+renderGrid('armor-grid',ARMORS,'armor-count');
+renderGrid('catalyst-grid',CATALYSTS,'catalyst-count');
+renderWFav();renderCCWeapon();
+</script>
+</body></html>
