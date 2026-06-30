@@ -979,8 +979,158 @@ const ORIGIN=[
 {id:'??',origin:'廃人',name:'過去の栄光',en:'',trigger:'常時',effect:'他素性の刻印を取得できるようになる',fl:'全ての素性を捨てた者が、この道を選ぶ。\n廃人に、失うものはもう何もない。'},
 {id:'??',origin:'廃人',name:'何もなく',en:'',trigger:'常時',effect:'このキャラクターはロストしない。',fl:'何も持たないことが、最大の自由だと気づいた者がいた。\nその者が、最初の廃人だった。'}
 ];
+const PRICED_ITEMS=[
+{id:'短01',cat:'短剣',kind:'weapon',name:'盗人の短刀',sub:'短剣',dmg:'1d4',attr:'無',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'HD急所掠り：命中対象の次の回避判定にPD+1 MP1',price:140},
+{id:'短02',cat:'短剣',kind:'weapon',name:'脇差',sub:'短剣/直剣',dmg:'1d4',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'同じラウンドに「直剣」で攻撃しているなら命中+5%',price:130},
+{id:'短03',cat:'短剣',kind:'weapon',name:'ダガー',sub:'短剣',dmg:'1d4+1',attr:'無',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'EX生死の一線：命中対象のHP5以下なら死の宣告付与（POWロール） MP2',price:210},
+{id:'短04',cat:'短剣',kind:'weapon',name:'毒の刃',sub:'短剣',dmg:'1d3',attr:'毒',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'HD 毒の蓄積：毒1付与 MP1',price:170},
+{id:'短05',cat:'短剣',kind:'weapon',name:'巡礼のナイフ',sub:'短剣',dmg:'1d3',attr:'聖(血)',rng:'1m',ap:'1',maxAtk:'2',db:'DEX/FTH',spec:'手番にHP1d3+1を消費してこの武器の属性を「血」に変化させる',price:230},
+{id:'短06',cat:'短剣',kind:'weapon',name:'水銀刀',sub:'短剣',dmg:'1d4+1',attr:'無',rng:'1m',ap:'1',maxAtk:'4',db:'DEX',spec:'HD 水銀の連鎖：AP1回復 MP1',price:190},
+{id:'短07',cat:'短剣',kind:'weapon',name:'彫刻刀',sub:'短剣',dmg:'1d3+1',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'手番に1APを消費して射程内の目標に対して以下の効果を発揮する\\n・味方(自分含む)：戦闘の間「刻まれし根」を取得させる(重複不可。上書きされる。)\\n・敵(味方も可能)：命中判定を行いHD以上なら封印付与',price:430},
+{id:'短08',cat:'短剣',kind:'weapon',name:'爪牙',sub:'短剣',dmg:'1d4',attr:'無',rng:'1m',ap:'1',maxAtk:'3',db:'DEX/AGI',spec:'HD以上での成功で装甲貫通(3)',price:100},
+{id:'短09',cat:'短剣',kind:'weapon',name:'星鉄の短刀',sub:'短剣',dmg:'1d4+1',attr:'雷',rng:'1m',ap:'1',maxAtk:'3',db:'DEX',spec:'HD 帯電の傷：対象を攻撃するたびに1ダメージ受ける状態にする MP1\\nEX 隕石の落下：帯電の傷状態の対象に1d8＋隣接するマスの敵に1d4 MP2',price:430},
+{id:'短10',cat:'短剣',kind:'weapon',name:'儚月',sub:'短剣',dmg:'1d6+2',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'通常成功をEXとして扱う。HDは失敗として扱う',price:200},
+{id:'短11',cat:'短剣',kind:'weapon',name:'深淵の舌',sub:'短剣',dmg:'1d6',attr:'闇',rng:'1m',ap:'1',maxAtk:'2',db:'INT',spec:'命中後に使用者も与えたものと同じ状態異常を受ける\\nEX 深淵の共鳴：自身の受けている状態異常の種類×3ダメージ追加 MP2',price:370},
+{id:'短12',cat:'短剣',kind:'weapon',name:'フェルドランスの牙',sub:'短剣/直剣',dmg:'1d4/1d6+1',attr:'毒',rng:'1m',ap:'1',maxAtk:'2',db:'DEX',spec:'ダメージを受けた時、射程1の目標1体に毒1付与\\nHD 冒涜の邪毒：装甲無視(付与されている毒スタック分) MP1',price:360},
+{id:'短13',cat:'短剣',kind:'weapon',name:'新月',sub:'短剣',dmg:'0',attr:'無',rng:'1m',ap:'1',maxAtk:'4',db:'DEX',spec:'HD 月の刃：この武器の残っている攻撃回数を消費してこの攻撃にダメージを合算する。消費した攻撃回数×1ダメージ追加 MP2',price:280},
+{id:'直14',cat:'直剣',kind:'weapon',name:'ショートソード',sub:'直剣',dmg:'1d4+1',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 確かな一撃：対象HP半分以下なら追加ダメージ+1d4 MP1',price:190},
+{id:'直15',cat:'直剣',kind:'weapon',name:'ロングソード',sub:'直剣',dmg:'1d6+1',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 万能の一手：移動直後の攻撃なら追加ダメージ+1d4 MP1',price:210},
+{id:'直16',cat:'直剣',kind:'weapon',name:'KATANA',sub:'直剣',dmg:'2d4',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 居合：ラウンド中、次の回避に成功すると1d4ダメージの反撃(装甲無視) MP1',price:240},
+{id:'直17',cat:'直剣',kind:'weapon',name:'バスタードソード',sub:'直剣/大剣',dmg:'1d4+2',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR',spec:'両手持ち時 ダメージ+1d4\\nHD 不規則な剣：装甲貫通(3) MP1',price:220},
+{id:'直18',cat:'直剣',kind:'weapon',name:'炎の剣',sub:'直剣',dmg:'1d6',attr:'炎',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HD 炎の波及：命中対象が燃焼中なら隣接の別の敵にも燃焼付与 MP1',price:270},
+{id:'直19',cat:'直剣',kind:'weapon',name:'奇術師のタクト',sub:'直剣/触媒',dmg:'1d4',attr:'聖',rng:'1m',ap:'1',maxAtk:'2',db:'DEX/FTH',spec:'触媒：魔術/奇跡1枠',price:160},
+{id:'直20',cat:'直剣',kind:'weapon',name:'銀のレイピア',sub:'直剣/短剣',dmg:'1d3+1',attr:'無',rng:'1m',ap:'1',maxAtk:'3',db:'DEX/AGI',spec:'自分よりAGIが低い目標に攻撃する時命中+5%、固定+1ダメージ追加',price:180},
+{id:'直21',cat:'直剣',kind:'weapon',name:'黒き剣',sub:'直剣',dmg:'1d6',attr:'無',rng:'1(3)',ap:'1',maxAtk:'2',db:'STR(POW)',spec:'射程3で使用する場合、MP3消費。DBはPOW参照。',price:160},
+{id:'直22',cat:'直剣',kind:'weapon',name:'白闇刀',sub:'直剣',dmg:'1d6+2',attr:'血',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'装備すると装備入れ替えが出来なくなる。戦闘開始時に自身に狂喜付与\\nHD 白き闇：ダメージ+1d4 MP1',price:390},
+{id:'直23',cat:'直剣',kind:'weapon',name:'贖罪の剣',sub:'直剣',dmg:'1d6+1',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'自身のHP半分以下のとき ダメージ+2\\nHD 痛みの反射：HP半分以下のとき命中対象を1マス後退 MP1',price:280},
+{id:'直24',cat:'直剣',kind:'weapon',name:'黄金の陽光',sub:'直剣/大剣',dmg:'2d6',attr:'無',rng:'1m',ap:'2',maxAtk:'2',db:'STR',spec:'両手持ち時 ダメージ+1d4\\nHD 太陽は堕ちず：燃焼付与(この効果で与える燃焼は累積する) MP1',price:330},
+{id:'直25',cat:'直剣',kind:'weapon',name:'骸の王',sub:'直剣',dmg:'1d8',attr:'無',rng:'1(3)',ap:'1',maxAtk:'2',db:'INT',spec:'この武器のダメージは装甲ではなく耐性で軽減される。\\nHPではなくMPにダメージを与え、MPが0ならHPを減少する。\\n射程3で使用する場合、MP3消費。命中-5%。',price:390},
+{id:'直26',cat:'直剣',kind:'weapon',name:'霧の刃',sub:'直剣',dmg:'1d6+2',attr:'冷気',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'この武器の回避にはPD+1。\\nEX 帝国の剣技：ダメージ+1d4 この攻撃で冷気スタックが5になったなら与えるダメージ+2 MP2',price:440},
+{id:'大27',cat:'大剣',kind:'weapon',name:'グレートソード',sub:'大剣',dmg:'2d6',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 大地の震動：命中対象その両隣の敵全員は次ラウンド終了まで移動にかかるAP+1 MP1',price:300},
+{id:'大28',cat:'大剣',kind:'weapon',name:'クレイモア',sub:'大剣',dmg:'2d6+1',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 古の一撃：この武器で行う次の攻撃に装甲貫通(3)がつく MP1',price:290},
+{id:'大29',cat:'大剣',kind:'weapon',name:'断罪剣',sub:'大剣',dmg:'2d6+2',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'EX 首狩り：ダメージ+1d6 MP1',price:260},
+{id:'大30',cat:'大剣',kind:'weapon',name:'白夜',sub:'大剣/直剣',dmg:'1d6+2',attr:'聖',rng:'1m',ap:'2',maxAtk:'2',db:'STR',spec:'片手持ち時ダメージ-2。',price:240},
+{id:'大31',cat:'大剣',kind:'weapon',name:'腐食剣',sub:'大剣',dmg:'2d4',attr:'毒',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'対象の毒スタック分だけ装甲無視する',price:230},
+{id:'大32',cat:'大剣',kind:'weapon',name:'訓練用の丸太',sub:'大剣/槍',dmg:'2d6',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1APを消費して射程内1マスに障害物を設置する(進入不可。通過不可。)',price:280},
+{id:'大33',cat:'大剣',kind:'weapon',name:'石英の大剣',sub:'大剣',dmg:'2d6+2',attr:'無',rng:'1m',ap:'3',maxAtk:'1',db:'CON',spec:'なし',price:200},
+{id:'大34',cat:'大剣',kind:'weapon',name:'鯨骨の大剣',sub:'大剣',dmg:'2d4',attr:'冷気',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'EX 深海の断裂：冷気スタック×1ダメージ追加 MP2',price:270},
+{id:'大35',cat:'大剣',kind:'weapon',name:'嘆き',sub:'大剣',dmg:'1d8+1',attr:'闇',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'与えたダメージの半分だけ対象のMP減少。(HPの減少は無し)\\n対象のMPが0のとき装甲貫通(全)。',price:380},
+{id:'大36',cat:'大剣',kind:'weapon',name:'大刀',sub:'大剣/直剣',dmg:'2d6',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'ラウンド開始時に1APを消費して宣言をする。\\nそのラウンドの間だけ自身に移動不可と狂喜を付与する。',price:320},
+{id:'大37',cat:'大剣',kind:'weapon',name:'暴風の大剣',sub:'大剣',dmg:'1d6+2',attr:'無',rng:'1m',ap:'1',maxAtk:'5',db:'AGI',spec:'攻撃後、ラウンドの間自身の命中判定に-20%(累積する)',price:280},
+{id:'大38',cat:'大剣',kind:'weapon',name:'業炎の大剣',sub:'大剣',dmg:'1d6+2',attr:'炎',rng:'1m',ap:'1',maxAtk:'2',db:'STR',spec:'自身が燃焼状態ならダメージ+1d6',price:260},
+{id:'大39',cat:'大剣',kind:'weapon',name:'星喰い',sub:'大剣/斧',dmg:'2d8+2',attr:'闇',rng:'2m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1APを消費して射程2以内の目標を1マス移動させる\\nEX 星の崩壊：対象を１マス後退＋後退できないなら1d8ダメージ MP2',price:560},
+{id:'斧40',cat:'斧・ハンマー',kind:'weapon',name:'木こりの斧',sub:'斧',dmg:'1d8+1',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 鎧割り：命中対象の物理装甲を1点永続的に減少 MP1',price:220},
+{id:'斧41',cat:'斧・ハンマー',kind:'weapon',name:'戦斧',sub:'斧',dmg:'1d12',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 競技場の咆哮：攻撃の処理終了後、互いにお互いのみ攻撃の目標に選べるようになる(どちらかのHPが0で解除) MP1',price:360},
+{id:'斧42',cat:'斧・ハンマー',kind:'weapon',name:'投擲斧',sub:'斧',dmg:'1d6',attr:'無',rng:'3m',ap:'1',maxAtk:'2',db:'DEX',spec:'EX 正確な投擲：投擲使用時ならダメージ+1d4（射程2〜3） MP2',price:190},
+{id:'斧43',cat:'斧・ハンマー',kind:'weapon',name:'ツルハシ',sub:'ハンマー',dmg:'1d8+2',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費すると戦闘MAPの障害物を破壊できる(穴や毒沼は不可)',price:270},
+{id:'斧44',cat:'斧・ハンマー',kind:'weapon',name:'雷槌',sub:'ハンマー',dmg:'1d8',attr:'雷',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'HD 落雷：命中後、射程2内の別の敵1体に1d6ダメージ MP1',price:290},
+{id:'斧45',cat:'斧・ハンマー',kind:'weapon',name:'スワンプマン',sub:'斧・ハンマー',dmg:'1d6',attr:'無',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費して、その戦闘中、射程１以内の味方が装備している近接武器のダメージ/特殊能力をこの武器のものとして扱うようになる。',price:300},
+{id:'斧46',cat:'斧・ハンマー',kind:'weapon',name:'儀式の斧',sub:'斧',dmg:'1d6',attr:'聖',rng:'1m',ap:'2',maxAtk:'1',db:'STR/FTH',spec:'EX 最後の審判：死の宣告付与（ロール不要）。使用者HP-1d6 MP2',price:280},
+{id:'斧47',cat:'斧・ハンマー',kind:'weapon',name:'疫病斧',sub:'斧',dmg:'1d8',attr:'毒',rng:'1m',ap:'2',maxAtk:'1',db:'STR',spec:'毒状態の対象に命中時、隣接するキャラクターに毒1付与',price:270},
+{id:'斧48',cat:'斧・ハンマー',kind:'weapon',name:'台風の目',sub:'斧',dmg:'2d6',attr:'無',rng:'2m',ap:'2',maxAtk:'1',db:'STR',spec:'射程1の目標には攻撃できない。\\nHD 雷纏い：ダメージ+1d6、次の攻撃からこの武器の属性は「雷」になる MP1',price:350},
+{id:'槍49',cat:'槍・ハルバード',kind:'weapon',name:'ショートスピア',sub:'槍',dmg:'1d6+1',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR',spec:'片手持ち可能\\nHD 牽制：命中対象は次のターン終了時まで、移動APコスト+1 MP1',price:250},
+{id:'槍50',cat:'槍・ハルバード',kind:'weapon',name:'ロングスピア',sub:'槍',dmg:'1d6+2',attr:'無',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'HD カウンター：AGIが自分より高い相手が目標ならダメージ+1d4 MP1',price:250},
+{id:'槍51',cat:'槍・ハルバード',kind:'weapon',name:'ハルバード',sub:'ハルバード',dmg:'1d8+1',attr:'無',rng:'2m',ap:'2',maxAtk:'2',db:'STR',spec:'HD 大薙ぎ：命中した対象と隣接する別の敵1体にも同ダメージ MP1',price:240},
+{id:'槍52',cat:'槍・ハルバード',kind:'weapon',name:'腐れ槍',sub:'槍',dmg:'1d6',attr:'毒',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'EX 発芽：毒状態の対象への命中時、その毒スタックと同じだけ自分のHPを回復する MP5',price:310},
+{id:'槍53',cat:'槍・ハルバード',kind:'weapon',name:'聖歌隊の槍',sub:'槍/触媒',dmg:'1d4+1',attr:'聖',rng:'2m',ap:'1',maxAtk:'3',db:'STR/FTH',spec:'奇跡触媒1枠\\nHD 浄化の穿ち：命中したアンデッドの状態異常1種を解除し追加ダメージ+1d4 MP1',price:330},
+{id:'槍54',cat:'槍・ハルバード',kind:'weapon',name:'凍てつく山嶺の頂',sub:'槍',dmg:'1d6',attr:'冷気',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'HD 氷晶の穿孔：冷気1付与 MP1',price:210},
+{id:'槍55',cat:'槍・ハルバード',kind:'weapon',name:'波紋の槍',sub:'槍',dmg:'1d6',attr:'無',rng:'2m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'直線上の射程2内の全員に命中する\\nHD 波紋伝達：2体命中時、それぞれ追加ダメージ1d4 MP1',price:250},
+{id:'槍56',cat:'槍・ハルバード',kind:'weapon',name:'魂喰らいの槍',sub:'槍',dmg:'1d8',attr:'無',rng:'2m',ap:'1',maxAtk:'2',db:'STR/INT',spec:'命中時 MPを4まで消費して固定値を同じだけ増加\\nHD 魂の共鳴：命中後の装甲計算時に装甲/耐性の好きな方で計算させる MP1',price:320},
+{id:'槍57',cat:'槍・ハルバード',kind:'weapon',name:'死神の大鎌',sub:'槍・ハルバード',dmg:'2d6',attr:'闇',rng:'3m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費して射程内すべての死の宣告カウントを1減少させる\\nEX 命を刈り取る：死の宣告付与 MP2',price:420},
+{id:'槍58',cat:'槍・ハルバード',kind:'weapon',name:'嵐の矛',sub:'槍',dmg:'1d10',attr:'無',rng:'2m',ap:'1',maxAtk:'2',db:'STR',spec:'HD 豪風：装甲貫通(3) MP1\\nEX 嵐の解放：戦闘中、この武器を「炎」「雷」の属性にする',price:290},
+{id:'槍59',cat:'槍・ハルバード',kind:'weapon',name:'海神の三叉槍',sub:'槍',dmg:'3d4',attr:'血',rng:'2m',ap:'2',maxAtk:'2',db:'STR/CON',spec:'命中判定前にHP1d4減少すると命中+10%\\nEX 呼び声：発狂付与 MP3',price:360},
+{id:'槍60',cat:'槍・ハルバード',kind:'weapon',name:'星の槍',sub:'槍',dmg:'1d8',attr:'無',rng:'2m',ap:'1',maxAtk:'2',db:'LUK',spec:'命中判定のクリティカル率+5%\\nCR 愛された者：戦闘中のあらゆるクリティカル率+1% MP3',price:270},
+{id:'槍61',cat:'槍・ハルバード',kind:'weapon',name:'半月のハルバード',sub:'ハルバード',dmg:'2d6+1',attr:'無',rng:'2m',ap:'2',maxAtk:'1',db:'STR',spec:'装甲+1、耐性+1\\nEX 月の癒し：攻撃後自分のHP+1d3 MP2',price:290},
+{id:'弓62',cat:'弓',kind:'weapon',name:'ショートボウ',sub:'弓',dmg:'1d4+1',attr:'無',rng:'3m',ap:'1',maxAtk:'2',db:'DEX',spec:'片手持ち時ダメージ-1\\nHD 至近の刻み：射程2以内の対象への命中時、ダメージ+2 MP1',price:230},
+{id:'弓63',cat:'弓',kind:'weapon',name:'ロングボウ',sub:'弓',dmg:'1d6+1',attr:'無',rng:'6m',ap:'1',maxAtk:'2',db:'DEX',spec:'HD 狙い定め：射程5以上の対象への攻撃成功時、自分の行う同一対象への命中+5%(戦闘の間。10%まで累積) MP1',price:300},
+{id:'弓64',cat:'弓',kind:'weapon',name:'狩猟弓',sub:'弓',dmg:'2d4',attr:'血',rng:'5m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'HPが最大値の半分以下の目標を射程10として攻撃できる\\n出血スタック4の相手に攻撃するなら命中判定で41が出たことにできる',price:400},
+{id:'弓65',cat:'弓',kind:'weapon',name:'蛇の弓',sub:'弓',dmg:'1d4',attr:'毒',rng:'5(3)',ap:'1',maxAtk:'2',db:'STR(DEX)',spec:'EX 毒の爆発：毒スタック5の対象への命中時、スタックを全消費して1d12ダメージ（装甲無視） MP2',price:310},
+{id:'弓66',cat:'弓',kind:'weapon',name:'赤い彗星',sub:'弓',dmg:'1d4+1',attr:'炎',rng:'5(3)',ap:'1',maxAtk:'2',db:'STR(DEX)',spec:'EX 延焼：燃焼中の対象に命中時、射程2内の別の敵1体にも燃焼付与 MP2',price:280},
+{id:'弓67',cat:'弓',kind:'weapon',name:'狙撃弓',sub:'弓',dmg:'2d6+1',attr:'無',rng:'10m',ap:'2',maxAtk:'1',db:'STR',spec:'攻撃したラウンド移動不可。移動したラウンド攻撃不可\\nHD 雷の一矢：この攻撃に「雷」属性付与 MP2',price:350},
+{id:'弓68',cat:'弓',kind:'weapon',name:'連射弓',sub:'弓',dmg:'0',attr:'無',rng:'2m',ap:'1',maxAtk:'4',db:'AGI',spec:'片手持ち可能。射程1での命中判定+10% 装甲貫通(1)\\nHD 乱れ矢：3回目の攻撃命中時、追加で1回無料攻撃 MP1',price:270},
+{id:'弓69',cat:'弓',kind:'weapon',name:'百鬼夜行',sub:'弓',dmg:'2d4+2',attr:'無',rng:'3m',ap:'2',maxAtk:'2',db:'DEX',spec:'使用者は常に恐怖状態になる\\nEX 魑魅魍魎：毒、出血、冷気から好きな状態異常を2つ付与 MP2',price:310},
+{id:'弓70',cat:'弓',kind:'weapon',name:'魂狩り弓',sub:'弓',dmg:'1d8',attr:'闇',rng:'5m',ap:'1',maxAtk:'2',db:'STR/INT',spec:'命中時 対象のMP-1d6。MP0の場合HP直接ダメージ\\nEX 魂の断絶：冷気1付与 MP2',price:340},
+{id:'弓71',cat:'弓',kind:'weapon',name:'冬の弓',sub:'弓',dmg:'1d6',attr:'冷気',rng:'5(3)',ap:'1',maxAtk:'2',db:'STR(DEX)',spec:'この攻撃で冷気スタックが5になった場合、冷気は全解除ではなく2つ解除される\\nHD 冬の訪れ：冷気1付与 MP3',price:350},
+{id:'弓72',cat:'弓',kind:'weapon',name:'和弓',sub:'弓',dmg:'1d10',attr:'無',rng:'8m',ap:'2',maxAtk:'1',db:'STR',spec:'手番に1AP消費して、この武器の次の命中判定に+10%、ダメージ+1d10、そのラウンド攻撃不可。',price:290},
+{id:'弓73',cat:'弓',kind:'weapon',name:'星読みの弓',sub:'弓',dmg:'1d8+1',attr:'無',rng:'5m',ap:'1',maxAtk:'2',db:'LUK',spec:'常時クリティカル率+5%',price:160},
+{id:'弓74',cat:'弓',kind:'weapon',name:'帝国の遺産',sub:'弓',dmg:'1d4+1',attr:'無',rng:'3m',ap:'2',maxAtk:'2',db:'自由',spec:'この武器の命中値は固定で80%になる\\n命中後、目標に隣接するマスへ移動できる',price:210},
+{id:'盾75',cat:'盾',kind:'weapon',name:'木の盾',sub:'盾',dmg:'1',attr:'無',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'HD 必死の防御：HP10以下のとき防御で+2(1戦闘1回) MP1',price:150},
+{id:'盾76',cat:'盾',kind:'weapon',name:'丸盾',sub:'盾',dmg:'2',attr:'無',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'HD 盾払い：対象の次の命中判定にPD+1 MP1',price:100},
+{id:'盾77',cat:'盾',kind:'weapon',name:'タワーシールド',sub:'盾',dmg:'2',attr:'無',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'ラウンド開始時に宣言して、射程2以内から敵は自分に攻撃するようになる',price:150},
+{id:'盾78',cat:'盾',kind:'weapon',name:'棘付き盾',sub:'盾',dmg:'1d4',attr:'血',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'HD 差し替えし：防御の処理後にダメージ1d4(装甲貫通(全)) MP1',price:340},
+{id:'盾79',cat:'盾',kind:'weapon',name:'炎の紋章盾',sub:'盾',dmg:'2',attr:'炎',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'防御時、攻撃者と自身に燃焼付与\\n装備中、燃焼で受けるダメージ-2',price:250},
+{id:'盾80',cat:'盾',kind:'weapon',name:'聖印盾',sub:'盾',dmg:'2',attr:'聖',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'防御時、次に使用する奇跡の命中判定+10%',price:190},
+{id:'盾81',cat:'盾',kind:'weapon',name:'反射盾',sub:'盾',dmg:'2',attr:'無',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'装備中に敵からの効果で状態異常を受けたなら相手にも同じ状態異常を付与\\nEX 反射：魔術防御時、その効果を無効にして、自身が使用したものとして攻撃してきた相手に攻撃する MP3',price:420},
+{id:'盾82',cat:'盾',kind:'weapon',name:'深淵の盾',sub:'盾',dmg:'3',attr:'闇',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'防御時に属性の効果が攻撃扱いで適用される\\nEX 深淵の侵食：防御時、攻撃者に発狂付与、使用者に発喜付与 MP2',price:370},
+{id:'盾83',cat:'盾',kind:'weapon',name:'受難者の盾',sub:'盾',dmg:'3',attr:'無',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'EX 最後の加護：HP半分以下で防御成功時、射程1の味方全員HP+1d6＋次ターン命中BD+1(ラウンド1回のみ) MP4',price:280},
+{id:'頭102',cat:'頭防具',kind:'armor',name:'布の頭巾',sub:'頭',dmg:'物理0',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:80},
+{id:'頭103',cat:'頭防具',kind:'armor',name:'革兜',sub:'頭',dmg:'物理1',attr:'魔術耐性0',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:80},
+{id:'頭104',cat:'頭防具',kind:'armor',name:'騎士兜',sub:'頭',dmg:'物理2',attr:'魔術耐性0',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:80},
+{id:'頭105',cat:'頭防具',kind:'armor',name:'白衣の頭巾',sub:'頭',dmg:'物理0',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'回復/加護奇跡の命中+5%',price:380},
+{id:'頭106',cat:'頭防具',kind:'armor',name:'魔術師の帽子',sub:'頭',dmg:'物理0',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'ラウンド終了時MP1回復',price:350},
+{id:'頭107',cat:'頭防具',kind:'armor',name:'深淵の仮面',sub:'頭',dmg:'物理1',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'POWロールにBD+1',price:330},
+{id:'頭108',cat:'頭防具',kind:'armor',name:'狩人の帽子',sub:'頭',dmg:'物理1',attr:'魔術耐性0',rng:'',ap:'',maxAtk:'',db:'',spec:'弓の命中+5%',price:220},
+{id:'頭109',cat:'頭防具',kind:'armor',name:'角兜',sub:'頭',dmg:'物理2',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'STRロールにBD+1',price:330},
+{id:'頭110',cat:'頭防具',kind:'armor',name:'呪術師の仮面',sub:'頭',dmg:'物理0',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'攻撃魔術の命中+1',price:270},
+{id:'頭111',cat:'頭防具',kind:'armor',name:'帝国の兜',sub:'頭',dmg:'物理3',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'CONロールにBD+1',price:330},
+{id:'胴112',cat:'胴防具',kind:'armor',name:'布の服',sub:'胴体',dmg:'物理1',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:100},
+{id:'胴113',cat:'胴防具',kind:'armor',name:'革鎧',sub:'胴体',dmg:'物理2',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:100},
+{id:'胴114',cat:'胴防具',kind:'armor',name:'鎖帷子',sub:'胴体',dmg:'物理3',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:100},
+{id:'胴115',cat:'胴防具',kind:'armor',name:'板金鎧',sub:'胴体',dmg:'物理4',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'回避PD+1',price:150},
+{id:'胴116',cat:'胴防具',kind:'armor',name:'白衣の法衣',sub:'胴体',dmg:'物理1',attr:'魔術耐性3',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:100},
+{id:'胴117',cat:'胴防具',kind:'armor',name:'奇術師のマント',sub:'胴体',dmg:'物理2',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'AGIに関係なく行動順が一番最初になる',price:320},
+{id:'胴118',cat:'胴防具',kind:'armor',name:'呪術師の外套',sub:'胴体',dmg:'物理1',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'MP+3',price:130},
+{id:'胴119',cat:'胴防具',kind:'armor',name:'鱗鎧',sub:'胴体',dmg:'物理3',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:100},
+{id:'胴120',cat:'胴防具',kind:'armor',name:'毒染めの外套',sub:'胴体',dmg:'物理1',attr:'魔術耐性2',rng:'',ap:'',maxAtk:'',db:'',spec:'ダメージを受けた時、相手に毒1付与',price:300},
+{id:'胴121',cat:'胴防具',kind:'armor',name:'影走りの外套',sub:'胴体',dmg:'物理2',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'各ラウンドに1回、回避備えのAP消費を0にする',price:380},
+{id:'胴122',cat:'胴防具',kind:'armor',name:'帝国の重鎧',sub:'胴体',dmg:'物理4',attr:'魔術耐性3',rng:'',ap:'',maxAtk:'',db:'',spec:'ラウンド終了時HP1回復。回避PD+1',price:320},
+{id:'胴123',cat:'胴防具',kind:'armor',name:'深淵の鱗甲',sub:'胴体',dmg:'物理3',attr:'魔術耐性4',rng:'',ap:'',maxAtk:'',db:'',spec:'冷気、出血の効果でダメージを受ける時3点軽減する。回避PD+1',price:480},
+{id:'触84',cat:'触媒',kind:'catalyst',name:'木の杖',sub:'杖',dmg:'技能+0',attr:'MP返還-',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:90},
+{id:'触85',cat:'触媒',kind:'catalyst',name:'学院の杖',sub:'杖',dmg:'技能+0',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:90},
+{id:'触86',cat:'触媒',kind:'catalyst',name:'儀式の錫杖',sub:'杖',dmg:'技能+5%',attr:'HD+1',rng:'',ap:'',maxAtk:'',db:'',spec:'付与魔術の命中+10%',price:150},
+{id:'触87',cat:'触媒',kind:'catalyst',name:'炎術の杖',sub:'杖',dmg:'技能+5%',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'炎属性魔術のダメージ+1d4',price:170},
+{id:'触88',cat:'触媒',kind:'catalyst',name:'雷術の杖',sub:'杖',dmg:'技能+5%',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'雷属性魔術のダメージ+1d4',price:170},
+{id:'触89',cat:'触媒',kind:'catalyst',name:'霜術の杖',sub:'杖',dmg:'技能+5%',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'魔術の射程+1。',price:130},
+{id:'触90',cat:'触媒',kind:'catalyst',name:'禁呪の杖',sub:'杖',dmg:'技能+10%',attr:'MP返還-',rng:'',ap:'',maxAtk:'',db:'',spec:'攻撃魔術の命中+10%。魔術のMP消費-1（最低1）',price:250},
+{id:'触91',cat:'触媒',kind:'catalyst',name:'深淵の杖',sub:'杖',dmg:'技能+15%',attr:'EX+5',rng:'',ap:'',maxAtk:'',db:'',spec:'魔術を使用するたびに自身に盲目、沈黙、封印から選んで付与する(すでに受けている状態異常は選べない)',price:400},
+{id:'触92',cat:'触媒',kind:'catalyst',name:'叡智の杖',sub:'杖',dmg:'技能+40%',attr:'HD+1',rng:'',ap:'',maxAtk:'',db:'',spec:'魔術に設定されている特殊効果は発動されない',price:210},
+{id:'触93',cat:'触媒',kind:'catalyst',name:'合掌',sub:'その他',dmg:'技能-10%',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'この装備は武器スロットに含めない\\n触媒：奇跡1枠',price:240},
+{id:'触94',cat:'触媒',kind:'catalyst',name:'白衣教団の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:90},
+{id:'触95',cat:'触媒',kind:'catalyst',name:'浄化の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'呪術師、深きものの末裔、「邪悪」への攻撃奇跡ダメージ+1d4\\n回復系奇跡の命中+5%',price:360},
+{id:'触96',cat:'触媒',kind:'catalyst',name:'守護の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+3',rng:'',ap:'',maxAtk:'',db:'',spec:'加護系奇跡の命中+10%',price:160},
+{id:'触97',cat:'触媒',kind:'catalyst',name:'刻印',sub:'聖印',dmg:'技能±0',attr:'HD+1',rng:'',ap:'',maxAtk:'',db:'',spec:'奇跡の命中判定の失敗すると同一奇跡の次の命中判定に通常成功したものとしてあつかう。',price:340},
+{id:'触98',cat:'触媒',kind:'catalyst',name:'殉教者の聖印',sub:'聖印',dmg:'技能±0',attr:'EX+3',rng:'',ap:'',maxAtk:'',db:'',spec:'HP半分以下の場合、全奇跡の命中+10%、ダメージ+2、回復奇跡で回復しなくなる',price:340},
+{id:'触99',cat:'触媒',kind:'catalyst',name:'タロットカード',sub:'その他',dmg:'技能±0',attr:'EX+1',rng:'',ap:'',maxAtk:'',db:'',spec:'触媒：魔術/奇跡6枠\\nラウンド開始時に1d6を振る。出た目に対応した魔術/奇跡のみ使用できる。\\n(※同一魔術/奇跡の登録不可)',price:500},
+{id:'触100',cat:'触媒',kind:'catalyst',name:'冒涜の聖印',sub:'聖印',dmg:'技能+5%',attr:'EX+2',rng:'',ap:'',maxAtk:'',db:'',spec:'攻撃系奇跡の命中+10%、攻撃奇跡のMP消費-1（最低1）。',price:270},
+{id:'触101',cat:'触媒',kind:'catalyst',name:'審判の聖印',sub:'聖印',dmg:'技能+10%',attr:'HD+1',rng:'',ap:'',maxAtk:'',db:'',spec:'「審判」とついた奇跡のダメージ+1d6',price:200}
+];
+const STARTER_ITEMS=[
+{name:'錆びた鉄の刃',cat:'短剣',kind:'weapon',dmg:'1d3',attr:'無',rng:'1m',ap:'1',maxAtk:'2',db:'STR/DEX',spec:'なし（特殊効果を持たない、最も粗末な刃）',price:40},
+{name:'木の弓',cat:'弓',kind:'weapon',dmg:'1d3',attr:'無',rng:'3m',ap:'1',maxAtk:'1',db:'DEX',spec:'なし',price:40},
+{name:'枯れ枝の杖',cat:'触媒',kind:'catalyst',dmg:'技能±0',attr:'MP返還-',rng:'-',ap:'-',maxAtk:'-',db:'-',spec:'魔術1枠。特殊効果なし',price:40},
+{name:'布の聖印',cat:'触媒',kind:'catalyst',dmg:'技能±0',attr:'MP返還-',rng:'-',ap:'-',maxAtk:'-',db:'-',spec:'奇跡1枠。特殊効果なし',price:40},
+{name:'麻布の頭巾',cat:'頭防具',kind:'armor',dmg:'物理0',attr:'魔術耐性0',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:30},
+{name:'継ぎ接ぎの服',cat:'胴防具',kind:'armor',dmg:'物理0',attr:'魔術耐性1',rng:'',ap:'',maxAtk:'',db:'',spec:'なし',price:30},
+{name:'木っ端の盾',cat:'盾',kind:'weapon',dmg:'1',attr:'無',rng:'1m',ap:'1',maxAtk:'1',db:'STR',spec:'なし',price:30}
+];
+const STARTER_SETS={
+'騎士':{weapon:'錆びた鉄の刃',isCatalyst:false,shield:null,armor:'継ぎ接ぎの服'},
+'守護者':{weapon:'錆びた鉄の刃',isCatalyst:false,shield:'木っ端の盾',armor:null},
+'戦士':{weapon:'錆びた鉄の刃',isCatalyst:false,shield:null,armor:'継ぎ接ぎの服'},
+'侍':{weapon:'錆びた鉄の刃',isCatalyst:false,shield:null,armor:'継ぎ接ぎの服'},
+'盗賊':{weapon:'錆びた鉄の刃',isCatalyst:false,shield:null,armor:'麻布の頭巾'},
+'狩人':{weapon:'木の弓',isCatalyst:false,shield:null,armor:'麻布の頭巾'},
+'呪術師':{weapon:'枯れ枝の杖',isCatalyst:true,shield:null,armor:'麻布の頭巾'},
+'魔法使い':{weapon:'枯れ枝の杖',isCatalyst:true,shield:null,armor:'麻布の頭巾'},
+'聖職者':{weapon:'布の聖印',isCatalyst:true,shield:null,armor:'麻布の頭巾'},
+'奇術師':{weapon:'布の聖印',isCatalyst:true,shield:null,armor:'継ぎ接ぎの服'},
+'深きもの':{weapon:'枯れ枝の杖',isCatalyst:true,shield:null,armor:'継ぎ接ぎの服'},
+'刻み師':{weapon:'布の聖印',isCatalyst:true,shield:null,armor:'麻布の頭巾'},
+'廃人':{weapon:'錆びた鉄の刃',isCatalyst:false,shield:null,armor:'継ぎ接ぎの服'}
+};
 
 </script>
+
 <script>
 //=================== 共通テーブル ===================
 const DB_TABLE = [[1,4,'0'],[5,8,'1d3'],[9,12,'1d4'],[13,16,'1d6'],[17,20,'1d8'],[21,24,'2d6'],[25,99,'2d8']];
@@ -1005,7 +1155,76 @@ function initOriginSelect(){
 }
 
 function onOriginChange(){
+  applyStarterEquipment();
   recalcAll();
+}
+
+function applyStarterEquipment(){
+  const originName = document.getElementById('originSelect').value;
+  const set = STARTER_SETS[originName];
+  if(!set) return;
+
+  // 武器①：触媒系の素性は「武器①に触媒を直接セット」（触媒は武器として扱う）
+  const weaponSel = document.getElementById('sel_weapon1');
+  if(weaponSel){
+    if(set.isCatalyst){
+      // 武器①の選択肢に触媒が無い場合は一時的に追加して選択
+      let opt = Array.from(weaponSel.options).find(o=>o.value===set.weapon);
+      if(!opt){
+        opt = document.createElement('option');
+        opt.value = set.weapon;
+        const starterItem = STARTER_ITEMS.find(s=>s.name===set.weapon);
+        opt.textContent = priceLabel(starterItem);
+        weaponSel.appendChild(opt);
+      }
+    }
+    weaponSel.value = set.weapon;
+    onEquipChangeCatalystAware('weapon1', set.isCatalyst);
+    document.getElementById('status_weapon1').value = 'initial';
+  }
+  // 武器②は未選択にリセット
+  const weapon2Sel = document.getElementById('sel_weapon2');
+  if(weapon2Sel){ weapon2Sel.value=''; onEquipChange('weapon2','weapon'); }
+
+  // 盾／触媒スロット：守護者のみ盾を入れる。それ以外は空。
+  const shieldSel = document.getElementById('sel_shield');
+  if(shieldSel){
+    shieldSel.value = set.shield || '';
+    onEquipChange('shield','shield_catalyst');
+    document.getElementById('status_shield').value = 'initial';
+  }
+
+  // 頭防具／胴防具：armorがnullなら両方クリア（守護者は盾で2点目を使い切るため防具なし）
+  const headSel = document.getElementById('sel_head');
+  const bodySel = document.getElementById('sel_body');
+  const isHead = set.armor === '麻布の頭巾';
+  const isBody = set.armor === '継ぎ接ぎの服';
+  if(headSel){
+    headSel.value = isHead ? set.armor : '';
+    onEquipChange('head','armor_head');
+    document.getElementById('status_head').value = 'initial';
+  }
+  if(bodySel){
+    bodySel.value = isBody ? set.armor : '';
+    onEquipChange('body','armor_body');
+    document.getElementById('status_body').value = 'initial';
+  }
+
+  recalcMoney();
+}
+
+// 武器①スロットに触媒を入れた場合のメタ情報表示（通常のonEquipChangeは武器プールしか見ないため専用処理）
+function onEquipChangeCatalystAware(key, isCatalyst){
+  if(!isCatalyst){ onEquipChange(key,'weapon'); return; }
+  const name = document.getElementById('sel_'+key).value;
+  const item = STARTER_ITEMS.find(i=>i.name===name) || CATALYSTS.find(i=>i.name===name);
+  const metaEl = document.getElementById('meta_'+key);
+  const priceEl = document.getElementById('price_'+key);
+  if(!item){ metaEl.textContent='-'; priceEl.value=0; return; }
+  let metaParts = [item.sub || item.cat || ''];
+  if(item.spec && item.spec.includes('枠')) metaParts.push('<span class="cat-slot-tag">'+(item.spec.match(/[魔術奇跡\/]+\d枠/)||[''])[0]+'</span>');
+  metaEl.innerHTML = metaParts.join(' ');
+  priceEl.value = getRealPrice(item);
 }
 
 //=================== ② 能力値計算 ===================
@@ -1097,30 +1316,28 @@ const EQUIP_SLOTS = [
 ];
 
 function getPoolItems(pool){
-  if(pool==='weapon') return WEAPONS;
-  if(pool==='shield_catalyst') return [...WEAPONS.filter(w=>w.cat==='盾'), ...CATALYSTS];
-  if(pool==='armor_head') return ARMORS.filter(a=>a.cat==='頭防具');
-  if(pool==='armor_body') return ARMORS.filter(a=>a.cat==='胴防具');
+  if(pool==='weapon') return WEAPONS.filter(w=>w.cat!=='盾').concat(STARTER_ITEMS.filter(s=>s.kind==='weapon' && s.cat!=='盾'));
+  if(pool==='shield_catalyst') return [
+    ...WEAPONS.filter(w=>w.cat==='盾'), ...CATALYSTS,
+    ...STARTER_ITEMS.filter(s=>s.cat==='盾'||s.kind==='catalyst')
+  ];
+  if(pool==='armor_head') return ARMORS.filter(a=>a.cat==='頭防具').concat(STARTER_ITEMS.filter(s=>s.cat==='頭防具'));
+  if(pool==='armor_body') return ARMORS.filter(a=>a.cat==='胴防具').concat(STARTER_ITEMS.filter(s=>s.cat==='胴防具'));
   return [];
 }
 
-function estimatePrice(item){
-  // 簡易価格推定（強力な装備ほど高め。実際の価格は別途価格表で確定）
-  if(item.kind==='catalyst' || item.dmg===undefined) {
-    return item.spec && item.spec.length>40 ? 350 : 150;
-  }
-  let base = 80;
-  const dmgStr = (item.dmg||'').toString();
-  const diceMatch = dmgStr.match(/(\d+)d(\d+)/);
-  if(diceMatch){
-    base += parseInt(diceMatch[1])*parseInt(diceMatch[2])*8;
-  }
-  const flat = dmgStr.match(/\+(\d+)/);
-  if(flat) base += parseInt(flat[1])*15;
-  if(item.attr && item.attr!=='無' && item.attr!=='-') base += 60;
-  if(item.spec && item.spec.length>30) base += 80;
-  if(item.spec && item.spec.length>60) base += 100;
-  return Math.min(580, Math.max(50, Math.round(base/10)*10));
+function priceLabel(it){
+  const p = getRealPrice(it);
+  return `${it.name}（${p}G）`;
+}
+
+function findPricedItem(name){
+  return PRICED_ITEMS.find(p=>p.name===name);
+}
+function getRealPrice(item){
+  if(item && typeof item.price === 'number') return item.price;
+  const p = findPricedItem(item.name);
+  return p ? p.price : 100;
 }
 
 function initEquipSlots(){
@@ -1131,7 +1348,7 @@ function initEquipSlots(){
     const row = document.createElement('div');
     row.className = 'equip-row';
     row.id = 'row_'+slot.key;
-    const options = items.map(it=>`<option value="${it.id}">${it.name}</option>`).join('');
+    const options = items.map(it=>`<option value="${it.name}">${priceLabel(it)}</option>`).join('');
     row.innerHTML = `
       <span class="slot-label">${slot.label}</span>
       <select id="sel_${slot.key}" onchange="onEquipChange('${slot.key}','${slot.pool}')">
@@ -1152,15 +1369,15 @@ function initEquipSlots(){
 
 function onEquipChange(key, pool){
   const items = getPoolItems(pool);
-  const id = document.getElementById('sel_'+key).value;
-  const item = items.find(i=>i.id===id);
+  const name = document.getElementById('sel_'+key).value;
+  const item = items.find(i=>i.name===name);
   const metaEl = document.getElementById('meta_'+key);
   const priceEl = document.getElementById('price_'+key);
   if(!item){ metaEl.textContent = '-'; priceEl.value = 0; recalcMoney(); return; }
 
   let metaParts = [];
   if(item.kind==='catalyst'){
-    metaParts.push(item.sub);
+    metaParts.push(item.sub||'');
     if(item.spec && item.spec.includes('枠')) metaParts.push('<span class="cat-slot-tag">'+(item.spec.match(/[魔術奇跡\/]+\d枠/)||[''])[0]+'</span>');
   } else if(item.cat==='頭防具' || item.cat==='胴防具'){
     metaParts.push(`物理${item.dmg} / 耐性${item.attr}`);
@@ -1168,7 +1385,7 @@ function onEquipChange(key, pool){
     metaParts.push(`${item.dmg||''} ${item.attr||''} 射程${item.rng||''} AP${item.ap||''}`);
   }
   metaEl.innerHTML = metaParts.join(' ');
-  priceEl.value = estimatePrice(item);
+  priceEl.value = getRealPrice(item);
   recalcMoney();
 }
 
@@ -1280,7 +1497,7 @@ function buildPrintSheet(){
   let equipRows = '';
   EQUIP_SLOTS.forEach(slot=>{
     const sel = document.getElementById('sel_'+slot.key);
-    const name = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text : '';
+    const name = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].text.replace(/（\d+G）$/,'') : '';
     const meta = document.getElementById('meta_'+slot.key).innerHTML;
     const price = document.getElementById('price_'+slot.key).value;
     const status = document.getElementById('status_'+slot.key);
